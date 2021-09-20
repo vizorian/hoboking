@@ -1,0 +1,24 @@
+{
+  "dependencies": {
+    "signalr1": {
+      "restored": true,
+      "restoreTime": "2021-09-20T14:49:21.4053313Z"
+    },
+    "secrets1": {
+      "restored": true,
+      "restoreTime": "2021-09-20T14:49:19.4376439Z"
+    }
+  },
+  "parameters": {
+    "signalr1.resourceGroupName": {
+      "Name": "signalr1.resourceGroupName",
+      "Type": "resourceGroup",
+      "Value": "hoboking-group"
+    },
+    "signalr1.subscriptionId": {
+      "Name": "signalr1.subscriptionId",
+      "Type": "subscription",
+      "Value": "0ab47095-cb5f-4682-aa59-e36cbe07f38b"
+    }
+  }
+}

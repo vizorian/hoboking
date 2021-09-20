@@ -27,7 +27,8 @@ namespace SignalR_GameServer_v1
         {
             services.AddRazorPages();
 
-            services.AddSignalR();
+            services.AddSignalR()
+                .AddAzureSignalR();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -46,7 +47,7 @@ namespace SignalR_GameServer_v1
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
+            app.UseDefaultFiles();
             app.UseRouting();
 
             app.UseAuthorization();

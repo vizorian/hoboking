@@ -11,6 +11,7 @@
 using System;
 using System.Reflection;
 
+[assembly: Microsoft.Extensions.Configuration.UserSecrets.UserSecretsIdAttribute("34999ec8-eb4a-4a32-9d2f-fcbbe84e2d01")]
 [assembly: System.Reflection.AssemblyCompanyAttribute("SignalR-GameServer-v1")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
