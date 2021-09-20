@@ -1,0 +1,70 @@
+{
+  "format": 1,
+  "restore": {
+    "/Users/andrej/Projects/SignalR-GameServer-v1/SignalR-GameServer-v1/SignalR-GameServer-v1.csproj": {}
+  },
+  "projects": {
+    "/Users/andrej/Projects/SignalR-GameServer-v1/SignalR-GameServer-v1/SignalR-GameServer-v1.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/Users/andrej/Projects/SignalR-GameServer-v1/SignalR-GameServer-v1/SignalR-GameServer-v1.csproj",
+        "projectName": "SignalR-GameServer-v1",
+        "projectPath": "/Users/andrej/Projects/SignalR-GameServer-v1/SignalR-GameServer-v1/SignalR-GameServer-v1.csproj",
+        "packagesPath": "/Users/andrej/.nuget/packages/",
+        "outputPath": "/Users/andrej/Projects/SignalR-GameServer-v1/SignalR-GameServer-v1/obj/",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "/usr/local/share/dotnet/sdk/NuGetFallbackFolder"
+        ],
+        "configFilePaths": [
+          "/Users/andrej/.config/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "netcoreapp3.1"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netcoreapp3.1": {
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netcoreapp3.1": {
+          "dependencies": {
+            "Microsoft.AspNetCore.SignalR.Core": {
+              "target": "Package",
+              "version": "[1.1.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/3.1.402/RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}
