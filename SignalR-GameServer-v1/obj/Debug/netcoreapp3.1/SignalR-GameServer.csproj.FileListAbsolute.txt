@@ -55,3 +55,6 @@ D:\Studies\Rudens Semestras 4\Objektinis programų projektaviams\Projektas\Repos
 D:\Studies\Rudens Semestras 4\Objektinis programų projektaviams\Projektas\Repository\vizorian\hoboking\SignalR-GameServer-v1\obj\Debug\netcoreapp3.1\SignalR-GameServer.dll
 D:\Studies\Rudens Semestras 4\Objektinis programų projektaviams\Projektas\Repository\vizorian\hoboking\SignalR-GameServer-v1\obj\Debug\netcoreapp3.1\SignalR-GameServer.pdb
 D:\Studies\Rudens Semestras 4\Objektinis programų projektaviams\Projektas\Repository\vizorian\hoboking\SignalR-GameServer-v1\obj\Debug\netcoreapp3.1\SignalR-GameServer.genruntimeconfig.cache
+D:\Studies\Rudens Semestras 4\Objektinis programų projektaviams\Projektas\Repository\vizorian\hoboking\SignalR-GameServer-v1\bin\Debug\netcoreapp3.1\Azure.Extensions.AspNetCore.Configuration.Secrets.dll
+D:\Studies\Rudens Semestras 4\Objektinis programų projektaviams\Projektas\Repository\vizorian\hoboking\SignalR-GameServer-v1\bin\Debug\netcoreapp3.1\Azure.Security.KeyVault.Secrets.dll
+D:\Studies\Rudens Semestras 4\Objektinis programų projektaviams\Projektas\Repository\vizorian\hoboking\SignalR-GameServer-v1\obj\Debug\netcoreapp3.1\SignalR-GameServer.csproj.AssemblyReference.cache
