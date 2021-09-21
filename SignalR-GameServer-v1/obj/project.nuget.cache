@@ -1,11 +1,13 @@
 {
   "version": 2,
-  "dgSpecHash": "woLMYwHw7ekJHjYPIb4QT6/JUQw4r+vOTnHocZ8NEE0Nhb+dghYGacCXCEibzLQx5R1daEdRqzJdE4dQsMJH2A==",
+  "dgSpecHash": "sOUajCHlvLwAWv9aOMdPVuUrCXU6N6aUdgtsNOXGxDR501VVvqXRlj/NYqCle4UTY/mykwuNKrRKwfgFMfaf2w==",
   "success": true,
   "projectFilePath": "D:\\Studies\\Rudens Semestras 4\\Objektinis programų projektaviams\\Projektas\\Repository\\vizorian\\hoboking\\SignalR-GameServer-v1\\SignalR-GameServer.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\birst\\.nuget\\packages\\azure.core\\1.14.0\\azure.core.1.14.0.nupkg.sha512",
+    "C:\\Users\\birst\\.nuget\\packages\\azure.extensions.aspnetcore.configuration.secrets\\1.2.1\\azure.extensions.aspnetcore.configuration.secrets.1.2.1.nupkg.sha512",
     "C:\\Users\\birst\\.nuget\\packages\\azure.identity\\1.4.0\\azure.identity.1.4.0.nupkg.sha512",
+    "C:\\Users\\birst\\.nuget\\packages\\azure.security.keyvault.secrets\\4.0.2\\azure.security.keyvault.secrets.4.0.2.nupkg.sha512",
     "C:\\Users\\birst\\.nuget\\packages\\microsoft.aspnetcore.authorization\\2.2.0\\microsoft.aspnetcore.authorization.2.2.0.nupkg.sha512",
     "C:\\Users\\birst\\.nuget\\packages\\microsoft.aspnetcore.connections.abstractions\\3.0.0\\microsoft.aspnetcore.connections.abstractions.3.0.0.nupkg.sha512",
     "C:\\Users\\birst\\.nuget\\packages\\microsoft.aspnetcore.http.connections.client\\3.0.0\\microsoft.aspnetcore.http.connections.client.3.0.0.nupkg.sha512",

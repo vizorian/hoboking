@@ -5,5 +5,6 @@
   </PropertyGroup>
   <PropertyGroup>
     <ActiveDebugProfile>SignalR_GameServer</ActiveDebugProfile>
+    <NameOfLastUsedPublishProfile>D:\Studies\Rudens Semestras 4\Objektinis programų projektaviams\Projektas\Repository\vizorian\hoboking\SignalR-GameServer-v1\Properties\PublishProfiles\hoboking-AppService - Web Deploy.pubxml</NameOfLastUsedPublishProfile>
   </PropertyGroup>
 </Project>
