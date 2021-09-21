@@ -26,6 +26,7 @@ namespace SignalR_GameServer
         public void ConfigureServices(IServiceCollection services)
         {
             // services.AddRazorPages();
+
             services.AddSignalR().AddAzureSignalR();
         }
 

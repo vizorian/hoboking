@@ -98,7 +98,8 @@
                 // Create a function that the hub can call to broadcast messages.
                 connection.on('broadcastMessage', messageCallback);
                 connection.on('echo', messageCallback);
-                connection.onclose(onConnectionError);
+                //connection.onclose(onConnectionError);
+                connection.onclose('broadcastMessage', '_SYSTEM_', username + 'ATSIJUNGĖ');
             }
 
             function onConnected(connection) {
@@ -132,9 +133,6 @@
                     event.preventDefault();
                 });
             }
-
-            // Test disconnect funtion
-
 
             function onConnectionError(error) {
                 if (error && error.message) {

@@ -6,15 +6,9 @@ namespace SignalR_GameServer.Hubs
 {
     public class GameHub : Hub
     {
-        public GameHub()
+        public async Task MovePlayer(string x, string y)
         {
-        }
-
-        public async Task SendMessage(string user, string message)
-        {
-            //await Clients.All.SendAsync("ReceiveMessage", user, message);
-            await Clients.Others.SendAsync("ReceiveMessage", user, message);
-            //await Clients.Caller.SendAsync("ReceiveMessage", user, "delivered: " + message);
+            await Clients.Others.SendAsync("playerMoved", x, y);
         }
     }
 }

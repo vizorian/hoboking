@@ -13,9 +13,9 @@ namespace SignalR_GameServer.Hubs
             await Clients.All.SendAsync("broadcastMessage", name, message);
         }
 
-        public void Echo(string name, string message)
+        public async Task Echo(string name, string message)
         {
-            Clients.Client(Context.ConnectionId).SendAsync("echo", name, message + " (echo from server)");
+            await Clients.Client(Context.ConnectionId).SendAsync("echo", name, message + " (echo from server)");
         }
     }
 }
