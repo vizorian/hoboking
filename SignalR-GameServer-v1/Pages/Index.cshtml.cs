@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 
-namespace SignalR_GameServer_v1.Pages
+namespace SignalR_GameServer.Pages
 {
     public class IndexModel : PageModel
     {

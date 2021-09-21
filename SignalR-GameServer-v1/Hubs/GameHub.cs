@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using System;
 
-namespace SignalR_GameServer_v1.Hubs
+namespace SignalR_GameServer.Hubs
 {
     public class GameHub : Hub
     {

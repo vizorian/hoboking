@@ -2172,9 +2172,9 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Studies\\Rudens Semestras 4\\Objektinis programų projektaviams\\Projektas\\Repository\\vizorian\\hoboking\\SignalR-GameServer-v1\\SignalR-GameServer-v1.csproj",
-      "projectName": "SignalR-GameServer-v1",
-      "projectPath": "D:\\Studies\\Rudens Semestras 4\\Objektinis programų projektaviams\\Projektas\\Repository\\vizorian\\hoboking\\SignalR-GameServer-v1\\SignalR-GameServer-v1.csproj",
+      "projectUniqueName": "D:\\Studies\\Rudens Semestras 4\\Objektinis programų projektaviams\\Projektas\\Repository\\vizorian\\hoboking\\SignalR-GameServer-v1\\SignalR-GameServer.csproj",
+      "projectName": "SignalR-GameServer",
+      "projectPath": "D:\\Studies\\Rudens Semestras 4\\Objektinis programų projektaviams\\Projektas\\Repository\\vizorian\\hoboking\\SignalR-GameServer-v1\\SignalR-GameServer.csproj",
       "packagesPath": "C:\\Users\\birst\\.nuget\\packages\\",
       "outputPath": "D:\\Studies\\Rudens Semestras 4\\Objektinis programų projektaviams\\Projektas\\Repository\\vizorian\\hoboking\\SignalR-GameServer-v1\\obj\\",
       "projectStyle": "PackageReference",

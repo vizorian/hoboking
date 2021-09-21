@@ -7,7 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace SignalR_GameServer_v1
+namespace SignalR_GameServer
 {
     public class Program
     {

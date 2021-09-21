@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "La4EyPe93/SZm8z9AnzE8cgEcNgoXsyVQjoTkmW5GLvSYre8Ir4/nck05eromC5By0JQxLfIhhOVcKjZHDSkgA==",
+  "dgSpecHash": "woLMYwHw7ekJHjYPIb4QT6/JUQw4r+vOTnHocZ8NEE0Nhb+dghYGacCXCEibzLQx5R1daEdRqzJdE4dQsMJH2A==",
   "success": true,
-  "projectFilePath": "D:\\Studies\\Rudens Semestras 4\\Objektinis programų projektaviams\\Projektas\\Repository\\vizorian\\hoboking\\SignalR-GameServer-v1\\SignalR-GameServer-v1.csproj",
+  "projectFilePath": "D:\\Studies\\Rudens Semestras 4\\Objektinis programų projektaviams\\Projektas\\Repository\\vizorian\\hoboking\\SignalR-GameServer-v1\\SignalR-GameServer.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\birst\\.nuget\\packages\\azure.core\\1.14.0\\azure.core.1.14.0.nupkg.sha512",
     "C:\\Users\\birst\\.nuget\\packages\\azure.identity\\1.4.0\\azure.identity.1.4.0.nupkg.sha512",
