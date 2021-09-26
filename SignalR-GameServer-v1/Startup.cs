@@ -25,8 +25,7 @@ namespace SignalR_GameServer
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // services.AddRazorPages();
-
+            services.AddRazorPages();
             services.AddSignalR().AddAzureSignalR();
         }
 
@@ -48,8 +47,6 @@ namespace SignalR_GameServer
 
             app.UseHttpsRedirection();
             
-            // Main part
-            app.UseDefaultFiles();
             app.UseStaticFiles();
             app.UseRouting();
 
@@ -58,9 +55,8 @@ namespace SignalR_GameServer
 
             app.UseEndpoints(endpoints =>
             {
-                // endpoints.MapRazorPages();
-                // endpoints.MapHub<GameHub>("/gamehub");
-                endpoints.MapHub<Chat>("/chat");
+                endpoints.MapRazorPages();
+                endpoints.MapHub<GameHub>("/gameHub");
             });
         }
     }
