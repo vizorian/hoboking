@@ -17,6 +17,13 @@ connection.on("ReceiveCoordinates", function (user, x, y) {
     li.textContent = `${user} moved to X${x} Y${y}`;
 });
 
+//connection.on("ReceivePlayerCount", function (player_count) {
+//    var li = document.createElement("li");
+//    document.getElementById("messagesList").appendChild(li);
+//    var player_countString = player_count.toString();
+//    li.textContent = `Current player count is ${player_countString}`;
+//});
+
 connection.start().then(function () {
     document.getElementById("sendButton").disabled = false;
 }).catch(function (err) {
