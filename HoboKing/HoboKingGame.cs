@@ -106,34 +106,21 @@ namespace HoboKing
                 timer = TIMER;
             }
 
-            Random random = new Random();
             // Add required player
             foreach (var id in connector.IDs)
             {
                 if (playerManager.players.Find(p => p.ConnectionId == id) == null)
                 {
                     OtherPlayer p = new OtherPlayer(hoboTexture,
-                        new Vector2(HOBO_START_POSITION_X + random.Next(0, 15), 
+                        new Vector2(HOBO_START_POSITION_X, 
                         HOBO_START_POSITION_Y),
                         id, map);
+                    Console.WriteLine($"Added a new player with ID {id}");
                     playerManager.CreatePlayer(p);
                 }
             }
 
-            // Update player positions
-            //if (connector.coords.Count != 0)
-            //{
-            //    Coordinate coordinate = connector.coords.First();
-            //    Console.WriteLine($"{coordinate.ConnectionID} - X:{coordinate.X} Y:{coordinate.Y}");
-            //    OtherPlayer p = playerManager.players.Find(p => p.ConnectionId == coordinate.ConnectionID);
-            //    if (p != null)
-            //    {
-            //        p.Position = new Vector2(coordinate.X, coordinate.Y);
-            //        Console.WriteLine($"Updated {p.ConnectionId} to position X:{p.Position.X}  Y:{p.Position.Y}");
-            //        connector.coords.Remove(coordinate);
-            //    }
-            //}
-
+            // Update player positions by cycling through input list
             foreach (var coordinate in connector.coords)
             {
                 //Console.WriteLine($"{coordinate.ConnectionID} - X:{coordinate.X} Y:{coordinate.Y}");
