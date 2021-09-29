@@ -121,16 +121,31 @@ namespace HoboKing
             }
 
             // Update player positions
-            if (connector.coords.Count != 0)
+            //if (connector.coords.Count != 0)
+            //{
+            //    Coordinate coordinate = connector.coords.First();
+            //    Console.WriteLine($"{coordinate.ConnectionID} - X:{coordinate.X} Y:{coordinate.Y}");
+            //    OtherPlayer p = playerManager.players.Find(p => p.ConnectionId == coordinate.ConnectionID);
+            //    if (p != null)
+            //    {
+            //        p.Position = new Vector2(coordinate.X, coordinate.Y);
+            //        Console.WriteLine($"Updated {p.ConnectionId} to position X:{p.Position.X}  Y:{p.Position.Y}");
+            //        connector.coords.Remove(coordinate);
+            //    }
+            //}
+
+            foreach (var coordinate in connector.coords)
             {
-                Coordinate coordinate = connector.coords.First();
-                Console.WriteLine($"{coordinate.ConnectionID} - X:{coordinate.X} Y:{coordinate.Y}");
+                //Console.WriteLine($"{coordinate.ConnectionID} - X:{coordinate.X} Y:{coordinate.Y}");
                 OtherPlayer p = playerManager.players.Find(p => p.ConnectionId == coordinate.ConnectionID);
                 if (p != null)
                 {
-                    p.Position = new Vector2(coordinate.X, coordinate.Y);
-                    Console.WriteLine($"Updated {p.ConnectionId} to position X:{p.Position.X}  Y:{p.Position.Y}");
+                    Console.WriteLine($"THE NEW POSITION SHOULD BE {coordinate.X} {coordinate.Y}");
+                    float x = coordinate.X;
+                    float y = coordinate.Y;
+                    p.Position = new Vector2(x, y);
                     connector.coords.Remove(coordinate);
+                    break;
                 }
             }
 

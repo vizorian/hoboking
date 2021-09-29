@@ -39,10 +39,10 @@ namespace HoboKing.Entities
                 IDs.Remove(connectionId);
             });
 
-            Connection.On<string, string, string>("ReceiveCoordinates", (id, x, y) =>
+            Connection.On<string, float, float>("ReceiveCoordinates", (id, x, y) =>
             {
                 Console.WriteLine("Received data from" + id + "X: " + x + "Y: " + y);
-                coords.Add(new Coordinate(id, float.Parse(x), float.Parse(y)));
+                coords.Add(new Coordinate(id, x, y));
             });
         }
 

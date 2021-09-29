@@ -39,7 +39,7 @@ namespace SignalR_GameServer.Hubs
             await Clients.Others.SendAsync("ReceiveMessage", playerId, message);
         }
 
-        public async Task SendCoordinates(string playerId, string x, string y)
+        public async Task SendCoordinates(string playerId, float x, float y)
         {
             await Clients.Others.SendAsync("ReceiveCoordinates", playerId, x, y);
         }

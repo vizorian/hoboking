@@ -1,24 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Paulius\\Source\\Repos\\vizorian\\hoboking\\SignalR-GameServer-v1\\SignalR-GameServer.csproj": {}
+    "D:\\Studies\\Rudens Semestras 4\\Objektinis programų projektaviams\\Projektas\\Repository\\vizorian\\hoboking\\SignalR-GameServer-v1\\SignalR-GameServer.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Paulius\\Source\\Repos\\vizorian\\hoboking\\SignalR-GameServer-v1\\SignalR-GameServer.csproj": {
+    "D:\\Studies\\Rudens Semestras 4\\Objektinis programų projektaviams\\Projektas\\Repository\\vizorian\\hoboking\\SignalR-GameServer-v1\\SignalR-GameServer.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Paulius\\Source\\Repos\\vizorian\\hoboking\\SignalR-GameServer-v1\\SignalR-GameServer.csproj",
+        "projectUniqueName": "D:\\Studies\\Rudens Semestras 4\\Objektinis programų projektaviams\\Projektas\\Repository\\vizorian\\hoboking\\SignalR-GameServer-v1\\SignalR-GameServer.csproj",
         "projectName": "SignalR-GameServer",
-        "projectPath": "C:\\Users\\Paulius\\Source\\Repos\\vizorian\\hoboking\\SignalR-GameServer-v1\\SignalR-GameServer.csproj",
-        "packagesPath": "C:\\Users\\Paulius\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Paulius\\Source\\Repos\\vizorian\\hoboking\\SignalR-GameServer-v1\\obj\\",
+        "projectPath": "D:\\Studies\\Rudens Semestras 4\\Objektinis programų projektaviams\\Projektas\\Repository\\vizorian\\hoboking\\SignalR-GameServer-v1\\SignalR-GameServer.csproj",
+        "packagesPath": "C:\\Users\\birst\\.nuget\\packages\\",
+        "outputPath": "D:\\Studies\\Rudens Semestras 4\\Objektinis programų projektaviams\\Projektas\\Repository\\vizorian\\hoboking\\SignalR-GameServer-v1\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "C:\\Users\\Paulius\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Users\\birst\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
