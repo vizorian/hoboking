@@ -44,6 +44,11 @@ namespace HoboKing.Entities
                 Console.WriteLine("Received data from" + id + "X: " + x + "Y: " + y);
                 coords.Add(new Coordinate(id, x, y));
             });
+
+            Connection.On<int>("ReceivePlayerCount", (player_count) =>
+            {
+                Console.WriteLine("Received data from server the player count: " + player_count);
+            });
         }
 
         public string GetConnectionID()

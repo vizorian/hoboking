@@ -20,6 +20,11 @@ namespace SignalR_GameServer.Hubs
             _ = PlayerConnected($"{Context.ConnectionId}");
             _ = SendPlayerCount();
 
+            foreach (string connectedId in PlayerHandler.ConnectedIds)
+            {
+                _ = SendPlayerIdTargeted(connectedId);
+            }
+
             return base.OnConnectedAsync();
         }
 
@@ -58,6 +63,11 @@ namespace SignalR_GameServer.Hubs
         public async Task PlayerDisconnected(string playerId)
         {
             await Clients.Others.SendAsync("PlayerDisconnected", playerId);
+        }
+
+        public async Task SendPlayerIdTargeted(string playerId)
+        {
+            await Clients.Caller.SendAsync("PlayerConnected", playerId);
         }
 
         // client sided?
