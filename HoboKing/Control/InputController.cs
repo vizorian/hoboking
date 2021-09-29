@@ -10,9 +10,9 @@ namespace HoboKing.Control
 {
     class InputController
     {
-        private Hobo Hobo;
+        private Player Hobo;
         Stopwatch stopwatch;
-        public InputController(Hobo hobo)
+        public InputController(Player hobo)
         {
             this.Hobo = hobo;
             stopwatch = new Stopwatch();
@@ -24,7 +24,7 @@ namespace HoboKing.Control
 
             if (keyboardState.IsKeyDown(Keys.Space))
             {
-                if (Hobo.State != HoboState.Jumping || Hobo.State != HoboState.Falling)
+                if (Hobo.State != PlayerState.Jumping || Hobo.State != PlayerState.Falling)
                 {
                     stopwatch.Start();
                     Hobo.BeginCharge(gameTime);
@@ -32,7 +32,7 @@ namespace HoboKing.Control
             }
             else if (keyboardState.IsKeyUp(Keys.Space) && keyboardState.IsKeyDown(Keys.A))
             {
-                if (Hobo.State == HoboState.Charging)
+                if (Hobo.State == PlayerState.Charging)
                 {
                     Hobo.Jump(stopwatch.ElapsedMilliseconds, -1);
                     stopwatch.Reset();
@@ -40,7 +40,7 @@ namespace HoboKing.Control
             }
             else if (keyboardState.IsKeyUp(Keys.Space) && keyboardState.IsKeyDown(Keys.D))
             {
-                if (Hobo.State == HoboState.Charging)
+                if (Hobo.State == PlayerState.Charging)
                 {
                     Hobo.Jump(stopwatch.ElapsedMilliseconds, 1);
                     stopwatch.Reset();
@@ -48,7 +48,7 @@ namespace HoboKing.Control
             }
             else if(keyboardState.IsKeyUp(Keys.Space))
             {
-                if (Hobo.State == HoboState.Charging)
+                if (Hobo.State == PlayerState.Charging)
                 {
                     Hobo.Jump(stopwatch.ElapsedMilliseconds, 0);
                     stopwatch.Reset();
@@ -56,21 +56,21 @@ namespace HoboKing.Control
             }
             if (keyboardState.IsKeyDown(Keys.A) || keyboardState.IsKeyDown(Keys.Left))
             {
-                if (Hobo.State == HoboState.Idle || Hobo.State == HoboState.Walking)
+                if (Hobo.State == PlayerState.Idle || Hobo.State == PlayerState.Walking)
                 {
                     Hobo.Walk("left", gameTime);
                 }
             }
             if (keyboardState.IsKeyDown(Keys.D) || keyboardState.IsKeyDown(Keys.Right))
             {
-                if (Hobo.State == HoboState.Idle || Hobo.State == HoboState.Walking)
+                if (Hobo.State == PlayerState.Idle || Hobo.State == PlayerState.Walking)
                 {
                     Hobo.Walk("right", gameTime);
                 }
             }
             if (keyboardState.IsKeyUp(Keys.A) && keyboardState.IsKeyUp(Keys.D))
             {
-                if (Hobo.State == HoboState.Walking)
+                if (Hobo.State == PlayerState.Walking)
                 {
                     Hobo.Idle(); 
                 }

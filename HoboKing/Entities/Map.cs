@@ -16,7 +16,6 @@ namespace HoboKing.Entities
         public int TileWidth { get; set; }
         public int TileHeight { get; set; }
         public string Level { get; set; }
-        public int DrawOrder { get; set; }
 
         Dictionary<char, Tile> tiles = new Dictionary<char, Tile>();
 
@@ -29,8 +28,6 @@ namespace HoboKing.Entities
             TileHeight = tileHeight;
             VisibleTilesX = windowWidth / tileWidth;
             VisibleTilesY = windowHeight / tileHeight;
-
-            DrawOrder = 0;
 
             Level += "####............";
             Level += "#...............";

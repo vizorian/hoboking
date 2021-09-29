@@ -21,65 +21,67 @@ namespace HoboKing
         public const int HOBO_START_POSITION_X = 2;
         public const int HOBO_START_POSITION_Y = 8;
 
+        public const int TILE_SIZE = 30;
+
         private const string ASSET_NAME_HOBO = "batchest";
         private const string ASSET_NAME_TILE = "ground";
         private const string ASSET_NAME_SFX_JUMP = "jump";
+
         private SpriteFont font;
-        private string hoboState;
+        private string playerCount;
         private double hoboHeight;
 
-        private Texture2D _tileTexture;
-        private Texture2D _hoboTexture;
-        private SoundEffect _jumpSound;
+        private Texture2D tileTexture;
+        private Texture2D hoboTexture;
+        private SoundEffect jumpSound;
 
-        private Hobo _hobo;
+        private Map map;
+        private Player player;
+
+        private PlayerManager playerManager;
+
         private InputController inputController;
-
-        private Map _map;
-
         private EntityManager entityManager;
-
         private Connector connector;
 
-        float timer = 1.0f;
+        private float timer = 1.0f;
         const float TIMER = 1.0f;
+
         public HoboKingGame()
         {
+            IsMouseVisible = true;
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
-            IsMouseVisible = true;
+
             entityManager = new EntityManager();
+            playerManager = new PlayerManager(entityManager);
             connector = new Connector();
         }
 
         protected override void Initialize()
         {
             base.Initialize();
-
             _graphics.PreferredBackBufferWidth = WINDOW_WIDTH;
             _graphics.PreferredBackBufferHeight = WINDOW_HEIGHT;
             _graphics.ApplyChanges();
              connector.Connect();
         }
 
+
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            _hoboTexture = Content.Load<Texture2D>(ASSET_NAME_HOBO);
-            _tileTexture = Content.Load<Texture2D>(ASSET_NAME_TILE);
-            _jumpSound = Content.Load<SoundEffect>(ASSET_NAME_SFX_JUMP);
-            font = Content.Load<SpriteFont>("Debug");
+            LoadTextures();
 
-            _map = new Map(WINDOW_WIDTH, WINDOW_HEIGHT, 30, 30);
-            _map.AddTileType('#', _tileTexture);
+            map = new Map(WINDOW_WIDTH, WINDOW_HEIGHT, TILE_SIZE, TILE_SIZE);
+            map.AddTileType('#', tileTexture);
 
-            _hobo = new Hobo(_hoboTexture, new Vector2(HOBO_START_POSITION_X, HOBO_START_POSITION_Y), _jumpSound, _map);
+            player = new Player(hoboTexture, new Vector2(HOBO_START_POSITION_X, HOBO_START_POSITION_Y), jumpSound, map);
 
-            inputController = new InputController(_hobo);
-            entityManager.AddEntity(_map);
-            entityManager.AddEntity(_hobo);
-
+            inputController = new InputController(player);
+            entityManager.AddEntity(map);
+            entityManager.AddEntity(player);
         }
 
         protected override void Update(GameTime gameTime)
@@ -91,15 +93,41 @@ namespace HoboKing
 
             inputController.ProcessControls(gameTime);
             entityManager.Update(gameTime);
-            hoboState = _hobo.State.ToString();
-            hoboHeight = _hobo.Position.Y;
+
+            playerCount = playerManager.PlayerCount.ToString();
+            hoboHeight = player.Position.Y;
 
             float elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
             timer -= elapsed;
             if(timer < 0)
             {
-                connector.Send(_hobo.Position);
+                connector.Send(player.Position);
+                connector.IDs.ForEach(s => Console.WriteLine(s));
                 timer = TIMER;
+            }
+
+            Random random = new Random();
+            // Add required player
+            foreach (var id in connector.IDs)
+            {
+                if (playerManager.playerIDs.Find(p => p.ConnectionId == id) == null)
+                {
+                    OtherPlayer p = new OtherPlayer(hoboTexture,
+                        new Vector2(HOBO_START_POSITION_X + random.Next(0, 15), 
+                        HOBO_START_POSITION_Y),
+                        id, map);
+                    playerManager.CreatePlayer(p);
+                }
+            }
+
+            // Remove required player
+            foreach (var player in playerManager.playerIDs)
+            {
+                if (!connector.IDs.Contains(player.ConnectionId))
+                {
+                    playerManager.DeletePlayer(player);
+                    break;
+                }
             }
         }
 
@@ -109,11 +137,22 @@ namespace HoboKing
 
             _spriteBatch.Begin();
             entityManager.Draw(gameTime, _spriteBatch);
-            _spriteBatch.DrawString(font, hoboState, new Vector2(450, 10), Color.Black);
+
+            _spriteBatch.DrawString(font, playerCount, new Vector2(450, 10), Color.Black);
             _spriteBatch.DrawString(font, "Y:" + Math.Round(hoboHeight, 2), new Vector2(450, 30), Color.Black);
+
             _spriteBatch.End();
 
             base.Draw(gameTime);
+        }
+
+        // Loads game textures
+        void LoadTextures()
+        {
+            hoboTexture = Content.Load<Texture2D>(ASSET_NAME_HOBO);
+            tileTexture = Content.Load<Texture2D>(ASSET_NAME_TILE);
+            jumpSound = Content.Load<SoundEffect>(ASSET_NAME_SFX_JUMP);
+            font = Content.Load<SpriteFont>("Debug");
         }
     }
 }

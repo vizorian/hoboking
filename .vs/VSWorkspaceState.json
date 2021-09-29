@@ -1,10 +1,6 @@
 {
   "ExpandedNodes": [
-    "",
-    "\\SignalR-GameServer-v1",
-    "\\SignalR-GameServer-v1\\Hubs",
-    "\\SignalR-GameServer-v1\\Pages",
-    "\\SignalR-GameServer-v1\\wwwroot"
+    ""
   ],
   "SelectedNode": "\\SignalR-GameServer.sln",
   "PreviewInSolutionExplorer": false
