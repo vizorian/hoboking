@@ -43,12 +43,12 @@ namespace HoboKing.Entities
 
         public void Print()
         {
-            Debug.WriteLine("Map Width: " + Width);
-            Debug.WriteLine("Map Height: " + Height);
-            Debug.WriteLine("Tile Width: " + TileWidth);
-            Debug.WriteLine("Tile Height: " + TileHeight);
-            Debug.WriteLine("VisibleTilesX: " + VisibleTilesX);
-            Debug.WriteLine("VisibleTilesY: " + VisibleTilesY);
+            Console.WriteLine("Map Width: " + Width);
+            Console.WriteLine("Map Height: " + Height);
+            Console.WriteLine("Tile Width: " + TileWidth);
+            Console.WriteLine("Tile Height: " + TileHeight);
+            Console.WriteLine("VisibleTilesX: " + VisibleTilesX);
+            Console.WriteLine("VisibleTilesY: " + VisibleTilesY);
         }
 
         public char GetTile(int x, int y)

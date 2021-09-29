@@ -14,6 +14,7 @@ namespace HoboKing.Entities
         public int PlayerCount { get; set; }
 
         public List<string> IDs = new List<string>();
+        public List<Coordinate> coords = new List<Coordinate>();
 
         public Connector()
         {
@@ -37,6 +38,11 @@ namespace HoboKing.Entities
             {
                 IDs.Remove(connectionId);
             });
+
+            Connection.On<string, string, string>("ReceiveCoordinates", (id, x, y) =>
+            {
+                coords.Add(new Coordinate(id, float.Parse(x), float.Parse(y)));
+            });
         }
 
         public string GetConnectionID()
@@ -54,14 +60,15 @@ namespace HoboKing.Entities
             {
                 throw new Exception("Prisijungimo klaida!");
             }
-            Debug.WriteLine("Connection STATE: " + Connection.State);
+            Console.WriteLine("Connection STATE: " + Connection.State);
         }
 
         public async void Send(Vector2 position)
         {
             try
             {
-                await Connection.SendAsync("SendCoordinates", Connection.ConnectionId, position.X.ToString(), position.Y.ToString());
+                await Connection.SendAsync("SendCoordinates", 
+                    Connection.ConnectionId, position.X.ToString(), position.Y.ToString());
             }
             catch (Exception)
             {

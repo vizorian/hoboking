@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Diagnostics;
+using System.Linq;
 
 namespace HoboKing
 {
@@ -110,7 +111,7 @@ namespace HoboKing
             // Add required player
             foreach (var id in connector.IDs)
             {
-                if (playerManager.playerIDs.Find(p => p.ConnectionId == id) == null)
+                if (playerManager.players.Find(p => p.ConnectionId == id) == null)
                 {
                     OtherPlayer p = new OtherPlayer(hoboTexture,
                         new Vector2(HOBO_START_POSITION_X + random.Next(0, 15), 
@@ -120,8 +121,20 @@ namespace HoboKing
                 }
             }
 
+            // Update player positions
+            if (connector.coords.Count != 0)
+            {
+                Coordinate coordinate = connector.coords.First();
+                OtherPlayer p = playerManager.players.Find(p => p.ConnectionId == coordinate.ConnectionID);
+                if (p != null)
+                {
+                    p.Position = new Vector2(coordinate.X, coordinate.Y);
+                    connector.coords.Remove(coordinate);
+                }
+            }
+
             // Remove required player
-            foreach (var player in playerManager.playerIDs)
+            foreach (var player in playerManager.players)
             {
                 if (!connector.IDs.Contains(player.ConnectionId))
                 {
@@ -129,6 +142,7 @@ namespace HoboKing
                     break;
                 }
             }
+
         }
 
         protected override void Draw(GameTime gameTime)

@@ -146,15 +146,15 @@ namespace HoboKing.Entities
             switch (xDirection)
             {
                 case -1:
-                    Debug.WriteLine($"Jump strenght is {jumpStrength}, LEFT");
+                    Console.WriteLine($"Jump strenght is {jumpStrength}, LEFT");
                     PlayerVelocityX = xDirection * HORIZONTAL_SPEED;
                     return;
                 case 1:
-                    Debug.WriteLine($"Jump strenght is {jumpStrength}, RIGHT");
+                    Console.WriteLine($"Jump strenght is {jumpStrength}, RIGHT");
                     PlayerVelocityX = xDirection * HORIZONTAL_SPEED;
                     return;
                 default:
-                    Debug.WriteLine($"Jump strenght is {jumpStrength}, STRAIGHT UP");
+                    Console.WriteLine($"Jump strenght is {jumpStrength}, STRAIGHT UP");
                     return;
             }
         }
