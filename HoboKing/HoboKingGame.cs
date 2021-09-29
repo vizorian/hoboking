@@ -45,8 +45,8 @@ namespace HoboKing
         private EntityManager entityManager;
         private Connector connector;
 
-        private float timer = 1.0f;
-        const float TIMER = 1.0f;
+        private float timer = 0.1f;
+        const float TIMER = 0.1f;
 
         public HoboKingGame()
         {

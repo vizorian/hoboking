@@ -47,7 +47,7 @@ namespace HoboKing.Entities
 
             Connection.On<int>("ReceivePlayerCount", (player_count) =>
             {
-                Console.WriteLine("Received data from server the player count: " + player_count);
+                Console.WriteLine("Received count data from server. Current player count: " + player_count);
             });
         }
 

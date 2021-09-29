@@ -21,9 +21,8 @@ namespace SignalR_GameServer.Hubs
             _ = SendPlayerCount();
 
             foreach (string connectedId in PlayerHandler.ConnectedIds)
-            {
-                _ = SendPlayerIdTargeted(connectedId);
-            }
+                if(connectedId != Context.ConnectionId)
+                    _ = SendPlayerIdTargeted(connectedId);
 
             return base.OnConnectedAsync();
         }
