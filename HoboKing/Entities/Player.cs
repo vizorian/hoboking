@@ -7,13 +7,12 @@ using System.Diagnostics;
 
 namespace HoboKing.Entities
 {
-    class Hobo : IGameEntity
+    class Player : IGameEntity
     {
-        public int DrawOrder { get; set; }
         public Sprite Sprite { get; private set; }
         public float Speed { get; set; }
         public Vector2 Position { get; set; }
-        public HoboState State { get; private set; }
+        public PlayerState State { get; private set; }
 
         private SoundEffect JumpSound;
         private float PlayerVelocityY;
@@ -28,7 +27,7 @@ namespace HoboKing.Entities
         public bool onGround;
 
         private Map Map;
-        public Hobo(Texture2D spriteSheet, Vector2 position, SoundEffect jumpSound, Map map)
+        public Player(Texture2D spriteSheet, Vector2 position, SoundEffect jumpSound, Map map)
         {
             Sprite = new Sprite(spriteSheet, position);
             Position = position;
@@ -59,11 +58,11 @@ namespace HoboKing.Entities
             }
             if (PlayerVelocityX == 0 && onGround)
             {
-                State = HoboState.Idle;
+                State = PlayerState.Idle;
             }
             if (PlayerVelocityY < 0)
             {
-                State = HoboState.Falling;
+                State = PlayerState.Falling;
             }
 
             float maxHorizontalVelocity = 5.0f;
@@ -124,11 +123,11 @@ namespace HoboKing.Entities
 
         public bool BeginCharge(GameTime gameTime)
         {
-            if (State == HoboState.Jumping || State == HoboState.Falling)
+            if (State == PlayerState.Jumping || State == PlayerState.Falling)
             {
                 return false;
             }
-            State = HoboState.Charging;
+            State = PlayerState.Charging;
             return true;
         }
 
@@ -142,27 +141,27 @@ namespace HoboKing.Entities
             {
                 JumpSound.Play();
                 PlayerVelocityY = -jumpStrength;
-                State = HoboState.Jumping;
+                State = PlayerState.Jumping;
             }
             switch (xDirection)
             {
                 case -1:
-                    Debug.WriteLine($"Jump strenght is {jumpStrength}, LEFT");
+                    Console.WriteLine($"Jump strenght is {jumpStrength}, LEFT");
                     PlayerVelocityX = xDirection * HORIZONTAL_SPEED;
                     return;
                 case 1:
-                    Debug.WriteLine($"Jump strenght is {jumpStrength}, RIGHT");
+                    Console.WriteLine($"Jump strenght is {jumpStrength}, RIGHT");
                     PlayerVelocityX = xDirection * HORIZONTAL_SPEED;
                     return;
                 default:
-                    Debug.WriteLine($"Jump strenght is {jumpStrength}, STRAIGHT UP");
+                    Console.WriteLine($"Jump strenght is {jumpStrength}, STRAIGHT UP");
                     return;
             }
         }
 
         public void Walk(string direction, GameTime gameTime)
         {
-            State = HoboState.Walking;
+            State = PlayerState.Walking;
             if (direction == "left")
             {
                 PlayerVelocityX += -HORIZONTAL_SPEED * (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -175,7 +174,7 @@ namespace HoboKing.Entities
 
         public void Idle()
         {
-            State = HoboState.Idle;
+            State = PlayerState.Idle;
         }
     }
 }

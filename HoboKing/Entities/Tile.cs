@@ -11,7 +11,6 @@ namespace HoboKing.Entities
         public Vector2 Position { get; set; }
         public Texture2D Texture { get; set; }
         public int TileSize { get; set; }
-        public int DrawOrder { get; set; }
         public const int TILE_SIZE = 50;
         public Tile(Texture2D texture, int tileSize, Vector2 position)
         {

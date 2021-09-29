@@ -4,7 +4,7 @@ using System.Text;
 
 namespace HoboKing.Entities
 {
-    public enum HoboState
+    public enum PlayerState
     {
         Idle,
         Charging,

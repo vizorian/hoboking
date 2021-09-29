@@ -4,23 +4,51 @@ using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Xna.Framework;
 using System.Windows;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace HoboKing.Entities
 {
     class Connector
     {
         private HubConnection Connection;
+        public int PlayerCount { get; set; }
+
+        public List<string> IDs = new List<string>();
+        public List<Coordinate> coords = new List<Coordinate>();
 
         public Connector()
         {
             Connection = new HubConnectionBuilder().
                 WithUrl("https://hoboking-appservice.azurewebsites.net/gameHub").WithAutomaticReconnect().Build();
-            Connection.On<string, string>("ReceiveMessage", (user, x) =>
+            
+            // Receives a message from the server
+            Connection.On<string, string>("ReceiveMessage", (user, msg) =>
             {
-                Console.WriteLine($"User: {user}");
-                Console.WriteLine($"X: {x}");
-                //Console.WriteLine($"Y: {y}");
+                Console.WriteLine($"USER: {user}");
+                Console.WriteLine($"MESSAGE: {msg}");
             });
+
+            // Updates player count
+            Connection.On<string>("PlayerConnected", (connectionId) =>
+            {
+                IDs.Add(connectionId);
+            });
+
+            Connection.On<string>("PlayerDisconnected", (connectionId) =>
+            {
+                IDs.Remove(connectionId);
+            });
+
+            Connection.On<string, string, string>("ReceiveCoordinates", (id, x, y) =>
+            {
+                Console.WriteLine("Received data from" + id + "X: " + x + "Y: " + y);
+                coords.Add(new Coordinate(id, float.Parse(x), float.Parse(y)));
+            });
+        }
+
+        public string GetConnectionID()
+        {
+            return Connection.ConnectionId;
         }
 
         public async void Connect()
@@ -33,36 +61,20 @@ namespace HoboKing.Entities
             {
                 throw new Exception("Prisijungimo klaida!");
             }
-            Debug.WriteLine("Connection STATE: " + Connection.State);
-        }
-
-        public async void SendMsg(Vector2 position)
-        {
-            try
-            {
-                await Connection.SendAsync("SendMessage", "Pikynas", "kil niG");
-            }
-            catch (Exception)
-            {
-                throw new Exception("Duomenų siuntimo klaida");
-            }
+            Console.WriteLine("Connection STATE: " + Connection.State);
         }
 
         public async void Send(Vector2 position)
         {
             try
             {
-                await Connection.SendAsync("SendCoordinates", "Pikynas", position.X.ToString(), position.Y.ToString());
+                await Connection.SendAsync("SendCoordinates", 
+                    Connection.ConnectionId, position.X.ToString(), position.Y.ToString());
             }
             catch (Exception)
             {
                 throw new Exception("Duomenų siuntimo klaida");
             }
-        }
-
-        public async void Receive()
-        {
-
         }
     }
 }

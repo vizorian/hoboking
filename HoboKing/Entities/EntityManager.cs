@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
 
 namespace HoboKing.Entities
 {
@@ -52,7 +51,7 @@ namespace HoboKing.Entities
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            foreach(IGameEntity entity in _entities.OrderBy(e => e.DrawOrder))
+            foreach(IGameEntity entity in _entities)
             {
                 entity.Draw(spriteBatch, gameTime);
             }

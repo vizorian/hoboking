@@ -16,7 +16,6 @@ namespace HoboKing.Entities
         public int TileWidth { get; set; }
         public int TileHeight { get; set; }
         public string Level { get; set; }
-        public int DrawOrder { get; set; }
 
         Dictionary<char, Tile> tiles = new Dictionary<char, Tile>();
 
@@ -29,8 +28,6 @@ namespace HoboKing.Entities
             TileHeight = tileHeight;
             VisibleTilesX = windowWidth / tileWidth;
             VisibleTilesY = windowHeight / tileHeight;
-
-            DrawOrder = 0;
 
             Level += "####............";
             Level += "#...............";
@@ -46,12 +43,12 @@ namespace HoboKing.Entities
 
         public void Print()
         {
-            Debug.WriteLine("Map Width: " + Width);
-            Debug.WriteLine("Map Height: " + Height);
-            Debug.WriteLine("Tile Width: " + TileWidth);
-            Debug.WriteLine("Tile Height: " + TileHeight);
-            Debug.WriteLine("VisibleTilesX: " + VisibleTilesX);
-            Debug.WriteLine("VisibleTilesY: " + VisibleTilesY);
+            Console.WriteLine("Map Width: " + Width);
+            Console.WriteLine("Map Height: " + Height);
+            Console.WriteLine("Tile Width: " + TileWidth);
+            Console.WriteLine("Tile Height: " + TileHeight);
+            Console.WriteLine("VisibleTilesX: " + VisibleTilesX);
+            Console.WriteLine("VisibleTilesY: " + VisibleTilesY);
         }
 
         public char GetTile(int x, int y)
