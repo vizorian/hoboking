@@ -69,7 +69,7 @@ namespace HoboKing.Entities
             try
             {
                 await Connection.SendAsync("SendCoordinates", 
-                    Connection.ConnectionId, position.X.ToString(), position.Y.ToString());
+                    Connection.ConnectionId, position.X, position.Y);
             }
             catch (Exception)
             {

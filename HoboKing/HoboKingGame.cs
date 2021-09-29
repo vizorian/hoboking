@@ -147,6 +147,11 @@ namespace HoboKing
                     connector.coords.Remove(coordinate);
                     break;
                 }
+                else
+                {
+                    connector.coords.Remove(coordinate);
+                    break;
+                }
             }
 
             // Remove required player
