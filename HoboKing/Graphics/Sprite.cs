@@ -18,7 +18,7 @@ namespace HoboKing.Graphics
         
         public void Draw(SpriteBatch spriteBatch, Vector2 position)
         {
-            spriteBatch.Draw(Texture, position, null, Color.White, 0f, new Vector2(0, 0), new Vector2(0.4f, 0.4f), SpriteEffects.None, 0f);
+            spriteBatch.Draw(Texture, position, null, Color.White, 0f, new Vector2(0, 0), new Vector2(0.8f, 0.8f), SpriteEffects.None, 0f);
         }
     }
 }

@@ -13,49 +13,46 @@ namespace HoboKing.Entities
         private HubConnection Connection;
         public int PlayerCount { get; set; }
 
-        public List<string> IDs = new List<string>();
-        public List<Coordinate> coords = new List<Coordinate>();
+        public List<string> Connections = new List<string>();
+        public List<Coordinate> Inputs = new List<Coordinate>();
 
+        // Responsible for all communication between the Client and Server
         public Connector()
         {
+            // Create a connection to the Server's hub with automatic reconnection
             Connection = new HubConnectionBuilder().
                 WithUrl("https://hoboking-appservice.azurewebsites.net/gameHub").WithAutomaticReconnect().Build();
             
-            // Receives a message from the server
+            // Receives a message from the Server
+            // Kept for testing or possible chat
             Connection.On<string, string>("ReceiveMessage", (user, msg) =>
             {
                 Console.WriteLine($"USER: {user}");
                 Console.WriteLine($"MESSAGE: {msg}");
             });
 
-            // Updates player count
-            Connection.On<string>("PlayerConnected", (connectionId) =>
-            {
-                IDs.Add(connectionId);
-            });
+            // Adds a new connection to the current connection list
+            Connection.On<string>("PlayerConnected", (connectionId) => Connections.Add(connectionId));
 
-            Connection.On<string>("PlayerDisconnected", (connectionId) =>
-            {
-                IDs.Remove(connectionId);
-            });
+            // Removes a connection from the current connection list
+            Connection.On<string>("PlayerDisconnected", (connectionId) => Connections.Remove(connectionId));
 
-            Connection.On<string, float, float>("ReceiveCoordinates", (id, x, y) =>
-            {
-                Console.WriteLine("Received data from" + id + "X: " + x + "Y: " + y);
-                coords.Add(new Coordinate(id, x, y));
-            });
+            // Adds incoming inputs to the input list
+            Connection.On<string, float, float>("ReceiveCoordinates", (id, x, y) => Inputs.Add(new Coordinate(id, x, y)));
 
-            Connection.On<int>("ReceivePlayerCount", (player_count) =>
-            {
-                Console.WriteLine("Received count data from server. Current player count: " + player_count);
-            });
+            // Updates current player count
+            // Might use for checking if the current connections match the player count in the Server
+            Connection.On<int>("ReceivePlayerCount", (player_count) => PlayerCount = player_count);
         }
+
+        // Get self connection ID
 
         public string GetConnectionID()
         {
             return Connection.ConnectionId;
         }
 
+        // Attempts to initiate connection
         public async void Connect()
         {
             try
@@ -66,10 +63,11 @@ namespace HoboKing.Entities
             {
                 throw new Exception("Prisijungimo klaida!");
             }
-            Console.WriteLine("Connection STATE: " + Connection.State);
+            Console.WriteLine("Connection state: " + Connection.State);
         }
 
-        public async void Send(Vector2 position)
+        // Sends own positional coordinates to Server
+        public async void SendCoordinates(Vector2 position)
         {
             try
             {

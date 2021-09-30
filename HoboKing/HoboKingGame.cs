@@ -16,13 +16,21 @@ namespace HoboKing
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
-        public const int WINDOW_WIDTH = 512;
-        public const int WINDOW_HEIGHT = 1024;
+        // The app window size
+        public const int WINDOW_WIDTH = 1920;
+        public const int WINDOW_HEIGHT = 1080;
+
+        // The game window size inside the app (sides are black bars)
+        public const int GAME_WINDOW_WIDTH = 1280;
+
+        // should be 1080, reduced for fitting in screen
+        public const int GAME_WINDOW_HEIGHT = 1000;
 
         public const int HOBO_START_POSITION_X = 2;
         public const int HOBO_START_POSITION_Y = 8;
 
-        public const int TILE_SIZE = 30;
+        // approximate size to get a 1280x1080 game with side black bars
+        public const int TILE_SIZE = 20;
 
         private const string ASSET_NAME_HOBO = "batchest";
         private const string ASSET_NAME_TILE = "ground";
@@ -62,8 +70,9 @@ namespace HoboKing
         protected override void Initialize()
         {
             base.Initialize();
-            _graphics.PreferredBackBufferWidth = WINDOW_WIDTH;
-            _graphics.PreferredBackBufferHeight = WINDOW_HEIGHT;
+            _graphics.PreferredBackBufferWidth = GAME_WINDOW_WIDTH;
+            _graphics.PreferredBackBufferHeight = GAME_WINDOW_HEIGHT;
+            _graphics.IsFullScreen = false;
             _graphics.ApplyChanges();
              connector.Connect();
         }
@@ -75,10 +84,10 @@ namespace HoboKing
 
             LoadTextures();
 
-            map = new Map(WINDOW_WIDTH, WINDOW_HEIGHT, TILE_SIZE, TILE_SIZE);
+            map = new Map(GAME_WINDOW_WIDTH, GAME_WINDOW_HEIGHT, TILE_SIZE, TILE_SIZE);
             map.AddTileType('#', tileTexture);
 
-            player = new Player(hoboTexture, new Vector2(HOBO_START_POSITION_X, HOBO_START_POSITION_Y), jumpSound, map);
+            player = playerManager.CreatePlayer(hoboTexture, new Vector2(HOBO_START_POSITION_X, HOBO_START_POSITION_Y), jumpSound, map);
 
             inputController = new InputController(player);
             entityManager.AddEntity(map);
@@ -102,12 +111,12 @@ namespace HoboKing
             timer -= elapsed;
             if(timer < 0)
             {
-                connector.Send(player.Position);
+                connector.SendCoordinates(player.Position);
                 timer = TIMER;
             }
 
-            // Add required player
-            foreach (var id in connector.IDs)
+            // Add OtherPlayer objects for all connected players
+            foreach (var id in connector.Connections)
             {
                 if (playerManager.players.Find(p => p.ConnectionId == id) == null)
                 {
@@ -116,37 +125,35 @@ namespace HoboKing
                         HOBO_START_POSITION_Y),
                         id, map);
                     Console.WriteLine($"Added a new player with ID {id}");
-                    playerManager.CreatePlayer(p);
+                    playerManager.CreateOtherPlayer(p);
                 }
             }
 
             // Update player positions by cycling through input list
-            foreach (var coordinate in connector.coords)
+            foreach (Coordinate coordinate in connector.Inputs)
             {
-                //Console.WriteLine($"{coordinate.ConnectionID} - X:{coordinate.X} Y:{coordinate.Y}");
+                // Handle first input and remove it
                 OtherPlayer p = playerManager.players.Find(p => p.ConnectionId == coordinate.ConnectionID);
                 if (p != null)
                 {
-                    Console.WriteLine($"THE NEW POSITION SHOULD BE {coordinate.X} {coordinate.Y}");
-                    float x = coordinate.X;
-                    float y = coordinate.Y;
-                    p.Position = new Vector2(x, y);
-                    connector.coords.Remove(coordinate);
+                    p.Position = new Vector2(coordinate.X, coordinate.Y);
+                    connector.Inputs.Remove(coordinate);
                     break;
                 }
+                // Remove first input with no users (if user left)
                 else
                 {
-                    connector.coords.Remove(coordinate);
+                    connector.Inputs.Remove(coordinate);
                     break;
                 }
             }
 
-            // Remove required player
+            // Remove OtherPlayer objects that don't have an owner
             foreach (var player in playerManager.players)
             {
-                if (!connector.IDs.Contains(player.ConnectionId))
+                if (!connector.Connections.Contains(player.ConnectionId))
                 {
-                    playerManager.DeletePlayer(player);
+                    playerManager.RemoveOtherPlayer(player);
                     break;
                 }
             }
