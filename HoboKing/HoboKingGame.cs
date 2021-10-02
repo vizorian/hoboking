@@ -34,6 +34,8 @@ namespace HoboKing
 
         private const string ASSET_NAME_HOBO = "batchest";
         private const string ASSET_NAME_TILE = "ground";
+        private const string ASSET_NAME_TILE_LEFT = "ground_left";
+        private const string ASSET_NAME_TILE_RIGHT = "ground_right";
         private const string ASSET_NAME_SFX_JUMP = "jump";
 
         private SpriteFont font;
@@ -41,6 +43,8 @@ namespace HoboKing
         private double hoboHeight;
 
         private Texture2D tileTexture;
+        private Texture2D tileLeftTexture;
+        private Texture2D tileRightTexture;
         private Texture2D hoboTexture;
         private SoundEffect jumpSound;
 
@@ -86,6 +90,8 @@ namespace HoboKing
 
             map = new Map(GAME_WINDOW_WIDTH, GAME_WINDOW_HEIGHT, TILE_SIZE, TILE_SIZE);
             map.AddTileType('#', tileTexture);
+            map.AddTileType('<', tileLeftTexture);
+            map.AddTileType('>', tileRightTexture);
 
             player = playerManager.CreatePlayer(hoboTexture, new Vector2(HOBO_START_POSITION_X, HOBO_START_POSITION_Y), jumpSound, map);
 
@@ -180,6 +186,8 @@ namespace HoboKing
         {
             hoboTexture = Content.Load<Texture2D>(ASSET_NAME_HOBO);
             tileTexture = Content.Load<Texture2D>(ASSET_NAME_TILE);
+            tileLeftTexture = Content.Load<Texture2D>(ASSET_NAME_TILE_LEFT);
+            tileRightTexture = Content.Load<Texture2D>(ASSET_NAME_TILE_RIGHT);
             jumpSound = Content.Load<SoundEffect>(ASSET_NAME_SFX_JUMP);
             font = Content.Load<SpriteFont>("Debug");
         }
