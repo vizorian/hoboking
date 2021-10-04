@@ -9,7 +9,7 @@ namespace HoboKing.Entities
 {
     class Player : IGameEntity
     {
-        public Sprite Sprite { get; private set; }
+        public Sprite Sprite { get; set; }
         public float Speed { get; set; }
         public Vector2 Position { get; set; }
         public PlayerState State { get; private set; }

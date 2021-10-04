@@ -18,8 +18,6 @@ namespace HoboKing.Entities
         public int TileHeight { get; set; }
         public string Level { get; set; }
 
-        private const string mapFileName = "Level1.txt";
-
         Dictionary<char, Tile> tiles = new Dictionary<char, Tile>();
 
         public Map(int windowWidth, int windowHeight, int tileWidth = 50, int tileHeight = 50,
