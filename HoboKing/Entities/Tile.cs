@@ -36,7 +36,5 @@ namespace HoboKing.Entities
         {
             spriteBatch.Draw(Texture, new Rectangle((int)Position.X, (int)Position.Y, TileSize, TileSize), Color.White);
         }
-
-
     }
 }

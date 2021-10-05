@@ -30,9 +30,9 @@ namespace HoboKing.Entities
         public bool onGround;
 
         private Map Map;
-        public Player(Vector2 position, string connectionId, bool isOtherPlayer, Map map)
+        public Player(Texture2D texture, Vector2 position, string connectionId, bool isOtherPlayer, Map map)
         {
-            Sprite = new Sprite(position, ASSET_NAME);
+            Sprite = new Sprite(texture, position);
             Position = position;
             ConnectionId = connectionId;
             IsOtherPlayer = isOtherPlayer;

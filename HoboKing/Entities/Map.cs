@@ -17,6 +17,7 @@ namespace HoboKing.Entities
 
 
         private EntityManager entityManager;
+        private ContentLoader contentLoader;
 
         public int Width { get; set; }
         public int Height { get; set; }
@@ -41,6 +42,14 @@ namespace HoboKing.Entities
 
             // Read map data from file before drawing
             ReadMapData();
+        }
+
+        // This is where you can set tile types for now
+        private void CreateTileTypes()
+        {
+            AddTileType('#', contentLoader.TileTexture);
+            AddTileType('<', contentLoader.TileLeftTexture);
+            AddTileType('>', contentLoader.TileRightTexture);
         }
 
         // Reads map data from file
@@ -73,7 +82,7 @@ namespace HoboKing.Entities
         // Edit later for singleplayer as well
         public Player CreateMainPlayer(Connector connector)
         {
-            Player player = new Player(new Vector2(HOBO_START_POSITION_X, HOBO_START_POSITION_Y), connector.GetConnectionID(), false, this);
+            Player player = new Player(contentLoader.BatChest, new Vector2(HOBO_START_POSITION_X, HOBO_START_POSITION_Y), connector.GetConnectionID(), false, this);
             entityManager.AddEntity(player);
             return player;
         }
@@ -85,8 +94,7 @@ namespace HoboKing.Entities
             {
                 if (entityManager.players.Find(p => p.ConnectionId == id) == null)
                 {
-                    Player p = new Player(new Vector2(HOBO_START_POSITION_X, HOBO_START_POSITION_Y), id, true, this);
-
+                    Player p = new Player(contentLoader.BatChest, new Vector2(HOBO_START_POSITION_X, HOBO_START_POSITION_Y), id, true, this);
 
                     Console.WriteLine($"Added a new player with ID {id}");
                     entityManager.AddEntity(p);
@@ -134,7 +142,8 @@ namespace HoboKing.Entities
 
         public void LoadEntityContent(ContentManager contentManager)
         {
-            entityManager.LoadContent(contentManager);
+            contentLoader = new ContentLoader(contentManager);
+            CreateTileTypes();
         }
 
         public void DrawEntities(GameTime gameTime, SpriteBatch spriteBatch) 
@@ -176,8 +185,6 @@ namespace HoboKing.Entities
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-
-
             for (int x = 0; x < VisibleTilesX; x++)
             {
                 for (int y = 0; y < VisibleTilesY; y++)

@@ -29,18 +29,6 @@ namespace HoboKing
         // approximate size to get a 1280x1080 game with side black bars
         public const int TILE_SIZE = 20;
 
-        private const string ASSET_NAME_HOBO = "batchest";
-        private const string ASSET_NAME_TILE = "ground";
-        private const string ASSET_NAME_TILE_LEFT = "ground_left";
-        private const string ASSET_NAME_TILE_RIGHT = "ground_right";
-        private const string ASSET_NAME_SFX_JUMP = "jump";
-
-        private SpriteFont font;
-
-        private Texture2D tileTexture;
-        private Texture2D tileLeftTexture;
-        private Texture2D tileRightTexture;
-
         private Map map;
         private Player player;
 
@@ -72,21 +60,16 @@ namespace HoboKing
         protected override void LoadContent()
         {
             connector.Connect();
-            _spriteBatch = new SpriteBatch(GraphicsDevice);
-
-            LoadTextures();
+            _spriteBatch = new SpriteBatch(GraphicsDevice); 
 
             map = new Map(GAME_WINDOW_WIDTH, GAME_WINDOW_HEIGHT, TILE_SIZE, TILE_SIZE);
-            map.AddTileType('#', tileTexture);
-            map.AddTileType('<', tileLeftTexture);
-            map.AddTileType('>', tileRightTexture);
+            map.LoadEntityContent(Content);
 
             player = map.CreateMainPlayer(connector);
 
             Console.WriteLine($"Main player's connection ID: {connector.GetConnectionID()}");
 
             inputController = new InputController(player);
-            map.LoadEntityContent(Content);
         }
 
         protected override void Update(GameTime gameTime)
@@ -130,17 +113,6 @@ namespace HoboKing
             _spriteBatch.End();
 
             base.Draw(gameTime);
-        }
-
-        //Loads game textures
-        void LoadTextures()
-        {
-            //hoboTexture = Content.Load<Texture2D>(ASSET_NAME_HOBO);
-            tileTexture = Content.Load<Texture2D>(ASSET_NAME_TILE);
-            tileLeftTexture = Content.Load<Texture2D>(ASSET_NAME_TILE_LEFT);
-            tileRightTexture = Content.Load<Texture2D>(ASSET_NAME_TILE_RIGHT);
-            //jumpSound = Content.Load<SoundEffect>(ASSET_NAME_SFX_JUMP);
-            font = Content.Load<SpriteFont>("Debug");
         }
     }
 }

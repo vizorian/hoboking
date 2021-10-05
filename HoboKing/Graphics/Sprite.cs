@@ -16,23 +16,11 @@ namespace HoboKing.Graphics
 
         protected Rectangle Rectangle;
         private Color Color;
-        private string assetName;
-        public Sprite(Vector2 position, string textureAssetName)
+        public Sprite(Texture2D texture, Vector2 position)
         {
-            Texture = null;
+            Texture = texture;
             Position = position;
             Color = Color.White;
-            assetName = textureAssetName;
-        }
-
-        public void LoadContent(ContentManager contentManager)
-        {
-            Texture = contentManager.Load<Texture2D>(assetName);
-        }
-
-        protected virtual void OnContentLoaded(ContentManager contentManager, GraphicsDevice graphicsDevice)
-        {
-            UpdateRectangle();
         }
 
         private void UpdateRectangle()
