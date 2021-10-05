@@ -16,7 +16,6 @@ namespace HoboKing.Entities
         public string ConnectionId { get; set; }
         public bool IsOtherPlayer { get; set; }
 
-        private SoundEffect JumpSound;
         private float PlayerVelocityY;
         private float PlayerVelocityX;
 
@@ -26,14 +25,15 @@ namespace HoboKing.Entities
         private const int MIN_JUMP = 1;
         private const int HORIZONTAL_SPEED = 100;
 
+        private const string ASSET_NAME = "batchest";
+
         public bool onGround;
 
         private Map Map;
-        public Player(Texture2D spriteSheet, Vector2 position, SoundEffect jumpSound, string connectionId, bool isOtherPlayer, Map map)
+        public Player(Vector2 position, string connectionId, bool isOtherPlayer, Map map)
         {
-            Sprite = new Sprite(spriteSheet, position);
+            Sprite = new Sprite(position, ASSET_NAME);
             Position = position;
-            JumpSound = jumpSound;
             ConnectionId = connectionId;
             IsOtherPlayer = isOtherPlayer;
             Map = map;
@@ -43,7 +43,8 @@ namespace HoboKing.Entities
         {
             float realPosX = Position.X * Map.TileWidth;
             float realPosY = Position.Y * Map.TileWidth;
-            Sprite.Draw(spriteBatch, new Vector2(realPosX, realPosY));
+            Sprite.Position = new Vector2(realPosX, realPosY);
+            Sprite.Draw(spriteBatch);
         }
 
         public void Update(GameTime gameTime)
@@ -143,7 +144,6 @@ namespace HoboKing.Entities
                 jumpStrength = MIN_JUMP;
             if (PlayerVelocityY == 0)
             {
-                JumpSound.Play();
                 PlayerVelocityY = -jumpStrength;
                 State = PlayerState.Jumping;
             }

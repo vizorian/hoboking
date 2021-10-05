@@ -56,7 +56,6 @@ namespace HoboKing
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 
-           
             connector = new Connector();
         }
 
@@ -82,9 +81,12 @@ namespace HoboKing
             map.AddTileType('<', tileLeftTexture);
             map.AddTileType('>', tileRightTexture);
 
+            player = map.CreateMainPlayer(connector);
+
             Console.WriteLine($"Main player's connection ID: {connector.GetConnectionID()}");
 
             inputController = new InputController(player);
+            map.LoadEntityContent(Content);
         }
 
         protected override void Update(GameTime gameTime)
@@ -96,7 +98,6 @@ namespace HoboKing
 
             inputController.ProcessControls(gameTime);
             map.Update(gameTime);
-
             SendData(gameTime);
 
             map.AddConnectedPlayers(connector);
@@ -124,7 +125,7 @@ namespace HoboKing
             map.Draw(gameTime, _spriteBatch);
 
             // Was EntityManager.Draw go fix :)
-            map.Draw(gameTime, _spriteBatch);
+            map.DrawEntities(gameTime, _spriteBatch);
 
             _spriteBatch.End();
 

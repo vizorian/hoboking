@@ -1,5 +1,6 @@
 ﻿using HoboKing.Graphics;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -38,7 +39,7 @@ namespace HoboKing.Entities
             VisibleTilesX = windowWidth / tileWidth;
             VisibleTilesY = windowHeight / tileHeight;
 
-            // DO NOT KEEP THIS HERE
+            // Read map data from file before drawing
             ReadMapData();
         }
 
@@ -70,10 +71,11 @@ namespace HoboKing.Entities
 
         // Creates main player for multiplayer
         // Edit later for singleplayer as well
-        public void CreateMainPlayer(Connector connector)
+        public Player CreateMainPlayer(Connector connector)
         {
-            Player player = new Player(null, new Vector2(HOBO_START_POSITION_X, HOBO_START_POSITION_Y), null, connector.GetConnectionID(), false, this);
+            Player player = new Player(new Vector2(HOBO_START_POSITION_X, HOBO_START_POSITION_Y), connector.GetConnectionID(), false, this);
             entityManager.AddEntity(player);
+            return player;
         }
 
         // Add Player objects for all other connected players
@@ -83,7 +85,7 @@ namespace HoboKing.Entities
             {
                 if (entityManager.players.Find(p => p.ConnectionId == id) == null)
                 {
-                    Player p = new Player(null, new Vector2(HOBO_START_POSITION_X, HOBO_START_POSITION_Y), null, id, true, this);
+                    Player p = new Player(new Vector2(HOBO_START_POSITION_X, HOBO_START_POSITION_Y), id, true, this);
 
 
                     Console.WriteLine($"Added a new player with ID {id}");
@@ -130,6 +132,16 @@ namespace HoboKing.Entities
             }
         }
 
+        public void LoadEntityContent(ContentManager contentManager)
+        {
+            entityManager.LoadContent(contentManager);
+        }
+
+        public void DrawEntities(GameTime gameTime, SpriteBatch spriteBatch) 
+        {
+            entityManager.Draw(gameTime, spriteBatch);
+        }
+
         public char GetTile(int x, int y)
         {
             if (x >= 0 && x < Width && y >= 0 && y < Height)
@@ -164,6 +176,8 @@ namespace HoboKing.Entities
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
+
+
             for (int x = 0; x < VisibleTilesX; x++)
             {
                 for (int y = 0; y < VisibleTilesY; y++)

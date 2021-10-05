@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -18,7 +19,17 @@ namespace HoboKing.Entities
         public int PlayerCount { get; set; }
         public List<Player> players = new List<Player>();
 
-        public void AddEntity(IGameEntity entity)
+        // Loads the content (textures, sound) for every game entity
+        public void LoadContent(ContentManager contentManager)
+        {
+            foreach (var entity in _entities)
+            {
+                entity.Sprite.LoadContent(contentManager);
+                Console.WriteLine($"Loaded content for {entity}");
+            }
+        }
+
+        public void AddEntityInGame(IGameEntity entity)
         {
             if (entity == null)
             {
@@ -30,6 +41,20 @@ namespace HoboKing.Entities
                 PlayerCount++;
             }
             _entitiesToAdd.Add(entity);
+        }
+
+        public void AddEntity(IGameEntity entity)
+        {
+            if (entity == null)
+            {
+                throw new ArgumentNullException(nameof(entity), "Null cannot be added as an entity");
+            }
+            if (entity.GetType() == typeof(Player))
+            {
+                players.Add((Player)entity);
+                PlayerCount++;
+            }
+            _entities.Add(entity);
         }
 
         public void RemoveEntity(IGameEntity entity)
