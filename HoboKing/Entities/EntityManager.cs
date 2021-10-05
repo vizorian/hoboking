@@ -78,9 +78,5 @@ namespace HoboKing.Entities
             _entitiesToRemove.AddRange(_entities);
         }
 
-        public Player CreatePlayer(Texture2D texture, Vector2 position, SoundEffect jumpSound, string connectionId, Map map)
-        {
-            return new Player(texture, position, jumpSound, connectionId, map);
-        }
     }
 }

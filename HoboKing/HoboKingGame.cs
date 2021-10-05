@@ -51,8 +51,6 @@ namespace HoboKing
         private Map map;
         private Player player;
 
-        //private PlayerManager playerManager;
-
         private InputController inputController;
         private EntityManager entityManager;
         private Connector connector;
@@ -78,7 +76,7 @@ namespace HoboKing
             _graphics.PreferredBackBufferHeight = GAME_WINDOW_HEIGHT;
             _graphics.IsFullScreen = false;
             _graphics.ApplyChanges();
-             connector.Connect();
+            connector.Connect();
         }
 
 
@@ -93,10 +91,9 @@ namespace HoboKing
             map.AddTileType('<', tileLeftTexture);
             map.AddTileType('>', tileRightTexture);
 
-            player = entityManager.CreatePlayer(hoboTexture, new Vector2(HOBO_START_POSITION_X, HOBO_START_POSITION_Y), jumpSound, connector.GetConnectionID(), map);
+            player = new Player(hoboTexture, new Vector2(HOBO_START_POSITION_X, HOBO_START_POSITION_Y), jumpSound, null, false, map);
 
             inputController = new InputController(player);
-            //entityManager.AddEntity(map);
          
             entityManager.AddEntity(player);
         }
@@ -116,27 +113,40 @@ namespace HoboKing
 
             float elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
             timer -= elapsed;
-            if(timer < 0)
+            if (timer < 0)
             {
                 connector.SendCoordinates(player.Position);
                 timer = TIMER;
             }
 
+            AddConnectedPlayers();
+            UpdateConnectedPlayers();
+            RemoveConnectedPlayers();
+
+        }
+
+        private void AddConnectedPlayers()
+        {
             // Add OtherPlayer objects for all connected players
             foreach (var id in connector.Connections)
             {
                 if (entityManager.players.Find(p => p.ConnectionId == id) == null)
                 {
                     Player p = new Player(hoboTexture,
-                        new Vector2(HOBO_START_POSITION_X, 
+                        new Vector2(HOBO_START_POSITION_X,
                         HOBO_START_POSITION_Y), jumpSound,
-                        id, map);
-                    
+                        id, true, map);
+
+
                     Console.WriteLine($"Added a new player with ID {id}");
                     entityManager.AddEntity(p);
                 }
             }
+        }
 
+
+        private void UpdateConnectedPlayers()
+        {
             // Update player positions by cycling through input list
             foreach (Coordinate coordinate in connector.Inputs)
             {
@@ -155,7 +165,10 @@ namespace HoboKing
                     break;
                 }
             }
+        }
 
+        private void RemoveConnectedPlayers()
+        {
             // Remove OtherPlayer objects that don't have an owner
             foreach (var player in entityManager.players)
             {
@@ -165,7 +178,6 @@ namespace HoboKing
                     break;
                 }
             }
-
         }
 
         protected override void Draw(GameTime gameTime)

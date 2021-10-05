@@ -29,12 +29,13 @@ namespace HoboKing.Entities
         public bool onGround;
 
         private Map Map;
-        public Player(Texture2D spriteSheet, Vector2 position, SoundEffect jumpSound, string connectionId, Map map)
+        public Player(Texture2D spriteSheet, Vector2 position, SoundEffect jumpSound, string connectionId, bool isOtherPlayer, Map map)
         {
             Sprite = new Sprite(spriteSheet, position);
             Position = position;
             JumpSound = jumpSound;
             ConnectionId = connectionId;
+            IsOtherPlayer = isOtherPlayer;
             Map = map;
         }
 
