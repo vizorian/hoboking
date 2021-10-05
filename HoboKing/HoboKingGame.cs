@@ -76,12 +76,12 @@ namespace HoboKing
             _graphics.PreferredBackBufferHeight = GAME_WINDOW_HEIGHT;
             _graphics.IsFullScreen = false;
             _graphics.ApplyChanges();
-            connector.Connect();
         }
 
 
         protected override void LoadContent()
         {
+            connector.Connect();
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             LoadTextures();
@@ -91,10 +91,10 @@ namespace HoboKing
             map.AddTileType('<', tileLeftTexture);
             map.AddTileType('>', tileRightTexture);
 
-            player = new Player(hoboTexture, new Vector2(HOBO_START_POSITION_X, HOBO_START_POSITION_Y), jumpSound, null, false, map);
 
+            Console.WriteLine($"Main player's connection ID: {connector.GetConnectionID()}");
+            player = new Player(hoboTexture, new Vector2(HOBO_START_POSITION_X, HOBO_START_POSITION_Y), jumpSound, connector.GetConnectionID(), false, map);
             inputController = new InputController(player);
-         
             entityManager.AddEntity(player);
         }
 
@@ -122,12 +122,11 @@ namespace HoboKing
             AddConnectedPlayers();
             UpdateConnectedPlayers();
             RemoveConnectedPlayers();
-
         }
 
         private void AddConnectedPlayers()
         {
-            // Add OtherPlayer objects for all connected players
+            // Add Player objects for all other connected players
             foreach (var id in connector.Connections)
             {
                 if (entityManager.players.Find(p => p.ConnectionId == id) == null)
@@ -169,13 +168,16 @@ namespace HoboKing
 
         private void RemoveConnectedPlayers()
         {
-            // Remove OtherPlayer objects that don't have an owner
+            // Remove Player objects that don't have an owner and are not the main player
             foreach (var player in entityManager.players)
             {
-                if (!connector.Connections.Contains(player.ConnectionId))
+                if (player.IsOtherPlayer)
                 {
-                    entityManager.RemoveEntity(player);
-                    break;
+                    if (!connector.Connections.Contains(player.ConnectionId))
+                    {
+                        entityManager.RemoveEntity(player);
+                        break;
+                    }
                 }
             }
         }

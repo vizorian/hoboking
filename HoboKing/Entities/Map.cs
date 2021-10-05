@@ -19,7 +19,7 @@ namespace HoboKing.Entities
         public int TileHeight { get; set; }
         public string Level { get; set; }
 
-        Dictionary<char, Tile> tiles = new Dictionary<char, Tile>();
+        readonly Dictionary<char, Tile> tiles = new Dictionary<char, Tile>();
 
         public Map(int windowWidth, int windowHeight, int tileWidth = 50, int tileHeight = 50,
             int mapWidth = 64, int mapHeight = 54)

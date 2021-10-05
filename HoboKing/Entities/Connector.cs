@@ -45,10 +45,10 @@ namespace HoboKing.Entities
             Connection.On<int>("ReceivePlayerCount", (player_count) => PlayerCount = player_count);
         }
 
-        // Get self connection ID
-
+        // Get self connection ID, but wait for a connection
         public string GetConnectionID()
         {
+            while (Connection.ConnectionId == null);
             return Connection.ConnectionId;
         }
 
