@@ -48,6 +48,7 @@ namespace HoboKing.Entities
         // Get self connection ID, but wait for a connection
         public string GetConnectionID()
         {
+            // fuck it, can't find a better way
             while (Connection.ConnectionId == null);
             return Connection.ConnectionId;
         }

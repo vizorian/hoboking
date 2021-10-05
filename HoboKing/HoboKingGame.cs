@@ -26,9 +26,6 @@ namespace HoboKing
         // should be 1080, reduced for fitting in screen
         public const int GAME_WINDOW_HEIGHT = 1000;
 
-        public const int HOBO_START_POSITION_X = 2;
-        public const int HOBO_START_POSITION_Y = 8;
-
         // approximate size to get a 1280x1080 game with side black bars
         public const int TILE_SIZE = 20;
 
@@ -39,20 +36,15 @@ namespace HoboKing
         private const string ASSET_NAME_SFX_JUMP = "jump";
 
         private SpriteFont font;
-        private string playerCount;
-        private double hoboHeight;
 
         private Texture2D tileTexture;
         private Texture2D tileLeftTexture;
         private Texture2D tileRightTexture;
-        private Texture2D hoboTexture;
-        private SoundEffect jumpSound;
 
         private Map map;
         private Player player;
 
         private InputController inputController;
-        private EntityManager entityManager;
         private Connector connector;
 
         private float timer = 0.1f;
@@ -64,7 +56,6 @@ namespace HoboKing
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 
-            entityManager = new EntityManager();
            
             connector = new Connector();
         }
@@ -91,11 +82,9 @@ namespace HoboKing
             map.AddTileType('<', tileLeftTexture);
             map.AddTileType('>', tileRightTexture);
 
-
             Console.WriteLine($"Main player's connection ID: {connector.GetConnectionID()}");
-            player = new Player(hoboTexture, new Vector2(HOBO_START_POSITION_X, HOBO_START_POSITION_Y), jumpSound, connector.GetConnectionID(), false, map);
+
             inputController = new InputController(player);
-            entityManager.AddEntity(player);
         }
 
         protected override void Update(GameTime gameTime)
@@ -106,79 +95,24 @@ namespace HoboKing
             base.Update(gameTime);
 
             inputController.ProcessControls(gameTime);
-            entityManager.Update(gameTime);
+            map.Update(gameTime);
 
-            playerCount = entityManager.PlayerCount.ToString();
-            hoboHeight = player.Position.Y;
+            SendData(gameTime);
 
+            map.AddConnectedPlayers(connector);
+            map.UpdateConnectedPlayers(connector);
+            map.RemoveConnectedPlayers(connector);
+        }
+
+        // Send data every time interval
+        private void SendData(GameTime gameTime)
+        {
             float elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
             timer -= elapsed;
             if (timer < 0)
             {
                 connector.SendCoordinates(player.Position);
                 timer = TIMER;
-            }
-
-            AddConnectedPlayers();
-            UpdateConnectedPlayers();
-            RemoveConnectedPlayers();
-        }
-
-        private void AddConnectedPlayers()
-        {
-            // Add Player objects for all other connected players
-            foreach (var id in connector.Connections)
-            {
-                if (entityManager.players.Find(p => p.ConnectionId == id) == null)
-                {
-                    Player p = new Player(hoboTexture,
-                        new Vector2(HOBO_START_POSITION_X,
-                        HOBO_START_POSITION_Y), jumpSound,
-                        id, true, map);
-
-
-                    Console.WriteLine($"Added a new player with ID {id}");
-                    entityManager.AddEntity(p);
-                }
-            }
-        }
-
-
-        private void UpdateConnectedPlayers()
-        {
-            // Update player positions by cycling through input list
-            foreach (Coordinate coordinate in connector.Inputs)
-            {
-                // Handle first input and remove it
-                Player p = entityManager.players.Find(p => p.ConnectionId == coordinate.ConnectionID);
-                if (p != null)
-                {
-                    p.Position = new Vector2(coordinate.X, coordinate.Y);
-                    connector.Inputs.Remove(coordinate);
-                    break;
-                }
-                // Remove first input with no users (if user left)
-                else
-                {
-                    connector.Inputs.Remove(coordinate);
-                    break;
-                }
-            }
-        }
-
-        private void RemoveConnectedPlayers()
-        {
-            // Remove Player objects that don't have an owner and are not the main player
-            foreach (var player in entityManager.players)
-            {
-                if (player.IsOtherPlayer)
-                {
-                    if (!connector.Connections.Contains(player.ConnectionId))
-                    {
-                        entityManager.RemoveEntity(player);
-                        break;
-                    }
-                }
             }
         }
 
@@ -187,26 +121,24 @@ namespace HoboKing
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             _spriteBatch.Begin();
-            map.Draw(_spriteBatch, gameTime);
+            map.Draw(gameTime, _spriteBatch);
 
-            entityManager.Draw(gameTime, _spriteBatch);
-
-            _spriteBatch.DrawString(font, playerCount, new Vector2(450, 10), Color.Black);
-            _spriteBatch.DrawString(font, "Y:" + Math.Round(hoboHeight, 2), new Vector2(450, 30), Color.Black);
+            // Was EntityManager.Draw go fix :)
+            map.Draw(gameTime, _spriteBatch);
 
             _spriteBatch.End();
 
             base.Draw(gameTime);
         }
 
-        // Loads game textures
+        //Loads game textures
         void LoadTextures()
         {
-            hoboTexture = Content.Load<Texture2D>(ASSET_NAME_HOBO);
+            //hoboTexture = Content.Load<Texture2D>(ASSET_NAME_HOBO);
             tileTexture = Content.Load<Texture2D>(ASSET_NAME_TILE);
             tileLeftTexture = Content.Load<Texture2D>(ASSET_NAME_TILE_LEFT);
             tileRightTexture = Content.Load<Texture2D>(ASSET_NAME_TILE_RIGHT);
-            jumpSound = Content.Load<SoundEffect>(ASSET_NAME_SFX_JUMP);
+            //jumpSound = Content.Load<SoundEffect>(ASSET_NAME_SFX_JUMP);
             font = Content.Load<SpriteFont>("Debug");
         }
     }

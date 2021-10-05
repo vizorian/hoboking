@@ -52,7 +52,7 @@ namespace HoboKing.Entities
                 Position.X + PlayerVelocityX * (float)gameTime.ElapsedGameTime.TotalSeconds, 
                 Position.Y + PlayerVelocityY * (float)gameTime.ElapsedGameTime.TotalSeconds);
 
-            //Gravity
+            // Gravity
             PlayerVelocityY += GRAVITY * (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             PlayerVelocityX += -3.0f * PlayerVelocityX * (float)gameTime.ElapsedGameTime.TotalSeconds;

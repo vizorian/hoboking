@@ -10,11 +10,11 @@ namespace HoboKing.Control
 {
     class InputController
     {
-        private Player Hobo;
+        private Player player;
         Stopwatch stopwatch;
-        public InputController(Player hobo)
+        public InputController(Player player)
         {
-            this.Hobo = hobo;
+            this.player = player;
             stopwatch = new Stopwatch();
         }
 
@@ -24,55 +24,55 @@ namespace HoboKing.Control
 
             if (keyboardState.IsKeyDown(Keys.Space))
             {
-                if (Hobo.State != PlayerState.Jumping || Hobo.State != PlayerState.Falling)
+                if (player.State != PlayerState.Jumping || player.State != PlayerState.Falling)
                 {
                     stopwatch.Start();
-                    Hobo.BeginCharge(gameTime);
+                    player.BeginCharge(gameTime);
                 }
             }
             else if (keyboardState.IsKeyUp(Keys.Space) && keyboardState.IsKeyDown(Keys.A))
             {
-                if (Hobo.State == PlayerState.Charging)
+                if (player.State == PlayerState.Charging)
                 {
-                    Hobo.Jump(stopwatch.ElapsedMilliseconds, -1);
+                    player.Jump(stopwatch.ElapsedMilliseconds, -1);
                     stopwatch.Reset();
                 }
             }
             else if (keyboardState.IsKeyUp(Keys.Space) && keyboardState.IsKeyDown(Keys.D))
             {
-                if (Hobo.State == PlayerState.Charging)
+                if (player.State == PlayerState.Charging)
                 {
-                    Hobo.Jump(stopwatch.ElapsedMilliseconds, 1);
+                    player.Jump(stopwatch.ElapsedMilliseconds, 1);
                     stopwatch.Reset();
                 }
             }
             else if(keyboardState.IsKeyUp(Keys.Space))
             {
-                if (Hobo.State == PlayerState.Charging)
+                if (player.State == PlayerState.Charging)
                 {
-                    Hobo.Jump(stopwatch.ElapsedMilliseconds, 0);
+                    player.Jump(stopwatch.ElapsedMilliseconds, 0);
                     stopwatch.Reset();
                 }
             }
             if (keyboardState.IsKeyDown(Keys.A) || keyboardState.IsKeyDown(Keys.Left))
             {
-                if (Hobo.State == PlayerState.Idle || Hobo.State == PlayerState.Walking)
+                if (player.State == PlayerState.Idle || player.State == PlayerState.Walking)
                 {
-                    Hobo.Walk("left", gameTime);
+                    player.Walk("left", gameTime);
                 }
             }
             if (keyboardState.IsKeyDown(Keys.D) || keyboardState.IsKeyDown(Keys.Right))
             {
-                if (Hobo.State == PlayerState.Idle || Hobo.State == PlayerState.Walking)
+                if (player.State == PlayerState.Idle || player.State == PlayerState.Walking)
                 {
-                    Hobo.Walk("right", gameTime);
+                    player.Walk("right", gameTime);
                 }
             }
             if (keyboardState.IsKeyUp(Keys.A) && keyboardState.IsKeyUp(Keys.D))
             {
-                if (Hobo.State == PlayerState.Walking)
+                if (player.State == PlayerState.Walking)
                 {
-                    Hobo.Idle(); 
+                    player.Idle(); 
                 }
             }
 
