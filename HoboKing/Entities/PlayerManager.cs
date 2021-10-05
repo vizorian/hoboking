@@ -34,9 +34,9 @@ namespace HoboKing.Entities
             PlayerCount--;
         }
 
-        public Player CreatePlayer(Texture2D texture, Vector2 position, SoundEffect jumpSound, Map map)
+       /* public Player CreatePlayer(Texture2D texture, Vector2 position, SoundEffect jumpSound, Map map)
         {
             return new Player(texture, position, jumpSound, map);
-        }
+        }*/
     }
 }

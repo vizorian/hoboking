@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using HoboKing.Graphics;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,7 @@ namespace HoboKing.Entities
         public Vector2 Position { get; set; }
         public Texture2D Texture { get; set; }
         public int TileSize { get; set; }
+        public Sprite Sprite { get; set; }//laikinas
         public const int TILE_SIZE = 50;
         public Tile(Texture2D texture, int tileSize, Vector2 position)
         {

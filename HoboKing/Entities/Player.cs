@@ -13,6 +13,8 @@ namespace HoboKing.Entities
         public float Speed { get; set; }
         public Vector2 Position { get; set; }
         public PlayerState State { get; private set; }
+        public string ConnectionId { get; set; }
+        public bool IsOtherPlayer { get; set; }
 
         private SoundEffect JumpSound;
         private float PlayerVelocityY;
@@ -27,11 +29,12 @@ namespace HoboKing.Entities
         public bool onGround;
 
         private Map Map;
-        public Player(Texture2D spriteSheet, Vector2 position, SoundEffect jumpSound, Map map)
+        public Player(Texture2D spriteSheet, Vector2 position, SoundEffect jumpSound, string connectionId, Map map)
         {
             Sprite = new Sprite(spriteSheet, position);
             Position = position;
             JumpSound = jumpSound;
+            ConnectionId = connectionId;
             Map = map;
         }
 

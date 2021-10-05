@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using HoboKing.Graphics;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -8,12 +9,12 @@ using System.Text;
 
 namespace HoboKing.Entities
 {
-    class Map : IGameEntity
+    class Map
     {
         public int Width { get; set; }
         public int Height { get; set; }
         public int VisibleTilesX { get; set; }
-        public int VisibleTilesY { get; set; }
+        public int VisibleTilesY { get; set; } 
         public int TileWidth { get; set; }
         public int TileHeight { get; set; }
         public string Level { get; set; }

@@ -51,7 +51,7 @@ namespace HoboKing
         private Map map;
         private Player player;
 
-        private PlayerManager playerManager;
+        //private PlayerManager playerManager;
 
         private InputController inputController;
         private EntityManager entityManager;
@@ -67,7 +67,7 @@ namespace HoboKing
             Content.RootDirectory = "Content";
 
             entityManager = new EntityManager();
-            playerManager = new PlayerManager(entityManager);
+           
             connector = new Connector();
         }
 
@@ -93,10 +93,11 @@ namespace HoboKing
             map.AddTileType('<', tileLeftTexture);
             map.AddTileType('>', tileRightTexture);
 
-            player = playerManager.CreatePlayer(hoboTexture, new Vector2(HOBO_START_POSITION_X, HOBO_START_POSITION_Y), jumpSound, map);
+            player = entityManager.CreatePlayer(hoboTexture, new Vector2(HOBO_START_POSITION_X, HOBO_START_POSITION_Y), jumpSound, connector.GetConnectionID(), map);
 
             inputController = new InputController(player);
-            entityManager.AddEntity(map);
+            //entityManager.AddEntity(map);
+         
             entityManager.AddEntity(player);
         }
 
@@ -110,7 +111,7 @@ namespace HoboKing
             inputController.ProcessControls(gameTime);
             entityManager.Update(gameTime);
 
-            playerCount = playerManager.PlayerCount.ToString();
+            playerCount = entityManager.PlayerCount.ToString();
             hoboHeight = player.Position.Y;
 
             float elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -124,14 +125,15 @@ namespace HoboKing
             // Add OtherPlayer objects for all connected players
             foreach (var id in connector.Connections)
             {
-                if (playerManager.players.Find(p => p.ConnectionId == id) == null)
+                if (entityManager.players.Find(p => p.ConnectionId == id) == null)
                 {
-                    OtherPlayer p = new OtherPlayer(hoboTexture,
+                    Player p = new Player(hoboTexture,
                         new Vector2(HOBO_START_POSITION_X, 
-                        HOBO_START_POSITION_Y),
+                        HOBO_START_POSITION_Y), jumpSound,
                         id, map);
+                    
                     Console.WriteLine($"Added a new player with ID {id}");
-                    playerManager.CreateOtherPlayer(p);
+                    entityManager.AddEntity(p);
                 }
             }
 
@@ -139,7 +141,7 @@ namespace HoboKing
             foreach (Coordinate coordinate in connector.Inputs)
             {
                 // Handle first input and remove it
-                OtherPlayer p = playerManager.players.Find(p => p.ConnectionId == coordinate.ConnectionID);
+                Player p = entityManager.players.Find(p => p.ConnectionId == coordinate.ConnectionID);
                 if (p != null)
                 {
                     p.Position = new Vector2(coordinate.X, coordinate.Y);
@@ -155,11 +157,11 @@ namespace HoboKing
             }
 
             // Remove OtherPlayer objects that don't have an owner
-            foreach (var player in playerManager.players)
+            foreach (var player in entityManager.players)
             {
                 if (!connector.Connections.Contains(player.ConnectionId))
                 {
-                    playerManager.RemoveOtherPlayer(player);
+                    entityManager.RemoveEntity(player);
                     break;
                 }
             }
@@ -171,6 +173,8 @@ namespace HoboKing
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             _spriteBatch.Begin();
+            map.Draw(_spriteBatch, gameTime);
+
             entityManager.Draw(gameTime, _spriteBatch);
 
             _spriteBatch.DrawString(font, playerCount, new Vector2(450, 10), Color.Black);
