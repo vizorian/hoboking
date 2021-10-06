@@ -1,26 +1,22 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using System.Threading.Tasks;
 using System;
-using System.Collections.Generic;
 
 namespace SignalR_GameServer.Hubs
 {
-    public static class PlayerHandler
-    {
-        public static List<String> ConnectedIds = new List<String>();
-    }
-
     public class GameHub : Hub
     {
+        public PlayerHandler _PlayerHandler = PlayerHandler.getInstance();
+             
         public override Task OnConnectedAsync()
         {
-            PlayerHandler.ConnectedIds.Add(Context.ConnectionId);
+            _PlayerHandler.ConnectedIds.Add(Context.ConnectionId);
 
             _ = SendMessage("Server", $"A new player has connected with ID {Context.ConnectionId}");
             _ = PlayerConnected($"{Context.ConnectionId}");
             _ = SendPlayerCount();
 
-            foreach (string connectedId in PlayerHandler.ConnectedIds)
+            foreach (string connectedId in _PlayerHandler.ConnectedIds)
                 if(connectedId != Context.ConnectionId)
                     _ = SendPlayerIdTargeted(connectedId);
 
@@ -29,7 +25,7 @@ namespace SignalR_GameServer.Hubs
 
         public override Task OnDisconnectedAsync(Exception exception)
         {
-            PlayerHandler.ConnectedIds.Remove(Context.ConnectionId);
+            _PlayerHandler.ConnectedIds.Remove(Context.ConnectionId);
 
             _ = SendMessage("Server", $"Player with ID {Context.ConnectionId} has disconnected");
             _ = PlayerDisconnected($"{Context.ConnectionId}");
@@ -50,7 +46,7 @@ namespace SignalR_GameServer.Hubs
 
         public async Task SendPlayerCount()
         {
-            int player_count = PlayerHandler.ConnectedIds.Count;
+            int player_count = _PlayerHandler.ConnectedIds.Count;
             await Clients.All.SendAsync("ReceivePlayerCount", player_count);
         }
 
@@ -68,8 +64,5 @@ namespace SignalR_GameServer.Hubs
         {
             await Clients.Caller.SendAsync("PlayerConnected", playerId);
         }
-
-        // client sided?
-        // junk junk KreipinysIServer.SendAsync("SendCoordinates", user, x, y)???
     }
 }
