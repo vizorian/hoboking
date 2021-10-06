@@ -82,7 +82,7 @@ namespace HoboKing.Entities
         // Edit later for singleplayer as well
         public Player CreateMainPlayer(Connector connector)
         {
-            Player player = new Player(contentLoader.BatChest, new Vector2(HOBO_START_POSITION_X, HOBO_START_POSITION_Y), connector.GetConnectionID(), false, this);
+            Player player = new Player(contentLoader.BatChest, new Vector2(HOBO_START_POSITION_X, HOBO_START_POSITION_Y), connector.GetConnectionId(), false, this);
             entityManager.AddEntity(player);
             return player;
         }
@@ -90,7 +90,7 @@ namespace HoboKing.Entities
         // Add Player objects for all other connected players
         public void AddConnectedPlayers(Connector connector)
         {
-            foreach (var id in connector.Connections)
+            foreach (var id in connector.ConnectionsIds)
             {
                 if (entityManager.players.Find(p => p.ConnectionId == id) == null)
                 {
@@ -105,20 +105,20 @@ namespace HoboKing.Entities
         // Update player positions by cycling through input list
         public void UpdateConnectedPlayers(Connector connector)
         {
-            foreach (Coordinate coordinate in connector.Inputs)
+            foreach (Coordinate coordinate in connector.UnprocessedInputs)
             {
                 // Handle first input and remove it
                 Player p = entityManager.players.Find(p => p.ConnectionId == coordinate.ConnectionID);
                 if (p != null)
                 {
                     p.Position = new Vector2(coordinate.X, coordinate.Y);
-                    connector.Inputs.Remove(coordinate);
+                    connector.UnprocessedInputs.Remove(coordinate);
                     break;
                 }
                 // Remove first input with no users (if user left)
                 else
                 {
-                    connector.Inputs.Remove(coordinate);
+                    connector.UnprocessedInputs.Remove(coordinate);
                     break;
                 }
             }
@@ -131,7 +131,7 @@ namespace HoboKing.Entities
             {
                 if (player.IsOtherPlayer)
                 {
-                    if (!connector.Connections.Contains(player.ConnectionId))
+                    if (!connector.ConnectionsIds.Contains(player.ConnectionId))
                     {
                         entityManager.RemoveEntity(player);
                         break;

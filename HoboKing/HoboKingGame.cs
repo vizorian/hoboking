@@ -44,7 +44,7 @@ namespace HoboKing
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 
-            connector = new Connector();
+            connector = Connector.getInstance();
         }
 
         protected override void Initialize()
@@ -67,7 +67,7 @@ namespace HoboKing
 
             player = map.CreateMainPlayer(connector);
 
-            Console.WriteLine($"Main player's connection ID: {connector.GetConnectionID()}");
+            Console.WriteLine($"Main player's connection ID: {connector.GetConnectionId()}");
 
             inputController = new InputController(player);
         }
