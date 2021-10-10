@@ -79,6 +79,7 @@ namespace HoboKing
 
             base.Update(gameTime);
 
+            inputController.Update();
             inputController.ProcessControls(gameTime);
             map.Update(gameTime);
             SendData(gameTime);
@@ -95,7 +96,7 @@ namespace HoboKing
             timer -= elapsed;
             if (timer < 0)
             {
-                connector.SendCoordinates(player.Position);
+                connector.SendCoordinates(player.Sprite.Position);
                 timer = TIMER;
             }
         }

@@ -1,4 +1,5 @@
-﻿using HoboKing.Graphics;
+﻿using HoboKing.Control;
+using HoboKing.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -84,6 +85,7 @@ namespace HoboKing.Entities
         {
             Player player = new Player(contentLoader.BatChest, new Vector2(HOBO_START_POSITION_X, HOBO_START_POSITION_Y), connector.GetConnectionId(), false, this);
             entityManager.AddEntity(player);
+            player.SetPlayerMovement(new PlayerMovement(player));
             return player;
         }
 
@@ -111,7 +113,7 @@ namespace HoboKing.Entities
                 Player p = entityManager.players.Find(p => p.ConnectionId == coordinate.ConnectionID);
                 if (p != null)
                 {
-                    p.Position = new Vector2(coordinate.X, coordinate.Y);
+                    p.Sprite.Position = new Vector2(coordinate.X, coordinate.Y);
                     connector.UnprocessedInputs.Remove(coordinate);
                     break;
                 }

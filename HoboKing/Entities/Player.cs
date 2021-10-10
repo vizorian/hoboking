@@ -1,9 +1,8 @@
-﻿using HoboKing.Graphics;
+﻿using HoboKing.Control;
+using HoboKing.Graphics;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using System;
-using System.Diagnostics;
 
 namespace HoboKing.Entities
 {
@@ -11,13 +10,14 @@ namespace HoboKing.Entities
     {
         public Sprite Sprite { get; set; }
         public float Speed { get; set; }
-        public Vector2 Position { get; set; }
-        public PlayerState State { get; private set; }
+        public PlayerState State { get; set; }
         public string ConnectionId { get; set; }
         public bool IsOtherPlayer { get; set; }
 
-        private float PlayerVelocityY;
-        private float PlayerVelocityX;
+        private Movement movement;
+
+        public float PlayerVelocityY;
+        public float PlayerVelocityX;
 
         // CONSTANTS
         private const float GRAVITY = 10;
@@ -25,15 +25,12 @@ namespace HoboKing.Entities
         private const int MIN_JUMP = 1;
         private const int HORIZONTAL_SPEED = 100;
 
-        private const string ASSET_NAME = "batchest";
-
         public bool onGround;
 
         private Map Map;
         public Player(Texture2D texture, Vector2 position, string connectionId, bool isOtherPlayer, Map map)
         {
             Sprite = new Sprite(texture, position);
-            Position = position;
             ConnectionId = connectionId;
             IsOtherPlayer = isOtherPlayer;
             Map = map;
@@ -41,17 +38,21 @@ namespace HoboKing.Entities
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            float realPosX = Position.X * Map.TileWidth;
-            float realPosY = Position.Y * Map.TileWidth;
-            Sprite.Position = new Vector2(realPosX, realPosY);
-            Sprite.Draw(spriteBatch);
+            float realPosX = Sprite.Position.X * Map.TileWidth;
+            float realPosY = Sprite.Position.Y * Map.TileWidth;
+            Sprite.Draw(spriteBatch, new Vector2(realPosX, realPosY));
+        }
+        
+        public void SetPlayerMovement(Movement newMovement)
+        {
+            movement = newMovement;
         }
 
         public void Update(GameTime gameTime)
         {
             Vector2 NewPlayerPosition = new Vector2(
-                Position.X + PlayerVelocityX * (float)gameTime.ElapsedGameTime.TotalSeconds, 
-                Position.Y + PlayerVelocityY * (float)gameTime.ElapsedGameTime.TotalSeconds);
+                Sprite.Position.X + PlayerVelocityX * (float)gameTime.ElapsedGameTime.TotalSeconds,
+                Sprite.Position.Y + PlayerVelocityY * (float)gameTime.ElapsedGameTime.TotalSeconds);
 
             // Gravity
             PlayerVelocityY += GRAVITY * (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -85,8 +86,8 @@ namespace HoboKing.Entities
             // https://github.com/OneLoneCoder/videos/blob/master/OneLoneCoder_PlatformGame1.cpp
             if (PlayerVelocityX <= 0)
             {
-                if (Map.GetTile((int)(NewPlayerPosition.X + 0.0f), (int)(Position.Y + 0.0f)) != '.' ||
-                    Map.GetTile((int)(NewPlayerPosition.X + 0.0f), (int)(Position.Y + 0.9f)) != '.')
+                if (Map.GetTile((int)(NewPlayerPosition.X + 0.0f), (int)(Sprite.Position.Y + 0.0f)) != '.' ||
+                    Map.GetTile((int)(NewPlayerPosition.X + 0.0f), (int)(Sprite.Position.Y + 0.9f)) != '.')
                 {
                     NewPlayerPosition.X = (int)NewPlayerPosition.X + 1;
                     PlayerVelocityX = 0;
@@ -94,8 +95,8 @@ namespace HoboKing.Entities
             }
             else
             {
-                if (Map.GetTile((int)(NewPlayerPosition.X + 1.0f), (int)(Position.Y + 0.0f)) != '.' ||
-                    Map.GetTile((int)(NewPlayerPosition.X + 1.0f), (int)(Position.Y + 0.9f)) != '.')
+                if (Map.GetTile((int)(NewPlayerPosition.X + 1.0f), (int)(Sprite.Position.Y + 0.0f)) != '.' ||
+                    Map.GetTile((int)(NewPlayerPosition.X + 1.0f), (int)(Sprite.Position.Y + 0.9f)) != '.')
                 {
                     NewPlayerPosition.X = (int)NewPlayerPosition.X;
                     PlayerVelocityX = 0;
@@ -104,8 +105,8 @@ namespace HoboKing.Entities
             onGround = false;
             if (PlayerVelocityY <= 0)
             {
-                if (Map.GetTile((int)(NewPlayerPosition.X + 0.0f), (int)(Position.Y + 0.0f)) != '.' ||
-                    Map.GetTile((int)(NewPlayerPosition.X + 0.9f), (int)(Position.Y + 0.0f)) != '.')
+                if (Map.GetTile((int)(NewPlayerPosition.X + 0.0f), (int)(Sprite.Position.Y + 0.0f)) != '.' ||
+                    Map.GetTile((int)(NewPlayerPosition.X + 0.9f), (int)(Sprite.Position.Y + 0.0f)) != '.')
                 {
                     NewPlayerPosition.Y = (int)NewPlayerPosition.Y + 1;
                     PlayerVelocityY = 0;
@@ -113,8 +114,8 @@ namespace HoboKing.Entities
             }
             else
             {
-                if (Map.GetTile((int)(NewPlayerPosition.X + 0.0f), (int)(Position.Y + 1.0f)) != '.' ||
-                    Map.GetTile((int)(NewPlayerPosition.X + 0.9f), (int)(Position.Y + 1.0f)) != '.')
+                if (Map.GetTile((int)(NewPlayerPosition.X + 0.0f), (int)(Sprite.Position.Y + 1.0f)) != '.' ||
+                    Map.GetTile((int)(NewPlayerPosition.X + 0.9f), (int)(Sprite.Position.Y + 1.0f)) != '.')
                 {
                     NewPlayerPosition.Y = (int)NewPlayerPosition.Y;
                     PlayerVelocityY = 0;
@@ -122,63 +123,28 @@ namespace HoboKing.Entities
                 }
             }
 
-            Position = NewPlayerPosition;
+            Sprite.Position = NewPlayerPosition;
 
         }
 
-        public bool BeginCharge(GameTime gameTime)
+        public void BeginCharge(GameTime gameTime)
         {
-            if (State == PlayerState.Jumping || State == PlayerState.Falling)
-            {
-                return false;
-            }
-            State = PlayerState.Charging;
-            return true;
+            movement.BeginCharge(gameTime);
         }
 
         public void Jump(long jumpStrength, int xDirection)
         {
-            if (jumpStrength > MAX_JUMP)
-                jumpStrength = MAX_JUMP;
-            if (jumpStrength < MIN_JUMP)
-                jumpStrength = MIN_JUMP;
-            if (PlayerVelocityY == 0)
-            {
-                PlayerVelocityY = -jumpStrength;
-                State = PlayerState.Jumping;
-            }
-            switch (xDirection)
-            {
-                case -1:
-                    Console.WriteLine($"Jump strenght is {jumpStrength}, LEFT");
-                    PlayerVelocityX = xDirection * HORIZONTAL_SPEED;
-                    return;
-                case 1:
-                    Console.WriteLine($"Jump strenght is {jumpStrength}, RIGHT");
-                    PlayerVelocityX = xDirection * HORIZONTAL_SPEED;
-                    return;
-                default:
-                    Console.WriteLine($"Jump strenght is {jumpStrength}, STRAIGHT UP");
-                    return;
-            }
+            movement.Jump(jumpStrength, xDirection);
         }
 
         public void Walk(string direction, GameTime gameTime)
         {
-            State = PlayerState.Walking;
-            if (direction == "left")
-            {
-                PlayerVelocityX += -HORIZONTAL_SPEED * (float)gameTime.ElapsedGameTime.TotalSeconds;
-            }
-            if (direction == "right")
-            {
-                PlayerVelocityX += HORIZONTAL_SPEED * (float)gameTime.ElapsedGameTime.TotalSeconds;
-            }
+            movement.Walk(direction, gameTime);
         }
 
         public void Idle()
         {
-            State = PlayerState.Idle;
+            movement.Idle();
         }
     }
 }

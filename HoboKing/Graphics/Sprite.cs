@@ -1,9 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace HoboKing.Graphics
 {
@@ -34,9 +30,9 @@ namespace HoboKing.Graphics
             UpdateRectangle();
         }
 
-        public virtual void Draw(SpriteBatch spriteBatch)
+        public virtual void Draw(SpriteBatch spriteBatch, Vector2 drawingPosition)
         {
-            spriteBatch.Draw(Texture, Position, Color);
+            spriteBatch.Draw(Texture, drawingPosition, Color);
         }
 
         public bool Collision(Sprite target)

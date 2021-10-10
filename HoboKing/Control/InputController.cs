@@ -10,6 +10,9 @@ namespace HoboKing.Control
 {
     class InputController
     {
+        public KeyboardState KeyState { get; set; }
+        public KeyboardState PreviousKeyState { get; set; }
+
         private Player player;
         Stopwatch stopwatch;
         public InputController(Player player)
@@ -18,57 +21,85 @@ namespace HoboKing.Control
             stopwatch = new Stopwatch();
         }
 
+        public void Update()
+        {
+            PreviousKeyState = KeyState;
+            KeyState = Keyboard.GetState();
+        }
+
+        public bool KeyPressed(Keys key)
+        {
+            if (KeyState.IsKeyDown(key) && PreviousKeyState.IsKeyUp(key))
+                return true;
+            return false;
+        }
+
+        public bool KeyReleased(Keys key)
+        {
+            if (KeyState.IsKeyUp(key) && PreviousKeyState.IsKeyDown(key))
+                return true;
+            return false;
+        }
+
+        public bool KeyDown(Keys key)
+        {
+            if (KeyState.IsKeyDown(key))
+            {
+                return true;
+            }
+            return false;
+        }
+
+
         public void ProcessControls(GameTime gameTime)
         {
-            KeyboardState keyboardState = Keyboard.GetState();
-
-            if (keyboardState.IsKeyDown(Keys.Space))
+            if (KeyPressed(Keys.Space))
             {
                 if (player.State != PlayerState.Jumping || player.State != PlayerState.Falling)
                 {
+                    Console.WriteLine("Charging for a jump");
                     stopwatch.Start();
                     player.BeginCharge(gameTime);
                 }
             }
-            else if (keyboardState.IsKeyUp(Keys.Space) && keyboardState.IsKeyDown(Keys.A))
+            if (KeyReleased(Keys.Space) && KeyDown(Keys.A))
             {
-                if (player.State == PlayerState.Charging)
-                {
-                    player.Jump(stopwatch.ElapsedMilliseconds, -1);
-                    stopwatch.Reset();
-                }
+                Console.WriteLine("Jumping left");
+
+                player.Jump(stopwatch.ElapsedMilliseconds, -1);
+                stopwatch.Reset();
             }
-            else if (keyboardState.IsKeyUp(Keys.Space) && keyboardState.IsKeyDown(Keys.D))
+            else if (KeyReleased(Keys.Space) && KeyDown(Keys.D))
             {
-                if (player.State == PlayerState.Charging)
-                {
-                    player.Jump(stopwatch.ElapsedMilliseconds, 1);
-                    stopwatch.Reset();
-                }
+                Console.WriteLine("Jumping right");
+
+                player.Jump(stopwatch.ElapsedMilliseconds, 1);
+                stopwatch.Reset();
             }
-            else if(keyboardState.IsKeyUp(Keys.Space))
+           else if(KeyReleased(Keys.Space))
             {
-                if (player.State == PlayerState.Charging)
-                {
-                    player.Jump(stopwatch.ElapsedMilliseconds, 0);
-                    stopwatch.Reset();
-                }
+                Console.WriteLine("Jumping up");
+
+                player.Jump(stopwatch.ElapsedMilliseconds, 0);
+                stopwatch.Reset();
             }
-            if (keyboardState.IsKeyDown(Keys.A) || keyboardState.IsKeyDown(Keys.Left))
+
+
+            if (KeyDown(Keys.A))
             {
                 if (player.State == PlayerState.Idle || player.State == PlayerState.Walking)
                 {
                     player.Walk("left", gameTime);
                 }
             }
-            if (keyboardState.IsKeyDown(Keys.D) || keyboardState.IsKeyDown(Keys.Right))
+            if (KeyDown(Keys.D))
             {
                 if (player.State == PlayerState.Idle || player.State == PlayerState.Walking)
                 {
                     player.Walk("right", gameTime);
                 }
             }
-            if (keyboardState.IsKeyUp(Keys.A) && keyboardState.IsKeyUp(Keys.D))
+            if (KeyReleased(Keys.A) && KeyReleased(Keys.D))
             {
                 if (player.State == PlayerState.Walking)
                 {
