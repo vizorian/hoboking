@@ -9,6 +9,6 @@ namespace HoboKing.Entities
         public Sprite Sprite { get; set; }
 
         void Update(GameTime gameTime);
-        void Draw(SpriteBatch spriteBatch, GameTime gameTime);
+        void Draw(SpriteBatch spriteBatch);
     }
 }

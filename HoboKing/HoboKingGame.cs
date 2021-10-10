@@ -38,6 +38,8 @@ namespace HoboKing
         private float timer = 0.1f;
         const float TIMER = 0.1f;
 
+        private bool showBoundingBox = true;
+
         public HoboKingGame()
         {
             IsMouseVisible = true;
@@ -62,7 +64,7 @@ namespace HoboKing
             connector.Connect();
             _spriteBatch = new SpriteBatch(GraphicsDevice); 
 
-            map = new Map(GAME_WINDOW_WIDTH, GAME_WINDOW_HEIGHT, TILE_SIZE, TILE_SIZE);
+            map = new Map(_graphics.GraphicsDevice, GAME_WINDOW_WIDTH, GAME_WINDOW_HEIGHT);
             map.LoadEntityContent(Content);
 
             player = map.CreateMainPlayer(connector);
@@ -81,12 +83,33 @@ namespace HoboKing
 
             inputController.Update();
             inputController.ProcessControls(gameTime);
+
+            if (inputController.KeyPressed(Keys.F1))
+            {
+                showBoundingBox = !showBoundingBox;
+            }
+
             map.Update(gameTime);
             SendData(gameTime);
 
             map.AddConnectedPlayers(connector);
             map.UpdateConnectedPlayers(connector);
             map.RemoveConnectedPlayers(connector);
+        }
+
+        protected override void Draw(GameTime gameTime)
+        {
+            GraphicsDevice.Clear(Color.CornflowerBlue);
+
+            _spriteBatch.Begin();
+            
+            map.DrawMap(gameTime, _spriteBatch);
+            map.DrawEntities(_spriteBatch);
+            map.ShowBoundingBoxes(showBoundingBox);
+            
+            _spriteBatch.End();
+
+            base.Draw(gameTime);
         }
 
         // Send data every time interval
@@ -99,21 +122,6 @@ namespace HoboKing
                 connector.SendCoordinates(player.Sprite.Position);
                 timer = TIMER;
             }
-        }
-
-        protected override void Draw(GameTime gameTime)
-        {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
-
-            _spriteBatch.Begin();
-            map.Draw(gameTime, _spriteBatch);
-
-            // Was EntityManager.Draw go fix :)
-            map.DrawEntities(gameTime, _spriteBatch);
-
-            _spriteBatch.End();
-
-            base.Draw(gameTime);
         }
     }
 }

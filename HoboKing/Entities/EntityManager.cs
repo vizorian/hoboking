@@ -66,11 +66,19 @@ namespace HoboKing.Entities
             _entitiesToRemove.Clear();
         }
 
-        public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        public void SetShowBoundingBox(bool show)
         {
             foreach(IGameEntity entity in _entities)
             {
-                entity.Draw(spriteBatch, gameTime);
+                entity.Sprite.SetShowRectangle(show);
+            }
+        }
+
+        public void Draw(SpriteBatch spriteBatch)
+        {
+            foreach(IGameEntity entity in _entities)
+            {
+                entity.Draw(spriteBatch);
             }
         }
 

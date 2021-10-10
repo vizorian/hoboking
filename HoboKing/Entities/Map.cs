@@ -16,30 +16,28 @@ namespace HoboKing.Entities
         public const int HOBO_START_POSITION_X = 2;
         public const int HOBO_START_POSITION_Y = 8;
 
+        public const int TILE_SIZE = 20;
+        public const int MAP_WIDTH = 64;
+        public const int MAP_HEIGHT = 54;
 
         private EntityManager entityManager;
         private ContentLoader contentLoader;
+        private GraphicsDevice graphics;
 
-        public int Width { get; set; }
-        public int Height { get; set; }
+        private bool showBoxes;
+
         public int VisibleTilesX { get; set; }
         public int VisibleTilesY { get; set; } 
-        public int TileWidth { get; set; }
-        public int TileHeight { get; set; }
         public string Level { get; set; }
 
         readonly Dictionary<char, Tile> tiles = new Dictionary<char, Tile>();
 
-        public Map(int windowWidth, int windowHeight, int tileWidth = 50, int tileHeight = 50,
-            int mapWidth = 64, int mapHeight = 54)
+        public Map(GraphicsDevice g, int windowWidth, int windowHeight)
         {
-            Width = mapWidth;
-            Height = mapHeight;
+            graphics = g;
             entityManager = new EntityManager();
-            TileWidth = tileWidth;
-            TileHeight = tileHeight;
-            VisibleTilesX = windowWidth / tileWidth;
-            VisibleTilesY = windowHeight / tileHeight;
+            VisibleTilesX = windowWidth / TILE_SIZE;
+            VisibleTilesY = windowHeight / TILE_SIZE;
 
             // Read map data from file before drawing
             ReadMapData();
@@ -71,10 +69,10 @@ namespace HoboKing.Entities
 
         public void Print()
         {
-            Console.WriteLine("Map Width: " + Width);
-            Console.WriteLine("Map Height: " + Height);
-            Console.WriteLine("Tile Width: " + TileWidth);
-            Console.WriteLine("Tile Height: " + TileHeight);
+            Console.WriteLine("Map Width: " + MAP_WIDTH);
+            Console.WriteLine("Map Height: " + MAP_HEIGHT);
+            Console.WriteLine("Tile Width: " + TILE_SIZE);
+            Console.WriteLine("Tile Height: " + TILE_SIZE);
             Console.WriteLine("VisibleTilesX: " + VisibleTilesX);
             Console.WriteLine("VisibleTilesY: " + VisibleTilesY);
         }
@@ -83,7 +81,8 @@ namespace HoboKing.Entities
         // Edit later for singleplayer as well
         public Player CreateMainPlayer(Connector connector)
         {
-            Player player = new Player(contentLoader.BatChest, new Vector2(HOBO_START_POSITION_X, HOBO_START_POSITION_Y), connector.GetConnectionId(), false, this);
+            Player player = new Player(graphics, contentLoader.BatChest, new Vector2(HOBO_START_POSITION_X, HOBO_START_POSITION_Y), 
+                connector.GetConnectionId(), false, this);
             entityManager.AddEntity(player);
             player.SetPlayerMovement(new PlayerMovement(player));
             return player;
@@ -96,7 +95,7 @@ namespace HoboKing.Entities
             {
                 if (entityManager.players.Find(p => p.ConnectionId == id) == null)
                 {
-                    Player p = new Player(contentLoader.BatChest, new Vector2(HOBO_START_POSITION_X, HOBO_START_POSITION_Y), id, true, this);
+                    Player p = new Player(graphics, contentLoader.BatChest, new Vector2(HOBO_START_POSITION_X, HOBO_START_POSITION_Y), id, true, this);
 
                     Console.WriteLine($"Added a new player with ID {id}");
                     entityManager.AddEntity(p);
@@ -148,16 +147,16 @@ namespace HoboKing.Entities
             CreateTileTypes();
         }
 
-        public void DrawEntities(GameTime gameTime, SpriteBatch spriteBatch) 
+        public void DrawEntities(SpriteBatch spriteBatch) 
         {
-            entityManager.Draw(gameTime, spriteBatch);
+            entityManager.Draw(spriteBatch);
         }
 
         public char GetTile(int x, int y)
         {
-            if (x >= 0 && x < Width && y >= 0 && y < Height)
+            if (x >= 0 && x < MAP_WIDTH && y >= 0 && y < MAP_HEIGHT)
             {
-                return Level[y * Width + x];
+                return Level[y * MAP_WIDTH + x];
             }
             else return ' ';
         }
@@ -165,9 +164,9 @@ namespace HoboKing.Entities
         public string SetTile(int x, int y, char newTile)
         {
             StringBuilder sb = new StringBuilder(Level);
-            if (x >= 0 && x < Width && y >= 0 && y < Height)
+            if (x >= 0 && x < MAP_WIDTH && y >= 0 && y < MAP_HEIGHT)
             {
-                sb[y * Width + x] = newTile;
+                sb[y * MAP_WIDTH + x] = newTile;
                 return sb.ToString();
             } else
             {
@@ -177,7 +176,13 @@ namespace HoboKing.Entities
 
         public void AddTileType(char key, Texture2D texture)
         {
-            tiles.Add(key, new Tile(texture, TileWidth));
+            tiles.Add(key, new Tile(graphics, texture, TILE_SIZE));
+        }
+
+        public void ShowBoundingBoxes(bool show)
+        {
+            showBoxes = show;
+            entityManager.SetShowBoundingBox(show);
         }
 
         public void Update(GameTime gameTime)
@@ -185,7 +190,7 @@ namespace HoboKing.Entities
             entityManager.Update(gameTime);
         }
 
-        public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        public void DrawMap(GameTime gameTime, SpriteBatch spriteBatch)
         {
             for (int x = 0; x < VisibleTilesX; x++)
             {
@@ -202,8 +207,9 @@ namespace HoboKing.Entities
                             if (tiles.ContainsKey(TileID))
                             {
                                 Tile tile = tiles[TileID];
-                                tile.Position = new Vector2(x * TileWidth, y * TileHeight);
-                                tile.Draw(spriteBatch, gameTime);
+                                tile.SetPosition(new Vector2(x * TILE_SIZE, y * TILE_SIZE));
+                                tile.Sprite.SetShowRectangle(showBoxes);
+                                tile.Draw(spriteBatch);
                             } else
                             {
                                 throw new Exception($"Tile type ({TileID}) doesn't exist");
@@ -214,8 +220,9 @@ namespace HoboKing.Entities
                             if (tiles.ContainsKey(TileID))
                             {
                                 Tile tile = tiles[TileID];
-                                tile.Position = new Vector2(x * TileWidth, y * TileHeight);
-                                tile.Draw(spriteBatch, gameTime);
+                                tile.SetPosition(new Vector2(x * TILE_SIZE, y * TILE_SIZE));
+                                tile.Sprite.SetShowRectangle(showBoxes);
+                                tile.Draw(spriteBatch);
                             }
                             else
                             {
@@ -227,8 +234,9 @@ namespace HoboKing.Entities
                             if (tiles.ContainsKey(TileID))
                             {
                                 Tile tile = tiles[TileID];
-                                tile.Position = new Vector2(x * TileWidth, y * TileHeight);
-                                tile.Draw(spriteBatch, gameTime);
+                                tile.SetPosition(new Vector2(x * TILE_SIZE, y * TILE_SIZE));
+                                tile.Sprite.SetShowRectangle(showBoxes);
+                                tile.Draw(spriteBatch);
                             }
                             else
                             {

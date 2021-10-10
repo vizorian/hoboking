@@ -9,32 +9,33 @@ namespace HoboKing.Entities
 {
     class Tile : IGameEntity
     {
-        public Vector2 Position { get; set; }
-        public Texture2D Texture { get; set; }
         public int TileSize { get; set; }
-        public Sprite Sprite { get; set; }//laikinas
-        public const int TILE_SIZE = 50;
-        public Tile(Texture2D texture, int tileSize, Vector2 position)
+        public Sprite Sprite { get; set; }
+
+        public Tile(GraphicsDevice graphics, Texture2D texture, int tileSize, Vector2 position)
         {
             TileSize = tileSize;
-            Position = position;
-            Texture = texture;
+            Sprite = new Sprite(graphics, texture, position, tileSize);
         }
 
-        public Tile(Texture2D texture, int tileSize)
+        public Tile(GraphicsDevice graphics, Texture2D texture, int tileSize)
         {
-            Position = new Vector2(0, 0);
             TileSize = tileSize;
-            Texture = texture;
+            Sprite = new Sprite(graphics, texture, new Vector2(0, 0), tileSize);
+        }
+
+        public void SetPosition(Vector2 position)
+        {
+            Sprite.Position = position;
         }
 
         public void Update(GameTime gameTime)
         {
         }
 
-        public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
+        public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(Texture, new Rectangle((int)Position.X, (int)Position.Y, TileSize, TileSize), Color.White);
+            Sprite.Draw(spriteBatch, TileSize);
         }
     }
 }

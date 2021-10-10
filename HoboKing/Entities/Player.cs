@@ -28,18 +28,18 @@ namespace HoboKing.Entities
         public bool onGround;
 
         private Map Map;
-        public Player(Texture2D texture, Vector2 position, string connectionId, bool isOtherPlayer, Map map)
+        public Player(GraphicsDevice graphics ,Texture2D texture, Vector2 position, string connectionId, bool isOtherPlayer, Map map)
         {
-            Sprite = new Sprite(texture, position);
+            Sprite = new Sprite(graphics, texture, position);
             ConnectionId = connectionId;
             IsOtherPlayer = isOtherPlayer;
             Map = map;
         }
 
-        public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
+        public void Draw(SpriteBatch spriteBatch)
         {
-            float realPosX = Sprite.Position.X * Map.TileWidth;
-            float realPosY = Sprite.Position.Y * Map.TileWidth;
+            float realPosX = Sprite.Position.X * Map.TILE_SIZE;
+            float realPosY = Sprite.Position.Y * Map.TILE_SIZE;
             Sprite.Draw(spriteBatch, new Vector2(realPosX, realPosY));
         }
         
