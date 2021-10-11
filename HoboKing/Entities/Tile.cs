@@ -12,30 +12,20 @@ namespace HoboKing.Entities
         public int TileSize { get; set; }
         public Sprite Sprite { get; set; }
 
-        public Tile(GraphicsDevice graphics, Texture2D texture, int tileSize, Vector2 position)
+        public Tile(GraphicsDevice graphics, Texture2D texture, Vector2 position, int tileSize)
         {
             TileSize = tileSize;
             Sprite = new Sprite(graphics, texture, position, tileSize);
         }
 
-        public Tile(GraphicsDevice graphics, Texture2D texture, int tileSize)
-        {
-            TileSize = tileSize;
-            Sprite = new Sprite(graphics, texture, new Vector2(0, 0), tileSize);
-        }
-
-        public void SetPosition(Vector2 position)
-        {
-            Sprite.Position = position;
-        }
-
         public void Update(GameTime gameTime)
         {
+            Sprite.Update(gameTime);
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            Sprite.Draw(spriteBatch, TileSize);
+            Sprite.Draw(spriteBatch);
         }
     }
 }

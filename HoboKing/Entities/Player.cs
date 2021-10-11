@@ -20,32 +20,37 @@ namespace HoboKing.Entities
         public float PlayerVelocityX;
 
         // CONSTANTS
-        private const float GRAVITY = 10;
-        private const int MAX_JUMP = 10;
-        private const int MIN_JUMP = 1;
-        private const int HORIZONTAL_SPEED = 100;
+        private const float GRAVITY = 100;
+        private const int MAX_JUMP = 100;
+        private const int HORIZONTAL_SPEED = 50;
 
         public bool onGround;
 
-        private Map Map;
-        public Player(GraphicsDevice graphics ,Texture2D texture, Vector2 position, string connectionId, bool isOtherPlayer, Map map)
+        public Player(GraphicsDevice graphics ,Texture2D texture, Vector2 position, string connectionId, bool isOtherPlayer)
         {
             Sprite = new Sprite(graphics, texture, position);
             ConnectionId = connectionId;
             IsOtherPlayer = isOtherPlayer;
-            Map = map;
+
+            // Recalculates tiles to absolute coordinates
+            float realPosX = Sprite.Position.X * Map.TILE_SIZE;
+            float realPosY = Sprite.Position.Y * Map.TILE_SIZE;
+            Sprite.Position = new Vector2(realPosX, realPosY);
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            float realPosX = Sprite.Position.X * Map.TILE_SIZE;
-            float realPosY = Sprite.Position.Y * Map.TILE_SIZE;
-            Sprite.Draw(spriteBatch, new Vector2(realPosX, realPosY));
+            Sprite.Draw(spriteBatch);
         }
         
         public void SetPlayerMovement(Movement newMovement)
         {
             movement = newMovement;
+        }
+
+        public void CheckCollision(IGameEntity entity)
+        {
+            Sprite.Collision(entity.Sprite);
         }
 
         public void Update(GameTime gameTime)
@@ -71,60 +76,60 @@ namespace HoboKing.Entities
                 State = PlayerState.Falling;
             }
 
-            float maxHorizontalVelocity = 5.0f;
             // Velocity clamping
-            if (PlayerVelocityX > maxHorizontalVelocity)
-                PlayerVelocityX = maxHorizontalVelocity;
-            if (PlayerVelocityX < -maxHorizontalVelocity)
-                PlayerVelocityX = -maxHorizontalVelocity;
+            if (PlayerVelocityX > HORIZONTAL_SPEED)
+                PlayerVelocityX = HORIZONTAL_SPEED;
+            if (PlayerVelocityX < -HORIZONTAL_SPEED)
+                PlayerVelocityX = -HORIZONTAL_SPEED;
             if (PlayerVelocityY < -MAX_JUMP)
                 PlayerVelocityY = -MAX_JUMP;
             if (PlayerVelocityY > MAX_JUMP)
                 PlayerVelocityY = MAX_JUMP;
 
-            // Collisions
-            // https://github.com/OneLoneCoder/videos/blob/master/OneLoneCoder_PlatformGame1.cpp
-            if (PlayerVelocityX <= 0)
-            {
-                if (Map.GetTile((int)(NewPlayerPosition.X + 0.0f), (int)(Sprite.Position.Y + 0.0f)) != '.' ||
-                    Map.GetTile((int)(NewPlayerPosition.X + 0.0f), (int)(Sprite.Position.Y + 0.9f)) != '.')
-                {
-                    NewPlayerPosition.X = (int)NewPlayerPosition.X + 1;
-                    PlayerVelocityX = 0;
-                }
-            }
-            else
-            {
-                if (Map.GetTile((int)(NewPlayerPosition.X + 1.0f), (int)(Sprite.Position.Y + 0.0f)) != '.' ||
-                    Map.GetTile((int)(NewPlayerPosition.X + 1.0f), (int)(Sprite.Position.Y + 0.9f)) != '.')
-                {
-                    NewPlayerPosition.X = (int)NewPlayerPosition.X;
-                    PlayerVelocityX = 0;
-                }
-            }
-            onGround = false;
-            if (PlayerVelocityY <= 0)
-            {
-                if (Map.GetTile((int)(NewPlayerPosition.X + 0.0f), (int)(Sprite.Position.Y + 0.0f)) != '.' ||
-                    Map.GetTile((int)(NewPlayerPosition.X + 0.9f), (int)(Sprite.Position.Y + 0.0f)) != '.')
-                {
-                    NewPlayerPosition.Y = (int)NewPlayerPosition.Y + 1;
-                    PlayerVelocityY = 0;
-                }
-            }
-            else
-            {
-                if (Map.GetTile((int)(NewPlayerPosition.X + 0.0f), (int)(Sprite.Position.Y + 1.0f)) != '.' ||
-                    Map.GetTile((int)(NewPlayerPosition.X + 0.9f), (int)(Sprite.Position.Y + 1.0f)) != '.')
-                {
-                    NewPlayerPosition.Y = (int)NewPlayerPosition.Y;
-                    PlayerVelocityY = 0;
-                    onGround = true;
-                }
-            }
+
+            //// Collisions
+            //// https://github.com/OneLoneCoder/videos/blob/master/OneLoneCoder_PlatformGame1.cpp
+            //if (PlayerVelocityX <= 0)
+            //{
+            //    if (Map.GetTile((int)(NewPlayerPosition.X + 0.0f), (int)(Sprite.Position.Y + 0.0f)) != '.' ||
+            //        Map.GetTile((int)(NewPlayerPosition.X + 0.0f), (int)(Sprite.Position.Y + 0.9f)) != '.')
+            //    {
+            //        NewPlayerPosition.X = (int)NewPlayerPosition.X + 1;
+            //        PlayerVelocityX = 0;
+            //    }
+            //}
+            //else
+            //{
+            //    if (Map.GetTile((int)(NewPlayerPosition.X + 1.0f), (int)(Sprite.Position.Y + 0.0f)) != '.' ||
+            //        Map.GetTile((int)(NewPlayerPosition.X + 1.0f), (int)(Sprite.Position.Y + 0.9f)) != '.')
+            //    {
+            //        NewPlayerPosition.X = (int)NewPlayerPosition.X;
+            //        PlayerVelocityX = 0;
+            //    }
+            //}
+            //onGround = false;
+            //if (PlayerVelocityY <= 0)
+            //{
+            //    if (Map.GetTile((int)(NewPlayerPosition.X + 0.0f), (int)(Sprite.Position.Y + 0.0f)) != '.' ||
+            //        Map.GetTile((int)(NewPlayerPosition.X + 0.9f), (int)(Sprite.Position.Y + 0.0f)) != '.')
+            //    {
+            //        NewPlayerPosition.Y = (int)NewPlayerPosition.Y + 1;
+            //        PlayerVelocityY = 0;
+            //    }
+            //}
+            //else
+            //{
+            //    if (Map.GetTile((int)(NewPlayerPosition.X + 0.0f), (int)(Sprite.Position.Y + 1.0f)) != '.' ||
+            //        Map.GetTile((int)(NewPlayerPosition.X + 0.9f), (int)(Sprite.Position.Y + 1.0f)) != '.')
+            //    {
+            //        NewPlayerPosition.Y = (int)NewPlayerPosition.Y;
+            //        PlayerVelocityY = 0;
+            //        onGround = true;
+            //    }
+            //}
 
             Sprite.Position = NewPlayerPosition;
-
+            Sprite.Update(gameTime);
         }
 
         public void BeginCharge(GameTime gameTime)

@@ -24,8 +24,6 @@ namespace HoboKing.Entities
         private ContentLoader contentLoader;
         private GraphicsDevice graphics;
 
-        private bool showBoxes;
-
         public int VisibleTilesX { get; set; }
         public int VisibleTilesY { get; set; } 
         public string Level { get; set; }
@@ -82,7 +80,7 @@ namespace HoboKing.Entities
         public Player CreateMainPlayer(Connector connector)
         {
             Player player = new Player(graphics, contentLoader.BatChest, new Vector2(HOBO_START_POSITION_X, HOBO_START_POSITION_Y), 
-                connector.GetConnectionId(), false, this);
+                connector.GetConnectionId(), false);
             entityManager.AddEntity(player);
             player.SetPlayerMovement(new PlayerMovement(player));
             return player;
@@ -95,7 +93,7 @@ namespace HoboKing.Entities
             {
                 if (entityManager.players.Find(p => p.ConnectionId == id) == null)
                 {
-                    Player p = new Player(graphics, contentLoader.BatChest, new Vector2(HOBO_START_POSITION_X, HOBO_START_POSITION_Y), id, true, this);
+                    Player p = new Player(graphics, contentLoader.BatChest, new Vector2(HOBO_START_POSITION_X, HOBO_START_POSITION_Y), id, true);
 
                     Console.WriteLine($"Added a new player with ID {id}");
                     entityManager.AddEntity(p);
@@ -176,12 +174,11 @@ namespace HoboKing.Entities
 
         public void AddTileType(char key, Texture2D texture)
         {
-            tiles.Add(key, new Tile(graphics, texture, TILE_SIZE));
+            tiles.Add(key, new Tile(graphics, texture, new Vector2(0,0), TILE_SIZE));
         }
 
         public void ShowBoundingBoxes(bool show)
         {
-            showBoxes = show;
             entityManager.SetShowBoundingBox(show);
         }
 
@@ -190,7 +187,7 @@ namespace HoboKing.Entities
             entityManager.Update(gameTime);
         }
 
-        public void DrawMap(GameTime gameTime, SpriteBatch spriteBatch)
+        public void CreateMap()
         {
             for (int x = 0; x < VisibleTilesX; x++)
             {
@@ -203,50 +200,33 @@ namespace HoboKing.Entities
                             // Empty blocks (background tiles)
                             break;
                         case '#':
-                            // Draw platform blocks here
-                            if (tiles.ContainsKey(TileID))
-                            {
-                                Tile tile = tiles[TileID];
-                                tile.SetPosition(new Vector2(x * TILE_SIZE, y * TILE_SIZE));
-                                tile.Sprite.SetShowRectangle(showBoxes);
-                                tile.Draw(spriteBatch);
-                            } else
-                            {
-                                throw new Exception($"Tile type ({TileID}) doesn't exist");
-                            }
+                            AddTile(x, y, TileID);
                             break;
                         case '<':
-                            // Draw platform blocks here
-                            if (tiles.ContainsKey(TileID))
-                            {
-                                Tile tile = tiles[TileID];
-                                tile.SetPosition(new Vector2(x * TILE_SIZE, y * TILE_SIZE));
-                                tile.Sprite.SetShowRectangle(showBoxes);
-                                tile.Draw(spriteBatch);
-                            }
-                            else
-                            {
-                                throw new Exception($"Tile type ({TileID}) doesn't exist");
-                            }
+                            AddTile(x, y, TileID);
                             break;
                         case '>':
-                            // Draw platform blocks here
-                            if (tiles.ContainsKey(TileID))
-                            {
-                                Tile tile = tiles[TileID];
-                                tile.SetPosition(new Vector2(x * TILE_SIZE, y * TILE_SIZE));
-                                tile.Sprite.SetShowRectangle(showBoxes);
-                                tile.Draw(spriteBatch);
-                            }
-                            else
-                            {
-                                throw new Exception($"Tile type ({TileID}) doesn't exist");
-                            }
+                            AddTile(x, y, TileID);
                             break;
                         default:
                             break;
                     }
                 }
+            }
+        }
+
+        private void AddTile(int x, int y, char TileID)
+        {
+            // Draw platform blocks here
+            if (tiles.ContainsKey(TileID))
+            {
+                Tile tile = tiles[TileID];
+                Tile newTile = new Tile(graphics, tile.Sprite.Texture, new Vector2(x * TILE_SIZE, y * TILE_SIZE), tile.TileSize);
+                entityManager.AddEntity(newTile);
+            }
+            else
+            {
+                throw new Exception($"Tile type ({TileID}) doesn't exist");
             }
         }
     }

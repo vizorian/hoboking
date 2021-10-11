@@ -68,6 +68,7 @@ namespace HoboKing
             map.LoadEntityContent(Content);
 
             player = map.CreateMainPlayer(connector);
+            map.CreateMap();
 
             Console.WriteLine($"Main player's connection ID: {connector.GetConnectionId()}");
 
@@ -86,7 +87,7 @@ namespace HoboKing
 
             if (inputController.KeyPressed(Keys.F1))
             {
-                showBoundingBox = !showBoundingBox;
+                ToggleBoundingBoxes();
             }
 
             map.Update(gameTime);
@@ -97,15 +98,19 @@ namespace HoboKing
             map.RemoveConnectedPlayers(connector);
         }
 
+        private void ToggleBoundingBoxes()
+        {
+            showBoundingBox = !showBoundingBox;
+            map.ShowBoundingBoxes(showBoundingBox);
+        }
+
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             _spriteBatch.Begin();
             
-            map.DrawMap(gameTime, _spriteBatch);
             map.DrawEntities(_spriteBatch);
-            map.ShowBoundingBoxes(showBoundingBox);
             
             _spriteBatch.End();
 

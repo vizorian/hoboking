@@ -14,10 +14,13 @@ namespace HoboKing.Entities
         readonly List<IGameEntity> _entities = new List<IGameEntity>();
         readonly List<IGameEntity> _entitiesToAdd = new List<IGameEntity>();
         readonly List<IGameEntity> _entitiesToRemove = new List<IGameEntity>();
+
         public IEnumerable<IGameEntity> Entities => new ReadOnlyCollection<IGameEntity>(_entities);
 
         public int PlayerCount { get; set; }
         public List<Player> players = new List<Player>();
+
+        private Player mainPlayer;
 
         public void AddEntity(IGameEntity entity)
         {
@@ -27,8 +30,14 @@ namespace HoboKing.Entities
             }
             if (entity.GetType() == typeof(Player))
             {
-                players.Add((Player)entity);
+                Player player = (Player)entity;
+                players.Add(player);
                 PlayerCount++;
+                // Saves the main player in a variable mainPlayer.
+                if (player.IsOtherPlayer == false)
+                {
+                    mainPlayer = player;
+                }
             }
             _entitiesToAdd.Add(entity);
         }
@@ -50,25 +59,33 @@ namespace HoboKing.Entities
 
         public void Update(GameTime gameTime)
         {
-            foreach(IGameEntity entity in _entities)
+            foreach (IGameEntity entity in _entities)
             {
-                entity.Update(gameTime);
+                if (entity is Tile)
+                {
+                    mainPlayer.CheckCollision(entity);
+                } else
+                {
+                    entity.Update(gameTime);
+                }
             }
-            foreach(IGameEntity entity in _entitiesToAdd)
+            foreach (IGameEntity entity in _entitiesToAdd)
             {
                 _entities.Add(entity);
             }
             _entitiesToAdd.Clear();
             foreach (IGameEntity entity in _entitiesToRemove)
             {
+
                 _entities.Remove(entity);
+
             }
             _entitiesToRemove.Clear();
         }
 
         public void SetShowBoundingBox(bool show)
         {
-            foreach(IGameEntity entity in _entities)
+            foreach(var entity in _entities)
             {
                 entity.Sprite.SetShowRectangle(show);
             }

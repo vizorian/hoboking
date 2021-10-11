@@ -16,23 +16,25 @@ namespace HoboKing.Graphics
         private Color Color;
 
         private bool showRectangle;
+        private int Size;
 
-        public Sprite(Texture2D texture, Vector2 position)
+        // If size = 0, sprite stays default, if size is specified, then the sprite is resized
+        public Sprite(GraphicsDevice graphics, Texture2D texture, Vector2 position, int size = 0)
         {
             Texture = texture;
             Position = position;
             Color = Color.White;
             showRectangle = true;
-        }
-
-        public Sprite(GraphicsDevice graphics, Texture2D texture, Vector2 position) : this(texture, position)
-        {
-            SetRectangleTexture(graphics, texture);
-        }
-
-        public Sprite(GraphicsDevice graphics, Texture2D texture, Vector2 position, int size) : this(texture, position)
-        {
-            SetRectangleTexture(graphics, size);
+            Collided = false;
+            Size = size;
+            if (Size == 0)
+            {
+                Rectangle = new Rectangle((int)Position.X, (int)Position.Y, Texture.Width, Texture.Height);
+            } else
+            {
+                Rectangle = new Rectangle((int)Position.X, (int)Position.Y, size, size);
+            }
+            SetRectangleTexture(graphics);
         }
 
         public void SetShowRectangle(bool show)
@@ -40,14 +42,14 @@ namespace HoboKing.Graphics
             showRectangle = show;
         }
 
-        private void SetRectangleTexture(GraphicsDevice graphics, Texture2D texture)
+        private void SetRectangleTexture(GraphicsDevice graphics)
         {
             var colors = new List<Color>();
-            for (int y = 0; y < texture.Height; y++)
+            for (int y = 0; y < Rectangle.Height; y++)
             {
-                for (int x = 0; x < texture.Width; x++)
+                for (int x = 0; x < Rectangle.Width; x++)
                 {
-                    if (x == 0 || y == 0 || x == texture.Width - 1 || y == texture.Height - 1)
+                    if (x == 0 || y == 0 || x == Rectangle.Width - 1 || y == Rectangle.Height - 1)
                     {
                         colors.Add(Color.Black);
                     } else
@@ -57,54 +59,27 @@ namespace HoboKing.Graphics
                 }
             }
 
-            rectangleTexture = new Texture2D(graphics, texture.Width, texture.Height);
-            rectangleTexture.SetData<Color>(colors.ToArray());
-        }
-
-        private void SetRectangleTexture(GraphicsDevice graphics, int size)
-        {
-            var colors = new List<Color>();
-            for (int y = 0; y < size; y++)
-            {
-                for (int x = 0; x < size; x++)
-                {
-                    if (x == 0 || y == 0 || x == size - 1 || y == size - 1)
-                    {
-                        colors.Add(Color.Black);
-                    }
-                    else
-                    {
-                        colors.Add(new Color(0, 0, 0, 0));
-                    }
-                }
-            }
-
-            rectangleTexture = new Texture2D(graphics, size, size);
+            rectangleTexture = new Texture2D(graphics, Rectangle.Width, Rectangle.Height);
             rectangleTexture.SetData<Color>(colors.ToArray());
         }
 
         public void Update(GameTime gameTime)
         {
-
+            Rectangle.X = (int)Position.X;
+            Rectangle.Y = (int)Position.Y;
         }
 
         // Simple drawing method for a sprite
-        public virtual void Draw(SpriteBatch spriteBatch, Vector2 drawingPosition)
+        public virtual void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(Texture, drawingPosition, Color);
-            if (showRectangle)
+            if (showRectangle) ChangeColorOnCollision();
+            if (Size == 0)
             {
-                if (rectangleTexture != null)
-                {
-                    spriteBatch.Draw(rectangleTexture, drawingPosition, Color);
-                }
+                spriteBatch.Draw(Texture, Position, Color);
+            } else
+            {
+                spriteBatch.Draw(Texture, new Rectangle((int)Position.X, (int)Position.Y, Size, Size), Color);
             }
-        }
-
-        // Drawing with a size setting
-        public virtual void Draw(SpriteBatch spriteBatch, int size)
-        {
-            spriteBatch.Draw(Texture, new Rectangle((int)Position.X, (int)Position.Y, size, size), Color);
             if (showRectangle)
             {
                 if (rectangleTexture != null)
@@ -112,6 +87,13 @@ namespace HoboKing.Graphics
                     spriteBatch.Draw(rectangleTexture, Position, Color);
                 }
             }
+            Color = Color.White;
+        }
+
+        private void ChangeColorOnCollision()
+        {
+            if (Collided)
+                Color = Color.Red;                
         }
 
         public bool Collision(Sprite target)
