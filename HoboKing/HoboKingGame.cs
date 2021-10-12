@@ -32,7 +32,6 @@ namespace HoboKing
         private Map map;
         private Player player;
 
-        private InputController inputController;
         private Connector connector;
 
         private float timer = 0.1f;
@@ -71,8 +70,6 @@ namespace HoboKing
             map.CreateMap();
 
             Console.WriteLine($"Main player's connection ID: {connector.GetConnectionId()}");
-
-            inputController = new InputController(player);
         }
 
         protected override void Update(GameTime gameTime)
@@ -82,10 +79,9 @@ namespace HoboKing
 
             base.Update(gameTime);
 
-            inputController.Update();
-            inputController.ProcessControls(gameTime);
+            InputController.Update();
 
-            if (inputController.KeyPressed(Keys.F1))
+            if (InputController.KeyPressed(Keys.F1))
             {
                 ToggleBoundingBoxes();
             }

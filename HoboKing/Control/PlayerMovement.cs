@@ -8,16 +8,14 @@ namespace HoboKing.Control
 {
     class PlayerMovement : Movement
     {
-        // CONSTANTS
-        private const float GRAVITY = 10;
-        private const int MAX_JUMP = 10;
+        private const int MAX_JUMP = 1000;
         private const int MIN_JUMP = 1;
-        private const int HORIZONTAL_SPEED = 100;
+        private const int HORIZONTAL_SPEED = 5000;
 
-        public Player Player { get; set; }
+        private Player player;
         public PlayerMovement(Player player)
         {
-            Player = player;
+            this.player = player;
         }
 
         public override void Jump(long jumpStrength, int xDirection)
@@ -26,20 +24,20 @@ namespace HoboKing.Control
                 jumpStrength = MAX_JUMP;
             if (jumpStrength < MIN_JUMP)
                 jumpStrength = MIN_JUMP;
-            if (Player.PlayerVelocityY == 0)
+            if (player.VelocityY == 0)
             {
-                Player.PlayerVelocityY = -jumpStrength;
-                Player.State = PlayerState.Jumping;
+                player.VelocityY = -jumpStrength;
+                player.State = PlayerState.Jumping;
             }
             switch (xDirection)
             {
                 case -1:
                     Console.WriteLine($"Jump strenght is {jumpStrength}, LEFT");
-                    Player.PlayerVelocityX = xDirection * HORIZONTAL_SPEED;
+                    player.VelocityX = xDirection * HORIZONTAL_SPEED;
                     return;
                 case 1:
                     Console.WriteLine($"Jump strenght is {jumpStrength}, RIGHT");
-                    Player.PlayerVelocityX = xDirection * HORIZONTAL_SPEED;
+                    player.VelocityX = xDirection * HORIZONTAL_SPEED;
                     return;
                 default:
                     Console.WriteLine($"Jump strenght is {jumpStrength}, STRAIGHT UP");
@@ -49,30 +47,30 @@ namespace HoboKing.Control
 
         public override void Walk(string direction, GameTime gameTime)
         {
-            Player.State = PlayerState.Walking;
+            player.State = PlayerState.Walking;
             if (direction == "left")
             {
-                Player.PlayerVelocityX += -HORIZONTAL_SPEED * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                player.VelocityX = -HORIZONTAL_SPEED * (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
             if (direction == "right")
             {
-                Player.PlayerVelocityX += HORIZONTAL_SPEED * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                player.VelocityX = HORIZONTAL_SPEED * (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
         }
 
         public override bool BeginCharge(GameTime gameTime)
         {
-            if (Player.State == PlayerState.Jumping || Player.State == PlayerState.Falling)
+            if (player.State == PlayerState.Jumping || player.State == PlayerState.Falling)
             {
                 return false;
             }
-            Player.State = PlayerState.Charging;
+            player.State = PlayerState.Charging;
             return true;
         }
 
         public override void Idle()
         {
-            Player.State = PlayerState.Idle;
+            player.State = PlayerState.Idle;
         }
     }
 }

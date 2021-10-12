@@ -2,7 +2,9 @@
 using HoboKing.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using System;
+using System.Collections.Generic;
 
 namespace HoboKing.Entities
 {
@@ -14,21 +16,16 @@ namespace HoboKing.Entities
         public string ConnectionId { get; set; }
         public bool IsOtherPlayer { get; set; }
 
-        private Movement movement;
-
-        public float PlayerVelocityY;
-        public float PlayerVelocityX;
+        public float VelocityY;
+        public float VelocityX;
 
         // CONSTANTS
-        private const float GRAVITY = 100;
-        private const int MAX_JUMP = 100;
-        private const int HORIZONTAL_SPEED = 50;
+        private const float GRAVITY = 300;
 
-        private Vector2 oldPosition;
+        private Vector2 previousPosition;
+        private Movement movement;
 
-        public bool onGround;
-
-        public Player(GraphicsDevice graphics ,Texture2D texture, Vector2 position, string connectionId, bool isOtherPlayer)
+        public Player(GraphicsDevice graphics, Texture2D texture, Vector2 position, string connectionId, bool isOtherPlayer)
         {
             Sprite = new Sprite(graphics, texture, position, 40);
             ConnectionId = connectionId;
@@ -45,91 +42,64 @@ namespace HoboKing.Entities
             Sprite.Draw(spriteBatch);
         }
         
-        public void SetPlayerMovement(Movement newMovement)
+        public void SetMovementStrategy(Movement movementStrategy)
         {
-            movement = newMovement;
-        }
-
-        public void CheckCollision(IGameEntity entity)
-        {
-            Sprite.Collision(entity.Sprite);
+            movement = movementStrategy;
         }
 
         public void Update(GameTime gameTime)
         {
-            Vector2 NewPlayerPosition = new Vector2(
-                Sprite.Position.X + PlayerVelocityX * (float)gameTime.ElapsedGameTime.TotalSeconds,
-                Sprite.Position.Y + PlayerVelocityY * (float)gameTime.ElapsedGameTime.TotalSeconds);
-            oldPosition = Sprite.Position;
+            previousPosition = Sprite.Position;
 
-            // Gravity
-            PlayerVelocityY += GRAVITY * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            float time = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            VelocityY += GRAVITY * time;
+            Sprite.Position = new Vector2(
+                Sprite.Position.X + VelocityX * time,
+                Sprite.Position.Y + VelocityY * time);
 
-            PlayerVelocityX += -3.0f * PlayerVelocityX * (float)gameTime.ElapsedGameTime.TotalSeconds;
-            if (Math.Abs(PlayerVelocityX) < 0.01f)
-            {
-                PlayerVelocityX = 0.0f;
-            }
-            if (PlayerVelocityX == 0 && onGround)
-            {
-                State = PlayerState.Idle;
-            }
-            if (PlayerVelocityY < 0)
-            {
-                State = PlayerState.Falling;
-            }
-
-            // Velocity clamping
-            if (PlayerVelocityX > HORIZONTAL_SPEED)
-                PlayerVelocityX = HORIZONTAL_SPEED;
-            if (PlayerVelocityX < -HORIZONTAL_SPEED)
-                PlayerVelocityX = -HORIZONTAL_SPEED;
-            if (PlayerVelocityY < -MAX_JUMP)
-                PlayerVelocityY = -MAX_JUMP;
-            if (PlayerVelocityY > MAX_JUMP)
-                PlayerVelocityY = MAX_JUMP;
-
-            int minY = 870;
-            if (Sprite.Position.Y > minY)
-            {
-                Sprite.Position = new Vector2(NewPlayerPosition.X, minY);
-            } else
-            {
-                Sprite.Position = NewPlayerPosition;
-            }
-
-            // Position
-            // Collision check
-            // Collided
-            // 
-            if (Sprite.Collided)
-            {
-
-            }
-
-
-            //Sprite.Position = NewPlayerPosition;
             Sprite.Update(gameTime);
+
+            // Loop through all Tiles and check for collisions
+            foreach (var entity in EntityManager.Entities)
+            {
+                if (entity is Tile)
+                {
+                    if (Sprite.Collision(entity.Sprite))
+                    {
+                        if (previousPosition.Y < Sprite.Rectangle.Top)
+                        {
+                            Sprite.Position = new Vector2(Sprite.Position.X, previousPosition.Y);
+                            VelocityY = 0.01f;
+                        }
+                    }
+                }
+            }
+
+            InputControls(gameTime);
         }
 
-        public void BeginCharge(GameTime gameTime)
+        private void InputControls(GameTime gameTime)
         {
-            movement.BeginCharge(gameTime);
-        }
+            if (InputController.KeyPressed(Keys.Space))
+            {
+                movement.BeginCharge(gameTime);
+            } else if (InputController.KeyReleased(Keys.Space))
+            {
+                movement.Jump(1000, 0);
+            }
 
-        public void Jump(long jumpStrength, int xDirection)
-        {
-            movement.Jump(jumpStrength, xDirection);
-        }
-
-        public void Walk(string direction, GameTime gameTime)
-        {
-            movement.Walk(direction, gameTime);
-        }
-
-        public void Idle()
-        {
-            movement.Idle();
+            if (InputController.KeyPressedDown(Keys.A))
+            {
+                movement.Walk("left", gameTime);
+            }
+            if (InputController.KeyPressedDown(Keys.D))
+            {
+                movement.Walk("right", gameTime);
+            }
+            if (InputController.KeyReleased(Keys.A) || InputController.KeyReleased(Keys.D))
+            {
+                VelocityX = 0;
+            }
         }
     }
 }

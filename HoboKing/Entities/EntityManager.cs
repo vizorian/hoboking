@@ -11,11 +11,11 @@ namespace HoboKing.Entities
 {
     class EntityManager
     {
-        readonly List<IGameEntity> _entities = new List<IGameEntity>();
+        readonly static List<IGameEntity> _entities = new List<IGameEntity>();
         readonly List<IGameEntity> _entitiesToAdd = new List<IGameEntity>();
         readonly List<IGameEntity> _entitiesToRemove = new List<IGameEntity>();
 
-        public IEnumerable<IGameEntity> Entities => new ReadOnlyCollection<IGameEntity>(_entities);
+        public static IEnumerable<IGameEntity> Entities => new ReadOnlyCollection<IGameEntity>(_entities);
 
         public int PlayerCount { get; set; }
         public List<Player> players = new List<Player>();
@@ -61,18 +61,10 @@ namespace HoboKing.Entities
         {
             foreach (IGameEntity entity in _entities)
             {
-                if (entity is Tile)
-                {
-                    mainPlayer.CheckCollision(entity);
-                }
-                else
+                if (!(entity is Tile))
                 {
                     entity.Update(gameTime);
                 }
-                //if (!(entity is Tile))
-                //{
-                //    entity.Update(gameTime);
-                //}
             }
             foreach (IGameEntity entity in _entitiesToAdd)
             {

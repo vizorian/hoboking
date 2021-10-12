@@ -12,7 +12,8 @@ namespace HoboKing.Graphics
         public bool Collided { get; private set; }
         public int Size { get; set; }
 
-        private Rectangle rectangle;
+        public Rectangle Rectangle;
+
         private Texture2D rectangleTexture;
         private Color color;
 
@@ -29,10 +30,10 @@ namespace HoboKing.Graphics
             Size = size;
             if (Size == 0)
             {
-                rectangle = new Rectangle((int)Position.X, (int)Position.Y, Texture.Width, Texture.Height);
+                Rectangle = new Rectangle((int)Position.X, (int)Position.Y, Texture.Width, Texture.Height);
             } else
             {
-                rectangle = new Rectangle((int)Position.X, (int)Position.Y, size, size);
+                Rectangle = new Rectangle((int)Position.X, (int)Position.Y, size, size);
             }
             SetRectangleTexture(graphics);
         }
@@ -45,11 +46,11 @@ namespace HoboKing.Graphics
         private void SetRectangleTexture(GraphicsDevice graphics)
         {
             var colors = new List<Color>();
-            for (int y = 0; y < rectangle.Height; y++)
+            for (int y = 0; y < Rectangle.Height; y++)
             {
-                for (int x = 0; x < rectangle.Width; x++)
+                for (int x = 0; x < Rectangle.Width; x++)
                 {
-                    if (x == 0 || y == 0 || x == rectangle.Width - 1 || y == rectangle.Height - 1)
+                    if (x == 0 || y == 0 || x == Rectangle.Width - 1 || y == Rectangle.Height - 1)
                     {
                         colors.Add(Color.Black);
                     } else
@@ -59,14 +60,14 @@ namespace HoboKing.Graphics
                 }
             }
 
-            rectangleTexture = new Texture2D(graphics, rectangle.Width, rectangle.Height);
+            rectangleTexture = new Texture2D(graphics, Rectangle.Width, Rectangle.Height);
             rectangleTexture.SetData<Color>(colors.ToArray());
         }
 
         public void Update(GameTime gameTime)
         {
-            rectangle.X = (int)Position.X;
-            rectangle.Y = (int)Position.Y;
+            Rectangle.X = (int)Position.X;
+            Rectangle.Y = (int)Position.Y;
         }
 
         // Simple drawing method for a sprite
@@ -98,7 +99,7 @@ namespace HoboKing.Graphics
 
         public bool Collision(Sprite target)
         {
-            bool intersects = rectangle.Intersects(target.rectangle);
+            bool intersects = Rectangle.Intersects(target.Rectangle);
             Collided = intersects;
             target.Collided = intersects;
             return intersects;

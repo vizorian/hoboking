@@ -82,7 +82,7 @@ namespace HoboKing.Entities
             Player player = new Player(graphics, contentLoader.BatChest, new Vector2(HOBO_START_POSITION_X, HOBO_START_POSITION_Y), 
                 connector.GetConnectionId(), false);
             entityManager.AddEntity(player);
-            player.SetPlayerMovement(new PlayerMovement(player));
+            player.SetMovementStrategy(new PlayerMovement(player));
             return player;
         }
 
