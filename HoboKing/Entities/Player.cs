@@ -24,11 +24,13 @@ namespace HoboKing.Entities
         private const int MAX_JUMP = 100;
         private const int HORIZONTAL_SPEED = 50;
 
+        private Vector2 oldPosition;
+
         public bool onGround;
 
         public Player(GraphicsDevice graphics ,Texture2D texture, Vector2 position, string connectionId, bool isOtherPlayer)
         {
-            Sprite = new Sprite(graphics, texture, position);
+            Sprite = new Sprite(graphics, texture, position, 40);
             ConnectionId = connectionId;
             IsOtherPlayer = isOtherPlayer;
 
@@ -58,6 +60,7 @@ namespace HoboKing.Entities
             Vector2 NewPlayerPosition = new Vector2(
                 Sprite.Position.X + PlayerVelocityX * (float)gameTime.ElapsedGameTime.TotalSeconds,
                 Sprite.Position.Y + PlayerVelocityY * (float)gameTime.ElapsedGameTime.TotalSeconds);
+            oldPosition = Sprite.Position;
 
             // Gravity
             PlayerVelocityY += GRAVITY * (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -86,49 +89,26 @@ namespace HoboKing.Entities
             if (PlayerVelocityY > MAX_JUMP)
                 PlayerVelocityY = MAX_JUMP;
 
+            int minY = 870;
+            if (Sprite.Position.Y > minY)
+            {
+                Sprite.Position = new Vector2(NewPlayerPosition.X, minY);
+            } else
+            {
+                Sprite.Position = NewPlayerPosition;
+            }
 
-            //// Collisions
-            //// https://github.com/OneLoneCoder/videos/blob/master/OneLoneCoder_PlatformGame1.cpp
-            //if (PlayerVelocityX <= 0)
-            //{
-            //    if (Map.GetTile((int)(NewPlayerPosition.X + 0.0f), (int)(Sprite.Position.Y + 0.0f)) != '.' ||
-            //        Map.GetTile((int)(NewPlayerPosition.X + 0.0f), (int)(Sprite.Position.Y + 0.9f)) != '.')
-            //    {
-            //        NewPlayerPosition.X = (int)NewPlayerPosition.X + 1;
-            //        PlayerVelocityX = 0;
-            //    }
-            //}
-            //else
-            //{
-            //    if (Map.GetTile((int)(NewPlayerPosition.X + 1.0f), (int)(Sprite.Position.Y + 0.0f)) != '.' ||
-            //        Map.GetTile((int)(NewPlayerPosition.X + 1.0f), (int)(Sprite.Position.Y + 0.9f)) != '.')
-            //    {
-            //        NewPlayerPosition.X = (int)NewPlayerPosition.X;
-            //        PlayerVelocityX = 0;
-            //    }
-            //}
-            //onGround = false;
-            //if (PlayerVelocityY <= 0)
-            //{
-            //    if (Map.GetTile((int)(NewPlayerPosition.X + 0.0f), (int)(Sprite.Position.Y + 0.0f)) != '.' ||
-            //        Map.GetTile((int)(NewPlayerPosition.X + 0.9f), (int)(Sprite.Position.Y + 0.0f)) != '.')
-            //    {
-            //        NewPlayerPosition.Y = (int)NewPlayerPosition.Y + 1;
-            //        PlayerVelocityY = 0;
-            //    }
-            //}
-            //else
-            //{
-            //    if (Map.GetTile((int)(NewPlayerPosition.X + 0.0f), (int)(Sprite.Position.Y + 1.0f)) != '.' ||
-            //        Map.GetTile((int)(NewPlayerPosition.X + 0.9f), (int)(Sprite.Position.Y + 1.0f)) != '.')
-            //    {
-            //        NewPlayerPosition.Y = (int)NewPlayerPosition.Y;
-            //        PlayerVelocityY = 0;
-            //        onGround = true;
-            //    }
-            //}
+            // Position
+            // Collision check
+            // Collided
+            // 
+            if (Sprite.Collided)
+            {
 
-            Sprite.Position = NewPlayerPosition;
+            }
+
+
+            //Sprite.Position = NewPlayerPosition;
             Sprite.Update(gameTime);
         }
 

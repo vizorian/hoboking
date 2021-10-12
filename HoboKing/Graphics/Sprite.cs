@@ -10,29 +10,29 @@ namespace HoboKing.Graphics
         public Vector2 Velocity { get; set; }
         public Texture2D Texture { get; private set; }
         public bool Collided { get; private set; }
+        public int Size { get; set; }
 
-        private Rectangle Rectangle;
+        private Rectangle rectangle;
         private Texture2D rectangleTexture;
-        private Color Color;
+        private Color color;
 
         private bool showRectangle;
-        private int Size;
 
         // If size = 0, sprite stays default, if size is specified, then the sprite is resized
         public Sprite(GraphicsDevice graphics, Texture2D texture, Vector2 position, int size = 0)
         {
             Texture = texture;
             Position = position;
-            Color = Color.White;
+            color = Color.White;
             showRectangle = true;
             Collided = false;
             Size = size;
             if (Size == 0)
             {
-                Rectangle = new Rectangle((int)Position.X, (int)Position.Y, Texture.Width, Texture.Height);
+                rectangle = new Rectangle((int)Position.X, (int)Position.Y, Texture.Width, Texture.Height);
             } else
             {
-                Rectangle = new Rectangle((int)Position.X, (int)Position.Y, size, size);
+                rectangle = new Rectangle((int)Position.X, (int)Position.Y, size, size);
             }
             SetRectangleTexture(graphics);
         }
@@ -45,11 +45,11 @@ namespace HoboKing.Graphics
         private void SetRectangleTexture(GraphicsDevice graphics)
         {
             var colors = new List<Color>();
-            for (int y = 0; y < Rectangle.Height; y++)
+            for (int y = 0; y < rectangle.Height; y++)
             {
-                for (int x = 0; x < Rectangle.Width; x++)
+                for (int x = 0; x < rectangle.Width; x++)
                 {
-                    if (x == 0 || y == 0 || x == Rectangle.Width - 1 || y == Rectangle.Height - 1)
+                    if (x == 0 || y == 0 || x == rectangle.Width - 1 || y == rectangle.Height - 1)
                     {
                         colors.Add(Color.Black);
                     } else
@@ -59,14 +59,14 @@ namespace HoboKing.Graphics
                 }
             }
 
-            rectangleTexture = new Texture2D(graphics, Rectangle.Width, Rectangle.Height);
+            rectangleTexture = new Texture2D(graphics, rectangle.Width, rectangle.Height);
             rectangleTexture.SetData<Color>(colors.ToArray());
         }
 
         public void Update(GameTime gameTime)
         {
-            Rectangle.X = (int)Position.X;
-            Rectangle.Y = (int)Position.Y;
+            rectangle.X = (int)Position.X;
+            rectangle.Y = (int)Position.Y;
         }
 
         // Simple drawing method for a sprite
@@ -75,30 +75,30 @@ namespace HoboKing.Graphics
             if (showRectangle) ChangeColorOnCollision();
             if (Size == 0)
             {
-                spriteBatch.Draw(Texture, Position, Color);
+                spriteBatch.Draw(Texture, Position, color);
             } else
             {
-                spriteBatch.Draw(Texture, new Rectangle((int)Position.X, (int)Position.Y, Size, Size), Color);
+                spriteBatch.Draw(Texture, new Rectangle((int)Position.X, (int)Position.Y, Size, Size), color);
             }
             if (showRectangle)
             {
                 if (rectangleTexture != null)
                 {
-                    spriteBatch.Draw(rectangleTexture, Position, Color);
+                    spriteBatch.Draw(rectangleTexture, Position, color);
                 }
             }
-            Color = Color.White;
+            color = Color.White;
         }
 
         private void ChangeColorOnCollision()
         {
             if (Collided)
-                Color = Color.Red;                
+                color = Color.Red;                
         }
 
         public bool Collision(Sprite target)
         {
-            bool intersects = Rectangle.Intersects(target.Rectangle);
+            bool intersects = rectangle.Intersects(target.rectangle);
             Collided = intersects;
             target.Collided = intersects;
             return intersects;

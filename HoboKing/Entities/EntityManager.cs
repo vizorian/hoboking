@@ -33,7 +33,7 @@ namespace HoboKing.Entities
                 Player player = (Player)entity;
                 players.Add(player);
                 PlayerCount++;
-                // Saves the main player in a variable mainPlayer.
+                // Saves the main player in a variable.
                 if (player.IsOtherPlayer == false)
                 {
                     mainPlayer = player;
@@ -64,10 +64,15 @@ namespace HoboKing.Entities
                 if (entity is Tile)
                 {
                     mainPlayer.CheckCollision(entity);
-                } else
+                }
+                else
                 {
                     entity.Update(gameTime);
                 }
+                //if (!(entity is Tile))
+                //{
+                //    entity.Update(gameTime);
+                //}
             }
             foreach (IGameEntity entity in _entitiesToAdd)
             {
