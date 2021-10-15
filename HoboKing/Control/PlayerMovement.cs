@@ -12,10 +12,9 @@ namespace HoboKing.Control
         private const int MIN_JUMP = 1;
         private const int HORIZONTAL_SPEED = 5000;
 
-        private Player player;
-        public PlayerMovement(Player player)
+        public PlayerMovement(Player player) : base(player)
         {
-            this.player = player;
+            Gravity = 300;
         }
 
         public override void Jump(long jumpStrength, int xDirection)
@@ -68,9 +67,12 @@ namespace HoboKing.Control
             return true;
         }
 
-        public override void Idle()
+        public override void Down(GameTime gameTime)
         {
-            player.State = PlayerState.Idle;
+        }
+
+        public override void Up(GameTime gameTime)
+        {
         }
     }
 }

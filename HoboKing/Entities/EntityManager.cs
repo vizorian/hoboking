@@ -61,7 +61,7 @@ namespace HoboKing.Entities
         {
             foreach (IGameEntity entity in _entities)
             {
-                if (!(entity is Tile))
+                if (entity is Player && (entity as Player).IsOtherPlayer == false)
                 {
                     entity.Update(gameTime);
                 }

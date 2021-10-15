@@ -1,30 +1,49 @@
-﻿using Microsoft.Xna.Framework;
+﻿using HoboKing.Entities;
+using Microsoft.Xna.Framework;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace HoboKing.Control
 {
     class DebugMovement : Movement
     {
-        public override bool BeginCharge(GameTime gameTime)
+        private const int VERTICAL_SPEED = 10000;
+        private const int HORIZONTAL_SPEED = 10000;
+
+        public DebugMovement(Player player) : base(player)
         {
-            throw new NotImplementedException();
+            Gravity = 0;
         }
 
-        public override void Idle()
+        public override bool BeginCharge(GameTime gameTime)
         {
-            throw new NotImplementedException();
+            return true;
         }
 
         public override void Jump(long jumpStrength, int xDirection)
         {
-            throw new NotImplementedException();
+
+        }
+
+        public override void Up(GameTime gameTime)
+        {
+            player.VelocityY = -VERTICAL_SPEED * (float)gameTime.ElapsedGameTime.TotalSeconds;
+        }
+        public override void Down(GameTime gameTime)
+        {
+            player.VelocityY = VERTICAL_SPEED * (float)gameTime.ElapsedGameTime.TotalSeconds;
         }
 
         public override void Walk(string direction, GameTime gameTime)
         {
-            throw new NotImplementedException();
+            player.State = PlayerState.Walking;
+            if (direction == "left")
+            {
+                player.VelocityX = -HORIZONTAL_SPEED * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            }
+            if (direction == "right")
+            {
+                player.VelocityX = HORIZONTAL_SPEED * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            }
         }
     }
 }
