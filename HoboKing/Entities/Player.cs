@@ -45,7 +45,7 @@ namespace HoboKing.Entities
         public void Update(GameTime gameTime)
         {
             previousPosition = Sprite.Position;
-
+            
             float time = (float)gameTime.ElapsedGameTime.TotalSeconds;
             VelocityY += movement.Gravity * time;
             Sprite.Position = new Vector2(
@@ -53,6 +53,8 @@ namespace HoboKing.Entities
                 Sprite.Position.Y + VelocityY * time);
 
             Sprite.Update(gameTime);
+
+            //Console.WriteLine($"Player coordinates X and Y: {Sprite.Position.X}-{Sprite.Position.Y}");
 
             // Loop through all Tiles and check for collisions
             foreach (var entity in EntityManager.Entities)

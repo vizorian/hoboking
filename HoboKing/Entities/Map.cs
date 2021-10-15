@@ -52,7 +52,7 @@ namespace HoboKing.Entities
         // Reads map data from file
         private void ReadMapData()
         {
-            using (var stream = TitleContainer.OpenStream("map.txt"))
+            using (var stream = TitleContainer.OpenStream("map/map1.txt"))
             {
                 using (var reader = new StreamReader(stream))
                 {
