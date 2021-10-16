@@ -22,7 +22,6 @@ namespace HoboKing.Entities
         public const int MAP_HEIGHT = 54;
 
         private EntityManager entityManager;
-        private ContentLoader contentLoader;
         private GraphicsDevice graphics;
         private CritterBuilder critterBuilder;
 
@@ -71,7 +70,7 @@ namespace HoboKing.Entities
         // Edit later for singleplayer as well
         public Player CreateMainPlayer(Connector connector)
         {
-            Player player = new Player(graphics, contentLoader.BatChest, new Vector2(HOBO_START_POSITION_X, HOBO_START_POSITION_Y), 
+            Player player = new Player(graphics, ContentLoader.BatChest, new Vector2(HOBO_START_POSITION_X, HOBO_START_POSITION_Y), 
                 connector.GetConnectionId(), false);
             entityManager.AddEntity(player);
             player.SetMovementStrategy(new DebugMovement(player));
@@ -80,7 +79,7 @@ namespace HoboKing.Entities
 
         public Critter CreateDebugCritter()
         {
-            Critter critter = critterBuilder.AddTexture(graphics, contentLoader.Woodcutter, new Vector2(HOBO_START_POSITION_X+8, HOBO_START_POSITION_Y+36), 100)
+            Critter critter = critterBuilder.AddTexture(graphics, ContentLoader.Woodcutter, new Vector2(HOBO_START_POSITION_X+8, HOBO_START_POSITION_Y+36), 100)
                 .AddMovement(new DebugMovement(null)).AddSpeech("Hello baj, I seek shelter.", 20).Build();
             
             entityManager.AddEntity(critter);
@@ -94,7 +93,7 @@ namespace HoboKing.Entities
             {
                 if (entityManager.players.Find(p => p.ConnectionId == id) == null)
                 {
-                    Player p = new Player(graphics, contentLoader.BatChest, new Vector2(HOBO_START_POSITION_X, HOBO_START_POSITION_Y), id, true);
+                    Player p = new Player(graphics, ContentLoader.BatChest, new Vector2(HOBO_START_POSITION_X, HOBO_START_POSITION_Y), id, true);
 
                     Console.WriteLine($"Added a new player with ID {id}");
                     entityManager.AddEntity(p);
@@ -140,11 +139,9 @@ namespace HoboKing.Entities
             }
         }
 
-
-
         public void LoadEntityContent(ContentManager contentManager)
         {
-            contentLoader = new ContentLoader(contentManager);
+            ContentLoader.LoadContent(contentManager);
             CreateTileTypes();
         }
 
@@ -152,9 +149,9 @@ namespace HoboKing.Entities
         private void CreateTileTypes()
         {
             NormalTileFactory normalTileFactory = new NormalTileFactory();
-            tiles.Add('#', normalTileFactory.CreateStandard(graphics, contentLoader.TileTexture, new Vector2(0, 0), TILE_SIZE));
-            tiles.Add('<', normalTileFactory.CreateSlopeLeft(graphics, contentLoader.TileTexture, new Vector2(0, 0), TILE_SIZE));
-            tiles.Add('>', normalTileFactory.CreateSlopeRight(graphics, contentLoader.TileTexture, new Vector2(0, 0), TILE_SIZE));
+            tiles.Add('#', normalTileFactory.CreateStandard(graphics, ContentLoader.TileTexture, new Vector2(0, 0), TILE_SIZE));
+            tiles.Add('<', normalTileFactory.CreateSlopeLeft(graphics, new Vector2(0, 0), TILE_SIZE));
+            tiles.Add('>', normalTileFactory.CreateSlopeRight(graphics, new Vector2(0, 0), TILE_SIZE));
         }
 
         public void DrawEntities(SpriteBatch spriteBatch) 
@@ -175,6 +172,8 @@ namespace HoboKing.Entities
         public void CreateMap()
         {
             NormalTileFactory normalTileFactory = new NormalTileFactory();
+            IceTileFactory iceTileFactory = new IceTileFactory();
+            SlowTileFactory slowTileFactory = new SlowTileFactory();
 
             for (int x = 0; x < VisibleTilesX; x++)
             {
@@ -200,6 +199,117 @@ namespace HoboKing.Entities
                     }
                 }
             }
+        }
+
+        // Cycle through standard tiles and apply appropriate texture, adding the tile from factory
+        public void UpdateTextures()
+        {
+            List<Tile> standardTiles = entityManager.GetStandardTiles();
+            // Tile specificTile = standardTiles.Find(o => o.Sprite.Position.X == 2 && o.Sprite.Position.Y == 2);
+            for (int x = 0; x < VisibleTilesX; x++)
+            {
+                for (int y = 0; y < VisibleTilesY; y++)
+                {
+                    char TileID = GetTile(x, y);
+                    if (TileID == '#')
+                    {
+                        bool hasNorth = false;
+                        bool hasEast = false;
+                        bool hasSouth = false;
+                        bool hasWest = false;
+                        if (GetTile(x, y - 1) != '.')
+                        {
+                            hasNorth = true;
+                        }
+                        if (GetTile(x + 1, y) != '.')
+                        {
+                            hasEast = true;
+                        }
+                        if (GetTile(x, y + 1) != '.')
+                        {
+                            hasSouth = true;
+                        }
+                        if (GetTile(x - 1, y) != '.')
+                        {
+                            hasWest = true;
+                        }
+                        // NW
+                        if (!hasNorth && hasEast && hasSouth && !hasWest)
+                        {
+                            Tile specificTile = standardTiles.Find(o => o.Sprite.Position.X == x * 20 && o.Sprite.Position.Y == y * 20);
+                            specificTile.Sprite.ChangeTexture(ContentLoader.GrassNW);
+                            continue;
+                        }
+                        // N
+                        else if (!hasNorth && hasEast && hasSouth && hasWest)
+                        {
+                            Tile specificTile = standardTiles.Find(o => o.Sprite.Position.X == x * 20 && o.Sprite.Position.Y == y * 20);
+                            specificTile.Sprite.ChangeTexture(ContentLoader.GrassN);
+                            continue;
+                        }
+                        // NE
+                        else if (!hasNorth && !hasEast && hasSouth && hasWest)
+                        {
+                            Tile specificTile = standardTiles.Find(o => o.Sprite.Position.X == x * 20 && o.Sprite.Position.Y == y * 20);
+                            specificTile.Sprite.ChangeTexture(ContentLoader.GrassNE);
+                            continue;
+                        }
+                        // W
+                        else if (hasNorth && hasEast && hasSouth && !hasWest)
+                        {
+                            Tile specificTile = standardTiles.Find(o => o.Sprite.Position.X == x * 20 && o.Sprite.Position.Y == y * 20);
+                            specificTile.Sprite.ChangeTexture(ContentLoader.GrassW);
+                            continue;
+                        }
+                        // Center
+                        else if (hasNorth && hasEast && hasSouth && hasWest)
+                        {
+                            Tile specificTile = standardTiles.Find(o => o.Sprite.Position.X == x * 20 && o.Sprite.Position.Y == y * 20);
+                            specificTile.Sprite.ChangeTexture(ContentLoader.GrassCenter);
+                            continue;
+                        }
+                        // E
+                        else if (hasNorth && !hasEast && hasSouth && hasWest)
+                        {
+                            Tile specificTile = standardTiles.Find(o => o.Sprite.Position.X == x * 20 && o.Sprite.Position.Y == y * 20);
+                            specificTile.Sprite.ChangeTexture(ContentLoader.GrassE);
+                            continue;
+                        }
+                        // SW
+                        else if (hasNorth && hasEast && !hasSouth && !hasWest)
+                        {
+                            Tile specificTile = standardTiles.Find(o => o.Sprite.Position.X == x * 20 && o.Sprite.Position.Y == y * 20);
+                            specificTile.Sprite.ChangeTexture(ContentLoader.GrassSW);
+                            continue;
+                        }
+                        // S
+                        else if (hasNorth && hasEast && !hasSouth && hasWest)
+                        {
+                            Tile specificTile = standardTiles.Find(o => o.Sprite.Position.X == x * 20 && o.Sprite.Position.Y == y * 20);
+                            specificTile.Sprite.ChangeTexture(ContentLoader.GrassS);
+                            continue;
+                        }
+                        // SE
+                        else if (hasNorth && !hasEast && !hasSouth && hasWest)
+                        {
+                            Tile specificTile = standardTiles.Find(o => o.Sprite.Position.X == x * 20 && o.Sprite.Position.Y == y * 20);
+                            specificTile.Sprite.ChangeTexture(ContentLoader.GrassSE);
+                            continue;
+                        }
+                        else
+                        {
+                            // Default value N
+                            Tile specificTile = standardTiles.Find(o => o.Sprite.Position.X == x * 20 && o.Sprite.Position.Y == y * 20);
+                            specificTile.Sprite.ChangeTexture(ContentLoader.GrassN);
+                        }
+                    }
+                }
+            }
+        }
+
+        public void SetTileTexture(int x, int y)
+        {
+
         }
 
         public char GetTile(int x, int y)
@@ -239,12 +349,12 @@ namespace HoboKing.Entities
                 }
                 else if (tileType == "slopeleft")
                 {
-                    Tile newTile = tileFactory.CreateSlopeLeft(graphics, tile.Sprite.Texture, new Vector2(x * TILE_SIZE, y * TILE_SIZE), tile.TileSize);
+                    Tile newTile = tileFactory.CreateSlopeLeft(graphics, new Vector2(x * TILE_SIZE, y * TILE_SIZE), tile.TileSize);
                     entityManager.AddEntity(newTile);
                 }
                 else if (tileType == "sloperight")
                 {
-                    Tile newTile = tileFactory.CreateSlopeRight(graphics, tile.Sprite.Texture, new Vector2(x * TILE_SIZE, y * TILE_SIZE), tile.TileSize);
+                    Tile newTile = tileFactory.CreateSlopeRight(graphics, new Vector2(x * TILE_SIZE, y * TILE_SIZE), tile.TileSize);
                     entityManager.AddEntity(newTile);
                 }
                 

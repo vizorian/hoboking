@@ -1,4 +1,6 @@
-﻿using Microsoft.Xna.Framework;
+﻿using HoboKing.Entities.Factory;
+using HoboKing.Graphics;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -101,5 +103,18 @@ namespace HoboKing.Entities
             _entitiesToRemove.AddRange(_entities);
         }
 
+        public List<Tile> GetStandardTiles()
+        {
+            List<Tile> tiles = new List<Tile>();
+            foreach(var entity in _entitiesToAdd)
+            {
+                if(entity.GetType() == typeof(NormalStandardTile) || entity.GetType() == typeof(IceStandardTile) || entity.GetType() == typeof(SlowStandardTile))
+                {
+                    tiles.Add(entity as Tile);
+                }
+            }
+
+            return tiles;
+        }
     }
 }

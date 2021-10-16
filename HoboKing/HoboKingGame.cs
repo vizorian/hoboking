@@ -73,6 +73,8 @@ namespace HoboKing
 
             map.CreateMap();
 
+            map.UpdateTextures();
+
             Console.WriteLine($"Main player's connection ID: {connector.GetConnectionId()}");
         }
 

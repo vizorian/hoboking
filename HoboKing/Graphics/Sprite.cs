@@ -104,5 +104,10 @@ namespace HoboKing.Graphics
             target.Collided = intersects;
             return intersects;
         }
+
+        public void ChangeTexture(Texture2D texture)
+        {
+            Texture = texture;
+        }
     }
 }
