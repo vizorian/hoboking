@@ -187,43 +187,13 @@ namespace HoboKing.Entities
                             // Empty blocks (background tiles)
                             break;
                         case '#':
-                            //AddTile(x, y, TileID, normalTileFactory);
-                            if (tiles.ContainsKey(TileID))
-                            {
-                                Tile tile = tiles[TileID];
-                                Tile newTile = normalTileFactory.CreateStandard(graphics, tile.Sprite.Texture, new Vector2(x * TILE_SIZE, y * TILE_SIZE), tile.TileSize);
-                                entityManager.AddEntity(newTile);
-                            }
-                            else
-                            {
-                                throw new Exception($"Tile type ({TileID}) doesn't exist");
-                            }
+                            AddTile(x, y, TileID, normalTileFactory, "standard");            
                             break;
                         case '<':
-                            //AddTile(x, y, TileID, normalTileFactory);
-                            if (tiles.ContainsKey(TileID))
-                            {
-                                Tile tile = tiles[TileID];
-                                Tile newTile = normalTileFactory.CreateSlopeLeft(graphics, tile.Sprite.Texture, new Vector2(x * TILE_SIZE, y * TILE_SIZE), tile.TileSize);
-                                entityManager.AddEntity(newTile);
-                            }
-                            else
-                            {
-                                throw new Exception($"Tile type ({TileID}) doesn't exist");
-                            }
+                            AddTile(x, y, TileID, normalTileFactory, "slopeleft");
                             break;
                         case '>':
-                            //AddTile(x, y, TileID, normalTileFactory);
-                            if (tiles.ContainsKey(TileID))
-                            {
-                                Tile tile = tiles[TileID];
-                                Tile newTile = normalTileFactory.CreateSlopeRight(graphics, tile.Sprite.Texture, new Vector2(x * TILE_SIZE, y * TILE_SIZE), tile.TileSize);
-                                entityManager.AddEntity(newTile);
-                            }
-                            else
-                            {
-                                throw new Exception($"Tile type ({TileID}) doesn't exist");
-                            }
+                            AddTile(x, y, TileID, normalTileFactory, "sloperight");
                             break;
                         default:
                             break;
@@ -255,22 +225,36 @@ namespace HoboKing.Entities
             }
         }
 
-        //private void AddTile(int x, int y, char TileID, AbstractTileFactory tileFactory)
-        //{
-        //    // Draw platform blocks here
-        //    if (tiles.ContainsKey(TileID))
-        //    {
-        //        Tile tile = tiles[TileID];
-        //        Tile newTile = new Tile(graphics, tile.Sprite.Texture, new Vector2(x * TILE_SIZE, y * TILE_SIZE), tile.TileSize);
-        //        /*Tile newTile = tileFactory*/
-        //        entityManager.AddEntity(newTile);
-        //    }
-        //    else
-        //    {
-        //        throw new Exception($"Tile type ({TileID}) doesn't exist");
-        //    }
-        //}
+        private void AddTile(int x, int y, char TileID, AbstractTileFactory tileFactory, string tileType)
+        {        
+            // Draw platform blocks here
+            if (tiles.ContainsKey(TileID))
+            {
+                Tile tile = tiles[TileID];
 
-    
+                if (tileType == "standard")
+                {
+                    Tile newTile = tileFactory.CreateStandard(graphics, tile.Sprite.Texture, new Vector2(x * TILE_SIZE, y * TILE_SIZE), tile.TileSize);
+                    entityManager.AddEntity(newTile);
+                }
+                else if (tileType == "slopeleft")
+                {
+                    Tile newTile = tileFactory.CreateSlopeLeft(graphics, tile.Sprite.Texture, new Vector2(x * TILE_SIZE, y * TILE_SIZE), tile.TileSize);
+                    entityManager.AddEntity(newTile);
+                }
+                else if (tileType == "sloperight")
+                {
+                    Tile newTile = tileFactory.CreateSlopeRight(graphics, tile.Sprite.Texture, new Vector2(x * TILE_SIZE, y * TILE_SIZE), tile.TileSize);
+                    entityManager.AddEntity(newTile);
+                }
+                
+            }
+            else
+            {
+                throw new Exception($"Tile type ({TileID}) doesn't exist");
+            }
+        }
+
+
     }
 }
