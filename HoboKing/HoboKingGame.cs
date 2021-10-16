@@ -64,6 +64,7 @@ namespace HoboKing
             _spriteBatch = new SpriteBatch(GraphicsDevice); 
 
             map = new Map(_graphics.GraphicsDevice, GAME_WINDOW_WIDTH, GAME_WINDOW_HEIGHT);
+            map.ReadMapData();
             map.LoadEntityContent(Content);
 
             player = map.CreateMainPlayer(connector);

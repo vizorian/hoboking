@@ -1,4 +1,5 @@
 ﻿using HoboKing.Control;
+using HoboKing.Entities.Factory;
 using HoboKing.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -36,21 +37,10 @@ namespace HoboKing.Entities
             entityManager = new EntityManager();
             VisibleTilesX = windowWidth / TILE_SIZE;
             VisibleTilesY = windowHeight / TILE_SIZE;
-
-            // Read map data from file before drawing
-            ReadMapData();
         }
-
-        // This is where you can set tile types for now
-        private void CreateTileTypes()
-        {
-            AddTileType('#', contentLoader.TileTexture);
-            AddTileType('<', contentLoader.TileLeftTexture);
-            AddTileType('>', contentLoader.TileRightTexture);
-        }
-
+ 
         // Reads map data from file
-        private void ReadMapData()
+        public void ReadMapData()
         {
             using (var stream = TitleContainer.OpenStream("map/map1.txt"))
             {
@@ -145,9 +135,88 @@ namespace HoboKing.Entities
             CreateTileTypes();
         }
 
+        // This is where you can set tile types for now
+        private void CreateTileTypes()
+        {
+            NormalTileFactory normalTileFactory = new NormalTileFactory();
+            tiles.Add('#', normalTileFactory.CreateStandard(graphics, contentLoader.TileTexture, new Vector2(0, 0), TILE_SIZE));
+            tiles.Add('<', normalTileFactory.CreateSlopeLeft(graphics, contentLoader.TileTexture, new Vector2(0, 0), TILE_SIZE));
+            tiles.Add('>', normalTileFactory.CreateSlopeRight(graphics, contentLoader.TileTexture, new Vector2(0, 0), TILE_SIZE));
+        }
+
         public void DrawEntities(SpriteBatch spriteBatch) 
         {
             entityManager.Draw(spriteBatch);
+        }
+
+        public void ShowBoundingBoxes(bool show)
+        {
+            entityManager.SetShowBoundingBox(show);
+        }
+
+        public void Update(GameTime gameTime)
+        {
+            entityManager.Update(gameTime);
+        }
+
+        public void CreateMap()
+        {
+            NormalTileFactory normalTileFactory = new NormalTileFactory();
+
+            for (int x = 0; x < VisibleTilesX; x++)
+            {
+                for (int y = 0; y < VisibleTilesY; y++)
+                {
+                    char TileID = GetTile(x, y);
+                    switch (TileID)
+                    {
+                        case '.':
+                            // Empty blocks (background tiles)
+                            break;
+                        case '#':
+                            //AddTile(x, y, TileID, normalTileFactory);
+                            if (tiles.ContainsKey(TileID))
+                            {
+                                Tile tile = tiles[TileID];
+                                Tile newTile = normalTileFactory.CreateStandard(graphics, tile.Sprite.Texture, new Vector2(x * TILE_SIZE, y * TILE_SIZE), tile.TileSize);
+                                entityManager.AddEntity(newTile);
+                            }
+                            else
+                            {
+                                throw new Exception($"Tile type ({TileID}) doesn't exist");
+                            }
+                            break;
+                        case '<':
+                            //AddTile(x, y, TileID, normalTileFactory);
+                            if (tiles.ContainsKey(TileID))
+                            {
+                                Tile tile = tiles[TileID];
+                                Tile newTile = normalTileFactory.CreateSlopeLeft(graphics, tile.Sprite.Texture, new Vector2(x * TILE_SIZE, y * TILE_SIZE), tile.TileSize);
+                                entityManager.AddEntity(newTile);
+                            }
+                            else
+                            {
+                                throw new Exception($"Tile type ({TileID}) doesn't exist");
+                            }
+                            break;
+                        case '>':
+                            //AddTile(x, y, TileID, normalTileFactory);
+                            if (tiles.ContainsKey(TileID))
+                            {
+                                Tile tile = tiles[TileID];
+                                Tile newTile = normalTileFactory.CreateSlopeRight(graphics, tile.Sprite.Texture, new Vector2(x * TILE_SIZE, y * TILE_SIZE), tile.TileSize);
+                                entityManager.AddEntity(newTile);
+                            }
+                            else
+                            {
+                                throw new Exception($"Tile type ({TileID}) doesn't exist");
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
         }
 
         public char GetTile(int x, int y)
@@ -166,68 +235,29 @@ namespace HoboKing.Entities
             {
                 sb[y * MAP_WIDTH + x] = newTile;
                 return sb.ToString();
-            } else
+            }
+            else
             {
                 throw new ArgumentOutOfRangeException();
             }
         }
 
-        public void AddTileType(char key, Texture2D texture)
-        {
-            tiles.Add(key, new Tile(graphics, texture, new Vector2(0,0), TILE_SIZE));
-        }
+        //private void AddTile(int x, int y, char TileID, AbstractTileFactory tileFactory)
+        //{
+        //    // Draw platform blocks here
+        //    if (tiles.ContainsKey(TileID))
+        //    {
+        //        Tile tile = tiles[TileID];
+        //        Tile newTile = new Tile(graphics, tile.Sprite.Texture, new Vector2(x * TILE_SIZE, y * TILE_SIZE), tile.TileSize);
+        //        /*Tile newTile = tileFactory*/
+        //        entityManager.AddEntity(newTile);
+        //    }
+        //    else
+        //    {
+        //        throw new Exception($"Tile type ({TileID}) doesn't exist");
+        //    }
+        //}
 
-        public void ShowBoundingBoxes(bool show)
-        {
-            entityManager.SetShowBoundingBox(show);
-        }
-
-        public void Update(GameTime gameTime)
-        {
-            entityManager.Update(gameTime);
-        }
-
-        public void CreateMap()
-        {
-            for (int x = 0; x < VisibleTilesX; x++)
-            {
-                for (int y = 0; y < VisibleTilesY; y++)
-                {
-                    char TileID = GetTile(x, y);
-                    switch (TileID)
-                    {
-                        case '.':
-                            // Empty blocks (background tiles)
-                            break;
-                        case '#':
-                            AddTile(x, y, TileID);
-                            break;
-                        case '<':
-                            AddTile(x, y, TileID);
-                            break;
-                        case '>':
-                            AddTile(x, y, TileID);
-                            break;
-                        default:
-                            break;
-                    }
-                }
-            }
-        }
-
-        private void AddTile(int x, int y, char TileID)
-        {
-            // Draw platform blocks here
-            if (tiles.ContainsKey(TileID))
-            {
-                Tile tile = tiles[TileID];
-                Tile newTile = new Tile(graphics, tile.Sprite.Texture, new Vector2(x * TILE_SIZE, y * TILE_SIZE), tile.TileSize);
-                entityManager.AddEntity(newTile);
-            }
-            else
-            {
-                throw new Exception($"Tile type ({TileID}) doesn't exist");
-            }
-        }
+    
     }
 }

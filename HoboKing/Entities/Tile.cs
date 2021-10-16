@@ -7,7 +7,7 @@ using System.Text;
 
 namespace HoboKing.Entities
 {
-    class Tile : IGameEntity
+    public abstract class Tile : IGameEntity
     {
         public int TileSize { get; set; }
         public Sprite Sprite { get; set; }
