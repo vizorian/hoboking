@@ -24,6 +24,7 @@ namespace HoboKing.Entities
         private EntityManager entityManager;
         private ContentLoader contentLoader;
         private GraphicsDevice graphics;
+        private CritterBuilder critterBuilder;
 
         public int VisibleTilesX { get; set; }
         public int VisibleTilesY { get; set; } 
@@ -35,6 +36,7 @@ namespace HoboKing.Entities
         {
             graphics = g;
             entityManager = new EntityManager();
+            critterBuilder = new CritterBuilder();
             VisibleTilesX = windowWidth / TILE_SIZE;
             VisibleTilesY = windowHeight / TILE_SIZE;
         }
@@ -74,6 +76,15 @@ namespace HoboKing.Entities
             entityManager.AddEntity(player);
             player.SetMovementStrategy(new DebugMovement(player));
             return player;
+        }
+
+        public Critter CreateDebugCritter()
+        {
+            Critter critter = critterBuilder.AddTexture(graphics, contentLoader.Woodcutter, new Vector2(HOBO_START_POSITION_X+8, HOBO_START_POSITION_Y+36), 100)
+                .AddMovement(new DebugMovement(null)).AddSpeech("Hello baj, I seek shelter.", 20).Build();
+            
+            entityManager.AddEntity(critter);
+            return critter;
         }
 
         // Add Player objects for all other connected players
@@ -128,6 +139,8 @@ namespace HoboKing.Entities
                 }
             }
         }
+
+
 
         public void LoadEntityContent(ContentManager contentManager)
         {
