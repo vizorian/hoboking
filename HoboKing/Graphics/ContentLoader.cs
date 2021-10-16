@@ -13,6 +13,7 @@ namespace HoboKing.Graphics
         public Texture2D TileLeftTexture { get; }
         public Texture2D TileRightTexture { get; }
         public SpriteFont Font { get; }
+        public Texture2D Woodcutter { get; }
         public ContentLoader(ContentManager contentManager)
         {
             BatChest = contentManager.Load<Texture2D>("batchest");
@@ -20,6 +21,7 @@ namespace HoboKing.Graphics
             TileLeftTexture = contentManager.Load<Texture2D>("ground_left");
             TileRightTexture = contentManager.Load<Texture2D>("ground_right");
             Font = contentManager.Load<SpriteFont>("Debug");
+            Woodcutter = contentManager.Load<Texture2D>("Woodcutter");
         }
     }
 }

@@ -67,6 +67,9 @@ namespace HoboKing
             map.LoadEntityContent(Content);
 
             player = map.CreateMainPlayer(connector);
+            
+            map.CreateDebugCritter();
+
             map.CreateMap();
 
             Console.WriteLine($"Main player's connection ID: {connector.GetConnectionId()}");
