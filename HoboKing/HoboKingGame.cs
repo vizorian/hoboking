@@ -38,14 +38,30 @@ namespace HoboKing
 
         public GameScene menuScene, mapScene;
 
-
-        // Accessible component pieces
-
-
         public HoboKingGame()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+        }
+
+        // Changes component state
+        private void ChangeComponentState(GameComponent component, bool state)
+        {
+            component.Enabled = state;
+            if (component is DrawableGameComponent)
+                ((DrawableGameComponent)component).Visible = state;
+        }
+
+        /// Switches game scene
+        public void SwitchScene(GameScene scene)
+        {
+            GameComponent[] usedComponents = scene.ReturnComponents();
+            foreach (GameComponent component in Components)
+            {
+                bool isUsed = usedComponents.Contains(component);
+                ChangeComponentState(component, isUsed);
+            }
+            InputController.PreviousKeyboardState = InputController.KeyboardState;
         }
 
         protected override void Initialize()
@@ -94,24 +110,6 @@ namespace HoboKing
             base.Draw(gameTime);
         }
 
-        // Changes component state
-        private void ChangeComponentState(GameComponent component, bool state)
-        {
-            component.Enabled = state;
-            if (component is DrawableGameComponent)
-                ((DrawableGameComponent)component).Visible = state;
-        }
-
-        /// Switches game scene
-        public void SwitchScene(GameScene scene)
-        {
-            GameComponent[] usedComponents = scene.ReturnComponents();
-            foreach (GameComponent component in Components)
-            {
-                bool isUsed = usedComponents.Contains(component);
-                ChangeComponentState(component, isUsed);
-            }
-            InputController.PreviousKeyboardState = InputController.KeyboardState;
-        }
+        
     }
 }

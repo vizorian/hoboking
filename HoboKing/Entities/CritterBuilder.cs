@@ -25,8 +25,8 @@ namespace HoboKing.Entities
         public CritterBuilder AddTexture(GraphicsDevice graphics, Texture2D texture, Vector2 position, int size)
         {
             // Recalculates tiles to absolute coordinates
-            position.X *= Map.TILE_SIZE;
-            position.Y *= Map.TILE_SIZE;
+            position.X *= MapComponent.TILE_SIZE;
+            position.Y *= MapComponent.TILE_SIZE;
 
             critter.Sprite = new Sprite(graphics, texture, position, size);
             return this;

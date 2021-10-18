@@ -26,8 +26,8 @@ namespace HoboKing.Entities
             IsOtherPlayer = isOtherPlayer;
 
             // Recalculates tiles to absolute coordinates
-            float realPosX = Sprite.Position.X * Map.TILE_SIZE;
-            float realPosY = Sprite.Position.Y * Map.TILE_SIZE;
+            float realPosX = Sprite.Position.X * MapComponent.TILE_SIZE;
+            float realPosY = Sprite.Position.Y * MapComponent.TILE_SIZE;
             Sprite.Position = new Vector2(realPosX, realPosY);
         }
 
@@ -37,8 +37,8 @@ namespace HoboKing.Entities
             IsOtherPlayer = isOtherPlayer;
 
             // Recalculates tiles to absolute coordinates
-            float realPosX = Sprite.Position.X * Map.TILE_SIZE;
-            float realPosY = Sprite.Position.Y * Map.TILE_SIZE;
+            float realPosX = Sprite.Position.X * MapComponent.TILE_SIZE;
+            float realPosY = Sprite.Position.Y * MapComponent.TILE_SIZE;
             Sprite.Position = new Vector2(realPosX, realPosY);
         }
 

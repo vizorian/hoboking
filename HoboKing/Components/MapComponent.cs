@@ -5,6 +5,7 @@ using HoboKing.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -45,6 +46,7 @@ namespace HoboKing
 
         private GameState gameState;
         private Player player;
+        private bool showBoundingBox = false;
 
         public MapComponent(HoboKingGame hoboKingGame) : base(hoboKingGame)
         {
@@ -160,11 +162,6 @@ namespace HoboKing
         public void DrawEntities(SpriteBatch spriteBatch)
         {
             EntityManager.Draw(spriteBatch);
-        }
-
-        public void ShowBoundingBoxes(bool show)
-        {
-            EntityManager.SetShowBoundingBox(show);
         }
 
         public void CreateMap()
@@ -366,6 +363,12 @@ namespace HoboKing
             }
         }
 
+        private void ToggleBoundingBoxes()
+        {
+            EntityManager.SetShowBoundingBox(showBoundingBox);
+            showBoundingBox = !showBoundingBox;
+        }
+
         public override void Initialize()
         {
             EntityManager = new EntityManager();
@@ -394,6 +397,9 @@ namespace HoboKing
 
         public override void Update(GameTime gameTime)
         {
+            if (InputController.KeyPressed(Keys.F1))
+                ToggleBoundingBoxes();
+
             EntityManager.Update(gameTime);
             base.Update(gameTime);
         }
