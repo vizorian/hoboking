@@ -10,6 +10,17 @@ namespace HoboKing.Graphics
 {
     static class ContentLoader
     {
+        // Main menu buttons
+        public static Texture2D StartSingleplayerButton { get; private set; }
+        public static Texture2D StartMultiplayerButton { get; private set; }
+        public static Texture2D OptionsButton { get; private set; }
+        public static Texture2D ExitButton { get; private set; }
+        public static Texture2D PauseButton { get; private set; }
+        public static Texture2D ResumeButton { get; private set; }
+        public static Texture2D ReturnButton { get; private set; }
+        public static Texture2D ExitToMenuButton { get; private set; }
+        public static Texture2D LoadingScreen { get; private set; }
+
         // Grass tiles
         public static Texture2D GrassNW { get; private set; }
         public static Texture2D GrassN { get; private set; }
@@ -71,6 +82,17 @@ namespace HoboKing.Graphics
 
         public static void LoadContent(ContentManager contentManager)
         {
+            // Buttons
+            StartSingleplayerButton = contentManager.Load<Texture2D>("Buttons\\StartSingleplayerButton");
+            StartMultiplayerButton = contentManager.Load<Texture2D>("Buttons\\StartMultiplayerButton");
+            OptionsButton = contentManager.Load<Texture2D>("Buttons\\OptionsButton");
+            ExitButton = contentManager.Load<Texture2D>("Buttons\\ExitButton");
+            //PauseButton = contentManager.Load<Texture2D>("PauseButton");
+            //ResumeButton = contentManager.Load<Texture2D>("Buttons\\ResumeButton");
+            ReturnButton = contentManager.Load<Texture2D>("Buttons\\ReturnButton");
+            ExitToMenuButton = contentManager.Load<Texture2D>("Buttons\\ExittoMenuButton");
+            //LoadingScreen = contentManager.Load<Texture2D>("LoadingScreen");
+
             // Grass tiles
             GrassNW = contentManager.Load<Texture2D>("Grass blocks\\GrassNW");
             GrassN = contentManager.Load<Texture2D>("Grass blocks\\GrassN");

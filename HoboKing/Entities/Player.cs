@@ -31,6 +31,17 @@ namespace HoboKing.Entities
             Sprite.Position = new Vector2(realPosX, realPosY);
         }
 
+        public Player(GraphicsDevice graphics, Texture2D texture, Vector2 position, bool isOtherPlayer)
+        {
+            Sprite = new Sprite(graphics, texture, position, 60);
+            IsOtherPlayer = isOtherPlayer;
+
+            // Recalculates tiles to absolute coordinates
+            float realPosX = Sprite.Position.X * Map.TILE_SIZE;
+            float realPosY = Sprite.Position.Y * Map.TILE_SIZE;
+            Sprite.Position = new Vector2(realPosX, realPosY);
+        }
+
         public void Draw(SpriteBatch spriteBatch)
         {
             Sprite.Draw(spriteBatch);

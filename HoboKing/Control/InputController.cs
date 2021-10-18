@@ -10,6 +10,8 @@ namespace HoboKing.Control
 {
     static class InputController
     {
+        public static MouseState MouseState { get; set; }
+        public static MouseState PreviousMouseState { get; set; }
         public static KeyboardState KeyState { get; set; }
         public static KeyboardState PreviousKeyState { get; set; }
 

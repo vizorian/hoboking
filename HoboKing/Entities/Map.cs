@@ -67,10 +67,12 @@ namespace HoboKing.Entities
 
         // Creates main player for multiplayer
         // Edit later for singleplayer as well
-        public Player CreateMainPlayer(Connector connector)
+        public Player CreateMainPlayer(Connector connector, bool isMultiplayer)
         {
-            Player player = new Player(graphics, ContentLoader.BatChest, new Vector2(HOBO_START_POSITION_X, HOBO_START_POSITION_Y), 
-                connector.GetConnectionId(), false);
+            Player player = new Player(graphics, ContentLoader.BatChest, new Vector2(HOBO_START_POSITION_X, HOBO_START_POSITION_Y), false);
+            if (isMultiplayer)
+                player = new Player(graphics, ContentLoader.BatChest, new Vector2(HOBO_START_POSITION_X, HOBO_START_POSITION_Y), connector.GetConnectionId(), false);
+            
             entityManager.AddEntity(player);
             player.SetMovementStrategy(new DebugMovement(player));
             return player;
