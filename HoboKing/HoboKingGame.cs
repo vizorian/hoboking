@@ -18,73 +18,55 @@ namespace HoboKing
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
-        // States
-        private MenuButtons _menuButtons;
-        private GameState _gameState;
+        //public void MouseClicked(int x, int y)
+        //{
+        //    Rectangle mouseClickRect = new Rectangle(x, y, 10, 10);
+        //    Console.WriteLine($"Mouse clicked on X Y: {x} {y}");
+        //    if (_gameState == GameState.MainMenu)
+        //    {
+        //        Rectangle startSingleplayerButtonRect = new Rectangle((int)_menuButtons.startSingleplayerButtonPosition.X, (int)_menuButtons.startSingleplayerButtonPosition.Y, 600, 60);
+        //        Rectangle startMultiplayerButtonRect = new Rectangle((int)_menuButtons.startMultiplayerButtonPosition.X, (int)_menuButtons.startMultiplayerButtonPosition.Y, 600, 60);
+        //        Rectangle optionsButtonRect = new Rectangle((int)_menuButtons.optionsButtonPosition.X, (int)_menuButtons.optionsButtonPosition.Y, 600, 60);
+        //        Rectangle exitButtonRect = new Rectangle((int)_menuButtons.exitButtonPosition.X, (int)_menuButtons.exitButtonPosition.Y, 600, 60);
 
-        private Thread backgroundThread;
-        private bool isLoading = false;
-        MouseState mouseState;
-        MouseState previousMouseState;
+        //        if (mouseClickRect.Intersects(startSingleplayerButtonRect))
+        //        {
+        //            // _gameState = GameState.Loading;
+        //            _gameState = GameState.PlayingMultiplayer;
+        //            isLoading = true;
+        //        }
+        //        else if (mouseClickRect.Intersects(startMultiplayerButtonRect))
+        //        {
+        //            // _gameState = GameState.Loading;
+        //            _gameState = GameState.PlayingMultiplayer;
+        //            isLoading = true;
+        //        }
+        //        else if (mouseClickRect.Intersects(optionsButtonRect))
+        //        {
+        //            // _gameState = GameState.Loading;
+        //            _gameState = GameState.OptionMenu;
+        //        }
+        //        else if (mouseClickRect.Intersects(exitButtonRect))
+        //        {
+        //            Exit();
+        //        }
+        //    }
 
-        enum GameState
-        {
-            MainMenu,
-            OptionMenu,
-            Loading,
-            PlayingSingleplayer,
-            PlayingMultiplayer,
-            Paused
-        }
+        //    if (_gameState == GameState.OptionMenu)
+        //    {
+        //        Rectangle returnButtonRect = new Rectangle((int)_menuButtons.returnButtonPosition.X, (int)_menuButtons.returnButtonPosition.Y, 600, 60);
 
-        public void MouseClicked(int x, int y)
-        {
-            Rectangle mouseClickRect = new Rectangle(x, y, 10, 10);
-            Console.WriteLine($"Mouse clicked on X Y: {x} {y}");
-            if (_gameState == GameState.MainMenu)
-            {
-                Rectangle startSingleplayerButtonRect = new Rectangle((int)_menuButtons.startSingleplayerButtonPosition.X, (int)_menuButtons.startSingleplayerButtonPosition.Y, 600, 60);
-                Rectangle startMultiplayerButtonRect = new Rectangle((int)_menuButtons.startMultiplayerButtonPosition.X, (int)_menuButtons.startMultiplayerButtonPosition.Y, 600, 60);
-                Rectangle optionsButtonRect = new Rectangle((int)_menuButtons.optionsButtonPosition.X, (int)_menuButtons.optionsButtonPosition.Y, 600, 60);
-                Rectangle exitButtonRect = new Rectangle((int)_menuButtons.exitButtonPosition.X, (int)_menuButtons.exitButtonPosition.Y, 600, 60);
-
-                if (mouseClickRect.Intersects(startSingleplayerButtonRect))
-                {
-                    // _gameState = GameState.Loading;
-                    _gameState = GameState.PlayingMultiplayer;
-                    isLoading = true;
-                }
-                else if (mouseClickRect.Intersects(startMultiplayerButtonRect))
-                {
-                    // _gameState = GameState.Loading;
-                    _gameState = GameState.PlayingMultiplayer;
-                    isLoading = true;
-                }
-                else if (mouseClickRect.Intersects(optionsButtonRect))
-                {
-                    // _gameState = GameState.Loading;
-                    _gameState = GameState.OptionMenu;
-                }
-                else if (mouseClickRect.Intersects(exitButtonRect))
-                {
-                    Exit();
-                }
-            }
-
-            if (_gameState == GameState.OptionMenu)
-            {
-                Rectangle returnButtonRect = new Rectangle((int)_menuButtons.returnButtonPosition.X, (int)_menuButtons.returnButtonPosition.Y, 600, 60);
-
-                if (mouseClickRect.Intersects(returnButtonRect))
-                {
-                    // _gameState = GameState.Loading;
-                    _gameState = GameState.MainMenu;
-                }
-            }
-        }
+        //        if (mouseClickRect.Intersects(returnButtonRect))
+        //        {
+        //            // _gameState = GameState.Loading;
+        //            _gameState = GameState.MainMenu;
+        //        }
+        //    }
+        //}
 
 
         // The app window size
+
         public const int WINDOW_WIDTH = 1920;
         public const int WINDOW_HEIGHT = 1080;
 
@@ -119,16 +101,14 @@ namespace HoboKing
 
         protected override void Initialize()
         {
-            // State bs
-            _gameState = new GameState();
-            _menuButtons = new MenuButtons(GraphicsDevice);
-            IsMouseVisible = true;
-
-            _gameState = GameState.MainMenu;
-
+            // STATE TESTING
+            //_gameState = new GameState();
+            //_menuButtons = new MenuButtons(GraphicsDevice);
+            //IsMouseVisible = true;
+            //_gameState = GameState.MainMenu;
             // Get the mouse state
-            mouseState = Mouse.GetState();
-            previousMouseState = mouseState;
+            //mouseState = Mouse.GetState();
+            //previousMouseState = mouseState;
 
             // Original
             base.Initialize();
@@ -145,8 +125,6 @@ namespace HoboKing
 
         protected override void LoadContent()
         {
-            if (_gameState == GameState.PlayingMultiplayer) isMultiplayer = true;
-            
             if (isMultiplayer) connector.Connect();
 
             _spriteBatch = new SpriteBatch(GraphicsDevice); 
@@ -158,9 +136,7 @@ namespace HoboKing
             player = map.CreateMainPlayer(connector, isMultiplayer);
             
             map.CreateDebugCritter();
-
             map.CreateMap();
-
             map.UpdateTextures();
 
             if (isMultiplayer) Console.WriteLine($"Main player's connection ID: {connector.GetConnectionId()}");
@@ -168,19 +144,8 @@ namespace HoboKing
 
         protected override void Update(GameTime gameTime)
         {
-            // States
-            mouseState = Mouse.GetState();
-            if (previousMouseState.LeftButton == ButtonState.Pressed && mouseState.LeftButton == ButtonState.Released)
-            {
-                MouseClicked(mouseState.X, mouseState.Y);
-            }
-            previousMouseState = mouseState;
-
             if (Keyboard.GetState().IsKeyDown(Keys.Escape))
-                _gameState = GameState.MainMenu;
-
-            // check for state loading && playing
-
+                Exit();
 
 
             base.Update(gameTime);
@@ -188,9 +153,7 @@ namespace HoboKing
             InputController.Update();
 
             if (InputController.KeyPressed(Keys.F1))
-            {
                 ToggleBoundingBoxes();
-            }
 
             map.Update(gameTime);
 
@@ -216,25 +179,21 @@ namespace HoboKing
 
             _spriteBatch.Begin();
 
-            // States
-            if (_gameState == GameState.MainMenu)
-            {
-                _spriteBatch.Draw(ContentLoader.StartSingleplayerButton, _menuButtons.startSingleplayerButtonPosition, Color.White);
-                _spriteBatch.Draw(ContentLoader.StartMultiplayerButton, _menuButtons.startMultiplayerButtonPosition, Color.White);
-                _spriteBatch.Draw(ContentLoader.OptionsButton, _menuButtons.optionsButtonPosition, Color.White);
-                _spriteBatch.Draw(ContentLoader.ExitButton, _menuButtons.exitButtonPosition, Color.White);
-            }
+            // STATE TESTING
+            //if (_gameState == GameState.MainMenu)
+            //{
+            //    _spriteBatch.Draw(ContentLoader.StartSingleplayerButton, _menuButtons.startSingleplayerButtonPosition, Color.White);
+            //    _spriteBatch.Draw(ContentLoader.StartMultiplayerButton, _menuButtons.startMultiplayerButtonPosition, Color.White);
+            //    _spriteBatch.Draw(ContentLoader.OptionsButton, _menuButtons.optionsButtonPosition, Color.White);
+            //    _spriteBatch.Draw(ContentLoader.ExitButton, _menuButtons.exitButtonPosition, Color.White);
+            //}
 
-            if (_gameState == GameState.OptionMenu)
-            {
-                _spriteBatch.Draw(ContentLoader.ReturnButton, _menuButtons.returnButtonPosition, Color.White);
-            }
+            //if (_gameState == GameState.OptionMenu)
+            //{
+            //    _spriteBatch.Draw(ContentLoader.ReturnButton, _menuButtons.returnButtonPosition, Color.White);
+            //}
 
-            if (_gameState == GameState.PlayingMultiplayer)
-            {
-                map.DrawEntities(_spriteBatch);
-                isLoading = false;
-            }
+            map.DrawEntities(_spriteBatch);
             
             _spriteBatch.End();
 
