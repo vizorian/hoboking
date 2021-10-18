@@ -397,6 +397,9 @@ namespace HoboKing
 
         public override void Update(GameTime gameTime)
         {
+            if (InputController.KeyPressed(Keys.Escape))
+                hoboKingGame.SwitchScene(hoboKingGame.menuScene);
+
             if (InputController.KeyPressed(Keys.F1))
                 ToggleBoundingBoxes();
 
@@ -407,6 +410,7 @@ namespace HoboKing
         public override void Draw(GameTime gameTime)
         {
             hoboKingGame.spriteBatch.Begin();
+            hoboKingGame.spriteBatch.Draw(ContentLoader.Background, new Rectangle(0, 0, HoboKingGame.GAME_WINDOW_WIDTH, HoboKingGame.GAME_WINDOW_HEIGHT), Color.White);
             EntityManager.Draw(hoboKingGame.spriteBatch);
             hoboKingGame.spriteBatch.End();
             base.Draw(gameTime);

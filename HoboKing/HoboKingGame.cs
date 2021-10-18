@@ -92,14 +92,11 @@ namespace HoboKing
         protected override void LoadContent()
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            SwitchScene(mapScene);
+            SwitchScene(menuScene);
         }
 
         protected override void Update(GameTime gameTime)
         {
-            if (InputController.KeyPressed(Keys.Escape))
-                Exit();
-
             InputController.Update();
             base.Update(gameTime);
         }

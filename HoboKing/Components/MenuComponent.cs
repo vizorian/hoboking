@@ -1,4 +1,6 @@
-﻿using Microsoft.Xna.Framework;
+﻿using HoboKing.Control;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -26,8 +28,8 @@ namespace HoboKing.States
 
         public override void Update(GameTime gameTime)
         {
-            //if (hoboKingGame.NewKey(Keys.Enter))
-            //    hoboKingGame.SwitchScene(hoboKingGame.levelScene);
+            if (InputController.KeyPressed(Keys.Enter))
+                hoboKingGame.SwitchScene(hoboKingGame.mapScene);
             base.Update(gameTime);
         }
 
