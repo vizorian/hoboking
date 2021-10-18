@@ -79,6 +79,7 @@ namespace HoboKing.Graphics
         public static Texture2D TileRightTexture { get; private set; }
         public static SpriteFont Font { get; private set; }
         public static Texture2D Woodcutter { get; private set; }
+        public static Texture2D Background { get; private set; }
 
         public static void LoadContent(ContentManager contentManager)
         {
@@ -151,6 +152,7 @@ namespace HoboKing.Graphics
             TileRightTexture = contentManager.Load<Texture2D>("ground_right");
             Woodcutter = contentManager.Load<Texture2D>("Critters\\Hobo Woodcutter\\Woodcutter");
             Font = contentManager.Load<SpriteFont>("Debug");
+            Background = contentManager.Load<Texture2D>("Background");
         }
     }
 }
