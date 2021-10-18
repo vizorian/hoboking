@@ -51,7 +51,6 @@ namespace HoboKing.Entities
                     {
                         Level += reader.ReadLine();
                     }
-
                 }
             }
         }
@@ -79,7 +78,7 @@ namespace HoboKing.Entities
 
         public Critter CreateDebugCritter()
         {
-            Critter critter = critterBuilder.AddTexture(graphics, ContentLoader.Woodcutter, new Vector2(HOBO_START_POSITION_X+8, HOBO_START_POSITION_Y+36), 100)
+            Critter critter = critterBuilder.AddTexture(graphics, ContentLoader.Woodcutter, new Vector2(HOBO_START_POSITION_X+16, HOBO_START_POSITION_Y+36), 100)
                 .AddMovement(new DebugMovement(null)).AddSpeech("Hello baj, I seek shelter.", 20).Build();
             
             entityManager.AddEntity(critter);
@@ -201,7 +200,7 @@ namespace HoboKing.Entities
             }
         }
 
-        // Cycle through standard tiles and apply appropriate texture, adding the tile from factory
+        // Cycle through standard tile entities and apply appropriate texture
         public void UpdateTextures()
         {
             List<Tile> standardTiles = entityManager.GetStandardTiles();
@@ -213,103 +212,106 @@ namespace HoboKing.Entities
                     char TileID = GetTile(x, y);
                     if (TileID == '#')
                     {
+                        Tile specificTile = standardTiles.Find(o => o.Sprite.Position.X == x * 20 && o.Sprite.Position.Y == y * 20);
+                        
                         bool hasNorth = false;
                         bool hasEast = false;
                         bool hasSouth = false;
                         bool hasWest = false;
-                        if (GetTile(x, y - 1) != '.')
-                        {
-                            hasNorth = true;
-                        }
-                        if (GetTile(x + 1, y) != '.')
-                        {
-                            hasEast = true;
-                        }
-                        if (GetTile(x, y + 1) != '.')
-                        {
-                            hasSouth = true;
-                        }
-                        if (GetTile(x - 1, y) != '.')
-                        {
-                            hasWest = true;
-                        }
+                        bool hasNW = false;
+                        bool hasNE = false;
+                        bool hasSW = false;
+                        bool hasSE = false;
+
+                        if (GetTile(x, y-1) != '.') hasNorth = true;
+                        if (GetTile(x+1, y) != '.') hasEast = true;
+                        if (GetTile(x, y+1) != '.') hasSouth = true;
+                        if (GetTile(x-1, y) != '.') hasWest = true;
+
+                        if (GetTile(x-1, y-1) != '.') hasNW = true;
+                        if (GetTile(x+1, y-1) != '.') hasNE = true;
+                        if (GetTile(x-1, y+1) != '.') hasSW = true;
+                        if (GetTile(x+1, y+1) != '.') hasSE = true;
+
                         // NW
                         if (!hasNorth && hasEast && hasSouth && !hasWest)
                         {
-                            Tile specificTile = standardTiles.Find(o => o.Sprite.Position.X == x * 20 && o.Sprite.Position.Y == y * 20);
-                            specificTile.Sprite.ChangeTexture(ContentLoader.GrassNW);
-                            continue;
+                            specificTile.Sprite.ChangeTexture(ContentLoader.GrassNW); continue;
                         }
                         // N
                         else if (!hasNorth && hasEast && hasSouth && hasWest)
                         {
-                            Tile specificTile = standardTiles.Find(o => o.Sprite.Position.X == x * 20 && o.Sprite.Position.Y == y * 20);
-                            specificTile.Sprite.ChangeTexture(ContentLoader.GrassN);
-                            continue;
+                            specificTile.Sprite.ChangeTexture(ContentLoader.GrassN); continue;
                         }
                         // NE
                         else if (!hasNorth && !hasEast && hasSouth && hasWest)
                         {
-                            Tile specificTile = standardTiles.Find(o => o.Sprite.Position.X == x * 20 && o.Sprite.Position.Y == y * 20);
-                            specificTile.Sprite.ChangeTexture(ContentLoader.GrassNE);
-                            continue;
+                            specificTile.Sprite.ChangeTexture(ContentLoader.GrassNE); continue;
                         }
                         // W
                         else if (hasNorth && hasEast && hasSouth && !hasWest)
                         {
-                            Tile specificTile = standardTiles.Find(o => o.Sprite.Position.X == x * 20 && o.Sprite.Position.Y == y * 20);
-                            specificTile.Sprite.ChangeTexture(ContentLoader.GrassW);
-                            continue;
+                            specificTile.Sprite.ChangeTexture(ContentLoader.GrassW); continue;
                         }
                         // Center
                         else if (hasNorth && hasEast && hasSouth && hasWest)
                         {
-                            Tile specificTile = standardTiles.Find(o => o.Sprite.Position.X == x * 20 && o.Sprite.Position.Y == y * 20);
-                            specificTile.Sprite.ChangeTexture(ContentLoader.GrassCenter);
-                            continue;
+                            // Check for corners
+                            // Corner NW
+                            if(!hasNW && hasNE && hasSW && hasSE)
+                            {
+                                specificTile.Sprite.ChangeTexture(ContentLoader.GrassCornerNW); continue;
+                            }
+                            // Corner ME
+                            else if (hasNW && !hasNE && hasSW && hasSE)
+                            {
+                                specificTile.Sprite.ChangeTexture(ContentLoader.GrassCornerNE); continue;
+                            }
+                            // Corner SW
+                            else if (hasNW && hasNE && !hasSW && hasSE)
+                            {
+                                specificTile.Sprite.ChangeTexture(ContentLoader.GrassCornerSW); continue;
+                            }
+                            // Corner SE
+                            else if (hasNW && hasNE && hasSW && !hasSE)
+                            {
+                                specificTile.Sprite.ChangeTexture(ContentLoader.GrassCornerSE); continue;
+                            }
+                            else
+                            {
+                                // No corner tiles
+                                specificTile.Sprite.ChangeTexture(ContentLoader.GrassCenter); continue;
+                            }
                         }
                         // E
                         else if (hasNorth && !hasEast && hasSouth && hasWest)
                         {
-                            Tile specificTile = standardTiles.Find(o => o.Sprite.Position.X == x * 20 && o.Sprite.Position.Y == y * 20);
-                            specificTile.Sprite.ChangeTexture(ContentLoader.GrassE);
-                            continue;
+                            specificTile.Sprite.ChangeTexture(ContentLoader.GrassE); continue;
                         }
                         // SW
                         else if (hasNorth && hasEast && !hasSouth && !hasWest)
                         {
-                            Tile specificTile = standardTiles.Find(o => o.Sprite.Position.X == x * 20 && o.Sprite.Position.Y == y * 20);
-                            specificTile.Sprite.ChangeTexture(ContentLoader.GrassSW);
-                            continue;
+                            specificTile.Sprite.ChangeTexture(ContentLoader.GrassSW); continue;
                         }
                         // S
                         else if (hasNorth && hasEast && !hasSouth && hasWest)
                         {
-                            Tile specificTile = standardTiles.Find(o => o.Sprite.Position.X == x * 20 && o.Sprite.Position.Y == y * 20);
-                            specificTile.Sprite.ChangeTexture(ContentLoader.GrassS);
-                            continue;
+                            specificTile.Sprite.ChangeTexture(ContentLoader.GrassS); continue;
                         }
                         // SE
                         else if (hasNorth && !hasEast && !hasSouth && hasWest)
                         {
-                            Tile specificTile = standardTiles.Find(o => o.Sprite.Position.X == x * 20 && o.Sprite.Position.Y == y * 20);
-                            specificTile.Sprite.ChangeTexture(ContentLoader.GrassSE);
-                            continue;
+                            specificTile.Sprite.ChangeTexture(ContentLoader.GrassSE); continue;
                         }
                         else
                         {
-                            // Default value N
-                            Tile specificTile = standardTiles.Find(o => o.Sprite.Position.X == x * 20 && o.Sprite.Position.Y == y * 20);
+                            // Default value N for now
+                            // To dynamically change according to current tile type, make default value a new blank texture and look for it do discern
                             specificTile.Sprite.ChangeTexture(ContentLoader.GrassN);
                         }
                     }
                 }
             }
-        }
-
-        public void SetTileTexture(int x, int y)
-        {
-
         }
 
         public char GetTile(int x, int y)

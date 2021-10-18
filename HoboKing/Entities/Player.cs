@@ -21,7 +21,7 @@ namespace HoboKing.Entities
 
         public Player(GraphicsDevice graphics, Texture2D texture, Vector2 position, string connectionId, bool isOtherPlayer)
         {
-            Sprite = new Sprite(graphics, texture, position, 40);
+            Sprite = new Sprite(graphics, texture, position, 60);
             ConnectionId = connectionId;
             IsOtherPlayer = isOtherPlayer;
 

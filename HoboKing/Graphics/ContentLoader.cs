@@ -11,51 +11,63 @@ namespace HoboKing.Graphics
     static class ContentLoader
     {
         // Grass tiles
-        public static Texture2D GrassNW { get; set; }
-        public static Texture2D GrassN { get; set; }
-        public static Texture2D GrassNE { get; set; }
-        public static Texture2D GrassE { get; set; }
-        public static Texture2D GrassSE { get; set; }
-        public static Texture2D GrassS { get; set; }
-        public static Texture2D GrassSW { get; set; }
-        public static Texture2D GrassW { get; set; }
-        public static Texture2D GrassCenter { get; set; }
-        public static Texture2D GrassLeft { get; set; }
-        public static Texture2D GrassRight { get; set; }
+        public static Texture2D GrassNW { get; private set; }
+        public static Texture2D GrassN { get; private set; }
+        public static Texture2D GrassNE { get; private set; }
+        public static Texture2D GrassE { get; private set; }
+        public static Texture2D GrassSE { get; private set; }
+        public static Texture2D GrassS { get; private set; }
+        public static Texture2D GrassSW { get; private set; }
+        public static Texture2D GrassW { get; private set; }
+        public static Texture2D GrassCenter { get; private set; }
+        public static Texture2D GrassCornerNW { get; private set; }
+        public static Texture2D GrassCornerNE { get; private set; }
+        public static Texture2D GrassCornerSW { get; private set; }
+        public static Texture2D GrassCornerSE { get; private set; }
+        public static Texture2D GrassLeft { get; private set; }
+        public static Texture2D GrassRight { get; private set; }
 
         // Ice tiles
-        public static Texture2D IceNW { get; set; }
-        public static Texture2D IceN { get; set; }
-        public static Texture2D IceNE { get; set; }
-        public static Texture2D IceE { get; set; }
-        public static Texture2D IceSE { get; set; }
-        public static Texture2D IceS { get; set; }
-        public static Texture2D IceSW { get; set; }
-        public static Texture2D IceW { get; set; }
-        public static Texture2D IceCenter { get; set; }
-        public static Texture2D IceLeft { get; set; }
-        public static Texture2D IceRight { get; set; }
+        public static Texture2D IceNW { get; private set; }
+        public static Texture2D IceN { get; private set; }
+        public static Texture2D IceNE { get; private set; }
+        public static Texture2D IceE { get; private set; }
+        public static Texture2D IceSE { get; private set; }
+        public static Texture2D IceS { get; private set; }
+        public static Texture2D IceSW { get; private set; }
+        public static Texture2D IceW { get; private set; }
+        public static Texture2D IceCenter { get; private set; }
+        public static Texture2D IceCornerNW { get; private set; }
+        public static Texture2D IceCornerNE { get; private set; }
+        public static Texture2D IceCornerSW { get; private set; }
+        public static Texture2D IceCornerSE { get; private set; }
+        public static Texture2D IceLeft { get; private set; }
+        public static Texture2D IceRight { get; private set; }
 
         // Sand tiles
-        public static Texture2D SandNW { get; set; }
-        public static Texture2D SandN { get; set; }
-        public static Texture2D SandNE { get; set; }
-        public static Texture2D SandE { get; set; }
-        public static Texture2D SandSE { get; set; }
-        public static Texture2D SandS { get; set; }
-        public static Texture2D SandSW { get; set; }
-        public static Texture2D SandW { get; set; }
-        public static Texture2D SandCenter { get; set; }
-        public static Texture2D SandLeft { get; set; }
-        public static Texture2D SandRight { get; set; }
+        public static Texture2D SandNW { get; private set; }
+        public static Texture2D SandN { get; private set; }
+        public static Texture2D SandNE { get; private set; }
+        public static Texture2D SandE { get; private set; }
+        public static Texture2D SandSE { get; private set; }
+        public static Texture2D SandS { get; private set; }
+        public static Texture2D SandSW { get; private set; }
+        public static Texture2D SandW { get; private set; }
+        public static Texture2D SandCenter { get; private set; }
+        public static Texture2D SandCornerNW { get; private set; }
+        public static Texture2D SandCornerNE { get; private set; }
+        public static Texture2D SandCornerSW { get; private set; }
+        public static Texture2D SandCornerSE { get; private set; }
+        public static Texture2D SandLeft { get; private set; }
+        public static Texture2D SandRight { get; private set; }
 
         // Other
-        public static Texture2D BatChest { get; set; }
-        public static Texture2D TileTexture { get; set; }
-        public static Texture2D TileLeftTexture { get; set; }
-        public static Texture2D TileRightTexture { get; set; }
-        public static SpriteFont Font { get; set; }
-        public static Texture2D Woodcutter { get; set; }
+        public static Texture2D BatChest { get; private set; }
+        public static Texture2D TileTexture { get; private set; }
+        public static Texture2D TileLeftTexture { get; private set; }
+        public static Texture2D TileRightTexture { get; private set; }
+        public static SpriteFont Font { get; private set; }
+        public static Texture2D Woodcutter { get; private set; }
 
         public static void LoadContent(ContentManager contentManager)
         {
@@ -69,6 +81,10 @@ namespace HoboKing.Graphics
             GrassSW = contentManager.Load<Texture2D>("Grass blocks\\GrassSW");
             GrassW = contentManager.Load<Texture2D>("Grass blocks\\GrassW");
             GrassCenter = contentManager.Load<Texture2D>("Grass blocks\\GrassCenter");
+            GrassCornerNW = contentManager.Load<Texture2D>("Grass blocks\\GrassCornerNW");
+            GrassCornerNE = contentManager.Load<Texture2D>("Grass blocks\\GrassCornerNE");
+            GrassCornerSW = contentManager.Load<Texture2D>("Grass blocks\\GrassCornerSW");
+            GrassCornerSE = contentManager.Load<Texture2D>("Grass blocks\\GrassCornerSE");
             GrassLeft = contentManager.Load<Texture2D>("Grass blocks\\GrassLeft");
             GrassRight = contentManager.Load<Texture2D>("Grass blocks\\GrassRight");
 
@@ -82,6 +98,10 @@ namespace HoboKing.Graphics
             IceSW = contentManager.Load<Texture2D>("Ice blocks\\IceSW");
             IceW = contentManager.Load<Texture2D>("Ice blocks\\IceW");
             IceCenter = contentManager.Load<Texture2D>("Ice blocks\\IceCenter");
+            IceCornerNW = contentManager.Load<Texture2D>("Ice blocks\\IceCornerNW");
+            IceCornerNE = contentManager.Load<Texture2D>("Ice blocks\\IceCornerNE");
+            IceCornerSW = contentManager.Load<Texture2D>("Ice blocks\\IceCornerSW");
+            IceCornerSE = contentManager.Load<Texture2D>("Ice blocks\\IceCornerSE");
             IceLeft = contentManager.Load<Texture2D>("Ice blocks\\IceLeft");
             IceRight = contentManager.Load<Texture2D>("Ice blocks\\IceRight");
 
@@ -95,6 +115,10 @@ namespace HoboKing.Graphics
             SandSW = contentManager.Load<Texture2D>("Sand blocks\\SandSW");
             SandW = contentManager.Load<Texture2D>("Sand blocks\\SandW");
             SandCenter = contentManager.Load<Texture2D>("Sand blocks\\SandCenter");
+            SandCornerNW = contentManager.Load<Texture2D>("Sand blocks\\SandCornerNW");
+            SandCornerNE = contentManager.Load<Texture2D>("Sand blocks\\SandCornerNE");
+            SandCornerSW = contentManager.Load<Texture2D>("Sand blocks\\SandCornerSW");
+            SandCornerSE = contentManager.Load<Texture2D>("Sand blocks\\SandCornerSE");
             SandLeft = contentManager.Load<Texture2D>("Sand blocks\\SandLeft");
             SandRight = contentManager.Load<Texture2D>("Sand blocks\\SandRight");
 
