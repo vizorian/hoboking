@@ -39,7 +39,7 @@ namespace HoboKing.Entities
 
         public void Update(GameTime gameTime)
         {
-            Sprite.Update(gameTime);
+            Sprite.Update();
             // Loop through all Tiles and check for collisions
             //foreach (var entity in EntityManager.Entities)
             //{

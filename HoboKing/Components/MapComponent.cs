@@ -347,15 +347,14 @@ namespace HoboKing
                 }
                 else if (tileType == "slopeleft")
                 {
-                    Tile newTile = new SlopeLeft(tile.Sprite.Texture, new Vector2(x * TILE_SIZE, y * TILE_SIZE), tile.TileSize, world);
+                    Tile newTile = new SlopeLeft(ContentLoader.GrassLeft, new Vector2(x * TILE_SIZE, y * TILE_SIZE), tile.TileSize, world);
                     EntityManager.AddEntity(newTile);
                 }
                 else if (tileType == "sloperight")
                 {
-                    Tile newTile = new SlopeRight(tile.Sprite.Texture, new Vector2(x * TILE_SIZE, y * TILE_SIZE), tile.TileSize, world);
+                    Tile newTile = new SlopeRight(ContentLoader.GrassRight, new Vector2(x * TILE_SIZE, y * TILE_SIZE), tile.TileSize, world);
                     EntityManager.AddEntity(newTile);
                 }
-
             }
             else
             {

@@ -65,15 +65,16 @@ namespace HoboKing.Graphics
             //debugView.DrawShape(fixture, body.GetTransform(), Color.Black);
         }
 
-        public void Update(GameTime gameTime)
+        public void Update()
         {
-
+            Size.X = Convert.ToInt32(body.Position.X * unitToPixel);
+            Size.Y = Convert.ToInt32(body.Position.Y * unitToPixel);
+            Position = new Vector2(Size.X, Size.Y);
         }
 
         public virtual void Draw(SpriteBatch spriteBatch)
         {
-            Size.X = Convert.ToInt32(body.Position.X * unitToPixel);
-            Size.Y = Convert.ToInt32(body.Position.Y * unitToPixel);
+            Update();
             spriteBatch.Draw(Texture, Size, Color.White);
         }
 

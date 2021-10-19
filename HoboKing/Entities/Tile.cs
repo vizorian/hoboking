@@ -21,7 +21,7 @@ namespace HoboKing.Entities
 
         public void Update(GameTime gameTime)
         {
-            Sprite.Update(gameTime);
+            Sprite.Update();
         }
 
         public void Draw(SpriteBatch spriteBatch)
