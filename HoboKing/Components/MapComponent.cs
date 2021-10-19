@@ -19,17 +19,18 @@ namespace HoboKing
 {
     class MapComponent : DrawableGameComponent
     {
-        public const int HOBO_START_POSITION_X = 7;
-        public const int HOBO_START_POSITION_Y = 15;
+        public const int HOBO_START_POSITION_X = 20;
+        public const int HOBO_START_POSITION_Y = 93;
 
         public const int TILE_SIZE = 20;
         public const int MAP_WIDTH = 64;
-        public const int MAP_HEIGHT = 54;
+        public const int MAP_HEIGHT = 100;
 
         private EntityManager EntityManager;
         private CritterBuilder CritterBuilder;
         private GraphicsDevice Graphics;
 
+        private Camera camera;
 
         private HoboKingGame hoboKingGame;
         private Texture2D background = ContentLoader.Background;
@@ -171,7 +172,7 @@ namespace HoboKing
         {
             for (int x = 0; x < VisibleTilesX; x++)
             {
-                for (int y = 0; y < VisibleTilesY; y++)
+                for (int y = 0; y < MAP_HEIGHT; y++)
                 {
                     char TileID = GetTile(x, y);
                     switch (TileID)
@@ -200,9 +201,9 @@ namespace HoboKing
         {
             List<Tile> standardTiles = EntityManager.GetStandardTiles();
             // Tile specificTile = standardTiles.Find(o => o.Sprite.Position.X == 2 && o.Sprite.Position.Y == 2);
-            for (int x = 0; x < VisibleTilesX; x++)
+            for (int x = 0; x < MAP_WIDTH; x++)
             {
-                for (int y = 0; y < VisibleTilesY; y++)
+                for (int y = 0; y < MAP_HEIGHT; y++)
                 {
                     char TileID = GetTile(x, y);
                     if (TileID == '#')
@@ -370,8 +371,8 @@ namespace HoboKing
             CritterBuilder = new CritterBuilder();
             Graphics = hoboKingGame.graphics.GraphicsDevice;
 
-            VisibleTilesX = HoboKingGame.GAME_WINDOW_WIDTH / TILE_SIZE;
-            VisibleTilesY = HoboKingGame.GAME_WINDOW_HEIGHT / TILE_SIZE;
+            VisibleTilesX = HoboKingGame.GAME_WINDOW_WIDTH / TILE_SIZE; // 64
+            VisibleTilesY = HoboKingGame.GAME_WINDOW_HEIGHT / TILE_SIZE; // 50
 
             ReadMapData();
             
@@ -386,7 +387,7 @@ namespace HoboKing
             player = CreateMainPlayer();
             CreateDebugCritter();
             UpdateTextures();
-            
+            camera = new Camera();
             base.LoadContent();
         }
 
@@ -396,14 +397,14 @@ namespace HoboKing
                 hoboKingGame.SwitchScene(hoboKingGame.menuScene);
 
             world.Step((float)gameTime.ElapsedGameTime.TotalSeconds);
-
+            camera.Follow(EntityManager.mainPlayer.Sprite);
             EntityManager.Update(gameTime);
             base.Update(gameTime);
         }
 
         public override void Draw(GameTime gameTime)
         {
-            hoboKingGame.spriteBatch.Begin();
+            hoboKingGame.spriteBatch.Begin(transformMatrix: camera.Transform);
             hoboKingGame.spriteBatch.Draw(ContentLoader.Background, new Rectangle(0, 0, HoboKingGame.GAME_WINDOW_WIDTH, HoboKingGame.GAME_WINDOW_HEIGHT), Color.White);
             EntityManager.Draw(hoboKingGame.spriteBatch);
             EntityManager.DrawDebug(debugView, Graphics, hoboKingGame.Content);

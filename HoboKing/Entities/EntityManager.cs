@@ -23,7 +23,7 @@ namespace HoboKing.Entities
         public int PlayerCount { get; set; }
         public List<Player> players = new List<Player>();
 
-        private Player mainPlayer;
+        public Player mainPlayer;
 
         public void AddEntity(IGameEntity entity)
         {
