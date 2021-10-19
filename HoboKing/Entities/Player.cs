@@ -3,6 +3,7 @@ using HoboKing.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using tainicom.Aether.Physics2D.Dynamics;
 
 namespace HoboKing.Entities
 {
@@ -13,33 +14,27 @@ namespace HoboKing.Entities
         public string ConnectionId { get; set; }
         public bool IsOtherPlayer { get; set; }
 
-        public float VelocityY;
-        public float VelocityX;
-
-        private Vector2 previousPosition;
         private Movement movement;
 
-        public Player(GraphicsDevice graphics, Texture2D texture, Vector2 position, string connectionId, bool isOtherPlayer)
+        public Player(GraphicsDevice graphics, Texture2D texture, Vector2 position, string connectionId, bool isOtherPlayer, World world)
         {
-            Sprite = new Sprite(graphics, texture, position, 60);
+            // Recalculates tiles to absolute coordinates
+            float realPosX = position.X * MapComponent.TILE_SIZE;
+            float realPosY = position.Y * MapComponent.TILE_SIZE;
+
+            Sprite = new Sprite(texture, new Vector2(realPosX, realPosY), world, BodyType.Dynamic, 60);
             ConnectionId = connectionId;
             IsOtherPlayer = isOtherPlayer;
-
-            // Recalculates tiles to absolute coordinates
-            float realPosX = Sprite.Position.X * MapComponent.TILE_SIZE;
-            float realPosY = Sprite.Position.Y * MapComponent.TILE_SIZE;
-            Sprite.Position = new Vector2(realPosX, realPosY);
         }
 
-        public Player(GraphicsDevice graphics, Texture2D texture, Vector2 position, bool isOtherPlayer)
+        public Player(GraphicsDevice graphics, Texture2D texture, Vector2 position, bool isOtherPlayer, World world)
         {
-            Sprite = new Sprite(graphics, texture, position, 60);
-            IsOtherPlayer = isOtherPlayer;
-
             // Recalculates tiles to absolute coordinates
-            float realPosX = Sprite.Position.X * MapComponent.TILE_SIZE;
-            float realPosY = Sprite.Position.Y * MapComponent.TILE_SIZE;
-            Sprite.Position = new Vector2(realPosX, realPosY);
+            float realPosX = position.X * MapComponent.TILE_SIZE;
+            float realPosY = position.Y * MapComponent.TILE_SIZE;
+
+            Sprite = new Sprite(texture, new Vector2(realPosX, realPosY), world, BodyType.Dynamic, 60);
+            IsOtherPlayer = isOtherPlayer;
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -53,52 +48,7 @@ namespace HoboKing.Entities
         }
 
         public void Update(GameTime gameTime)
-        {
-            previousPosition = Sprite.Position;
-            
-            float time = (float)gameTime.ElapsedGameTime.TotalSeconds;
-            VelocityY += movement.Gravity * time;
-            Sprite.Position = new Vector2(
-                Sprite.Position.X + VelocityX * time,
-                Sprite.Position.Y + VelocityY * time);
-
-            Sprite.Update(gameTime);
-
-            //Console.WriteLine($"Player coordinates X and Y: {Sprite.Position.X}-{Sprite.Position.Y}");
-
-            // Loop through all Tiles and check for collisions
-            foreach (var entity in EntityManager.Entities)
-            {
-                if (entity is Tile)
-                {
-                    if (Sprite.Collision(entity.Sprite))
-                    {
-                        if (Sprite.Rectangle.Bottom < entity.Sprite.Rectangle.Top)
-                        {
-                            Sprite.Position = new Vector2(Sprite.Position.X, previousPosition.Y);
-                            VelocityY = 0.01f;
-                        }
-
-                        if (Sprite.Rectangle.Top < entity.Sprite.Rectangle.Bottom)
-                        {
-                            Sprite.Position = new Vector2(Sprite.Position.X, previousPosition.Y);
-                            VelocityY = 0.01f;
-                        }
-
-                        if (Sprite.Rectangle.Right > entity.Sprite.Rectangle.Left)
-                        {
-                            Sprite.Position = new Vector2(previousPosition.X, Sprite.Position.Y);
-                            VelocityX = 0.01f;
-                        }
-
-                        if (Sprite.Rectangle.Left < entity.Sprite.Rectangle.Right)
-                        {
-                            Sprite.Position = new Vector2(previousPosition.X, Sprite.Position.Y);
-                            VelocityX = 0.01f;
-                        }
-                    }
-                }
-            }
+        {    
             InputControls(gameTime);
         }
 
@@ -107,11 +57,10 @@ namespace HoboKing.Entities
             // JUMP
             if (InputController.KeyPressed(Keys.Space))
             {
-                movement.BeginCharge(gameTime);
+                movement.Up(gameTime);
             }
             if (InputController.KeyReleased(Keys.Space))
             {
-                movement.Jump(1000, 0);
             }
 
             // LEFT, RIGHT
@@ -125,7 +74,6 @@ namespace HoboKing.Entities
             }
             if (InputController.KeyReleased(Keys.A) || InputController.KeyReleased(Keys.D))
             {
-                VelocityX = 0;
             }
 
             // DOWN
@@ -135,7 +83,6 @@ namespace HoboKing.Entities
             }
             if (InputController.KeyReleased(Keys.S))
             {
-                VelocityY = 0;
             }
 
             // UP
@@ -145,7 +92,6 @@ namespace HoboKing.Entities
             }
             if (InputController.KeyReleased(Keys.W))
             {
-                VelocityY = 0;
             }
         }
     }

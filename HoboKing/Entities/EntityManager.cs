@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using tainicom.Aether.Physics2D.Diagnostics;
 
 namespace HoboKing.Entities
 {
@@ -82,19 +83,19 @@ namespace HoboKing.Entities
             _entitiesToRemove.Clear();
         }
 
-        public void SetShowBoundingBox(bool show)
-        {
-            foreach(var entity in _entities)
-            {
-                entity.Sprite.SetShowRectangle(show);
-            }
-        }
-
         public void Draw(SpriteBatch spriteBatch)
         {
             foreach(IGameEntity entity in _entities)
             {
                 entity.Draw(spriteBatch);
+            }
+        }
+
+        public void DrawDebug(DebugView debugView, GraphicsDevice graphics, ContentManager content)
+        {
+            foreach (IGameEntity entity in _entities)
+            {
+                entity.Sprite.DrawDebug(debugView, graphics, content);
             }
         }
 
@@ -108,7 +109,12 @@ namespace HoboKing.Entities
             List<Tile> tiles = new List<Tile>();
             foreach(var entity in _entitiesToAdd)
             {
-                if(entity.GetType() == typeof(NormalStandardTile) || entity.GetType() == typeof(IceStandardTile) || entity.GetType() == typeof(SlowStandardTile))
+                //if(entity.GetType() == typeof(NormalStandardTile) || entity.GetType() == typeof(IceStandardTile) || entity.GetType() == typeof(SlowStandardTile))
+                //{
+                //    tiles.Add(entity as Tile);
+                //}
+
+                if(entity is Tile)
                 {
                     tiles.Add(entity as Tile);
                 }

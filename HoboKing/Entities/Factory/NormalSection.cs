@@ -6,9 +6,9 @@ namespace HoboKing.Entities.Factory
 {
     class NormalSection : MapSection
     {
-        public override AbstractTileFactory GetAbstractTileFactory()
-        {
-            return new NormalTileFactory();
-        }
+        //public override AbstractTileFactory GetAbstractTileFactory()
+        //{
+        //    return new NormalTileFactory();
+        //}
     }
 }

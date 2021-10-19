@@ -6,9 +6,9 @@ namespace HoboKing.Entities.Factory
 {
     class SlowSection : MapSection
     {
-        public override AbstractTileFactory GetAbstractTileFactory()
-        {
-            throw new NotImplementedException();
-        }
+        //public override AbstractTileFactory GetAbstractTileFactory()
+        //{
+        //    throw new NotImplementedException();
+        //}
     }
 }

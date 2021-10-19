@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using tainicom.Aether.Physics2D.Dynamics;
 
 namespace HoboKing.Entities
 {
@@ -22,13 +23,13 @@ namespace HoboKing.Entities
             this.critter = new Critter();
         }
 
-        public CritterBuilder AddTexture(GraphicsDevice graphics, Texture2D texture, Vector2 position, int size)
+        public CritterBuilder AddTexture(Texture2D texture, Vector2 position, int size, World world)
         {
             // Recalculates tiles to absolute coordinates
             position.X *= MapComponent.TILE_SIZE;
             position.Y *= MapComponent.TILE_SIZE;
 
-            critter.Sprite = new Sprite(graphics, texture, position, size);
+            critter.Sprite = new Sprite(texture, position, world, size);
             return this;
         }
 

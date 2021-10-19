@@ -1,17 +1,17 @@
 ﻿using HoboKing.Entities;
 using Microsoft.Xna.Framework;
 using System;
+using tainicom.Aether.Physics2D.Dynamics;
 
 namespace HoboKing.Control
 {
     class DebugMovement : Movement
     {
-        private const int VERTICAL_SPEED = 10000;
-        private const int HORIZONTAL_SPEED = 10000;
+        private const int VERTICAL_SPEED = 2;
+        private const int HORIZONTAL_SPEED = 2;
 
-        public DebugMovement(Player player) : base(player)
+        public DebugMovement(Player player, World world) : base(player)
         {
-            Gravity = 0;
         }
 
         public override bool BeginCharge(GameTime gameTime)
@@ -26,23 +26,21 @@ namespace HoboKing.Control
 
         public override void Up(GameTime gameTime)
         {
-            player.VelocityY = -VERTICAL_SPEED * (float)gameTime.ElapsedGameTime.TotalSeconds;
+
         }
         public override void Down(GameTime gameTime)
         {
-            player.VelocityY = VERTICAL_SPEED * (float)gameTime.ElapsedGameTime.TotalSeconds;
         }
 
         public override void Walk(string direction, GameTime gameTime)
         {
-            player.State = PlayerState.Walking;
             if (direction == "left")
             {
-                player.VelocityX = -HORIZONTAL_SPEED * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                player.Sprite.body.SetTransform(new Vector2(-2f, player.Sprite.body.Position.Y), 0f);
             }
             if (direction == "right")
             {
-                player.VelocityX = HORIZONTAL_SPEED * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                player.Sprite.body.SetTransform(new Vector2(2f, player.Sprite.body.Position.Y), 0f);
             }
         }
     }

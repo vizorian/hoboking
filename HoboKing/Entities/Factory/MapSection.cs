@@ -6,6 +6,6 @@ namespace HoboKing.Entities.Factory
 {
     public abstract class MapSection
     {
-        public abstract AbstractTileFactory GetAbstractTileFactory();
+        //public abstract AbstractTileFactory GetAbstractTileFactory();
     }
 }

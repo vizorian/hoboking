@@ -11,14 +11,16 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using tainicom.Aether.Physics2D.Dynamics;
+using tainicom.Aether.Physics2D.Diagnostics;
 
 
 namespace HoboKing
 {
-    class MapComponent : Microsoft.Xna.Framework.DrawableGameComponent
+    class MapComponent : DrawableGameComponent
     {
-        public const int HOBO_START_POSITION_X = 2;
-        public const int HOBO_START_POSITION_Y = 8;
+        public const int HOBO_START_POSITION_X = 7;
+        public const int HOBO_START_POSITION_Y = 15;
 
         public const int TILE_SIZE = 20;
         public const int MAP_WIDTH = 64;
@@ -45,8 +47,10 @@ namespace HoboKing
         }
 
         private GameState gameState;
+
+        private World world;
+        private DebugView debugView;
         private Player player;
-        private bool showBoundingBox = false;
 
         public MapComponent(HoboKingGame hoboKingGame) : base(hoboKingGame)
         {
@@ -81,17 +85,17 @@ namespace HoboKing
         // Creates main player for singleplayer
         public Player CreateMainPlayer()
         {
-            Player player = new Player(Graphics, ContentLoader.BatChest, new Vector2(HOBO_START_POSITION_X, HOBO_START_POSITION_Y), false);
+            Player player = new Player(Graphics, ContentLoader.BatChest, new Vector2(HOBO_START_POSITION_X, HOBO_START_POSITION_Y), false, world);
 
             EntityManager.AddEntity(player);
-            player.SetMovementStrategy(new DebugMovement(player));
+            player.SetMovementStrategy(new PlayerMovement(player, world));
             return player;
         }
 
         public Critter CreateDebugCritter()
         {
-            Critter critter = CritterBuilder.AddTexture(Graphics, ContentLoader.Woodcutter, new Vector2(HOBO_START_POSITION_X + 16, HOBO_START_POSITION_Y + 36), 100)
-                .AddMovement(new DebugMovement(null)).AddSpeech("Hello baj, I seek shelter.", 20).Build();
+            Critter critter = CritterBuilder.AddTexture(ContentLoader.Woodcutter, new Vector2(HOBO_START_POSITION_X + 16, HOBO_START_POSITION_Y + 36), 100, world)
+                .AddMovement(new DebugMovement(null, world)).AddSpeech("Hello baj, I seek shelter.", 20).Build();
 
             EntityManager.AddEntity(critter);
             return critter;
@@ -153,10 +157,9 @@ namespace HoboKing
         // This is where you can set tile types for now
         private void CreateTileTypes()
         {
-            NormalTileFactory normalTileFactory = new NormalTileFactory();
-            tiles.Add('#', normalTileFactory.CreateStandard(Graphics, ContentLoader.TileTexture, new Vector2(0, 0), TILE_SIZE));
-            tiles.Add('<', normalTileFactory.CreateSlopeLeft(Graphics, new Vector2(0, 0), TILE_SIZE));
-            tiles.Add('>', normalTileFactory.CreateSlopeRight(Graphics, new Vector2(0, 0), TILE_SIZE));
+            tiles.Add('#', new Standard(ContentLoader.TileTexture, new Vector2(0, 0), TILE_SIZE, world));
+            tiles.Add('<', new SlopeLeft(ContentLoader.TileTexture, new Vector2(0, 0), TILE_SIZE, world));
+            tiles.Add('>', new SlopeRight(ContentLoader.TileTexture, new Vector2(0, 0), TILE_SIZE, world));
         }
 
         public void DrawEntities(SpriteBatch spriteBatch)
@@ -166,10 +169,6 @@ namespace HoboKing
 
         public void CreateMap()
         {
-            NormalTileFactory normalTileFactory = new NormalTileFactory();
-            IceTileFactory iceTileFactory = new IceTileFactory();
-            SlowTileFactory slowTileFactory = new SlowTileFactory();
-
             for (int x = 0; x < VisibleTilesX; x++)
             {
                 for (int y = 0; y < VisibleTilesY; y++)
@@ -181,13 +180,13 @@ namespace HoboKing
                             // Empty blocks (background tiles)
                             break;
                         case '#':
-                            AddTile(x, y, TileID, normalTileFactory, "standard");
+                            AddTile(x, y, TileID, "standard");
                             break;
                         case '<':
-                            AddTile(x, y, TileID, normalTileFactory, "slopeleft");
+                            AddTile(x, y, TileID, "slopeleft");
                             break;
                         case '>':
-                            AddTile(x, y, TileID, normalTileFactory, "sloperight");
+                            AddTile(x, y, TileID, "sloperight");
                             break;
                         default:
                             break;
@@ -333,7 +332,7 @@ namespace HoboKing
             }
         }
 
-        private void AddTile(int x, int y, char TileID, AbstractTileFactory tileFactory, string tileType)
+        private void AddTile(int x, int y, char TileID, string tileType)
         {
             // Draw platform blocks here
             if (tiles.ContainsKey(TileID))
@@ -342,17 +341,17 @@ namespace HoboKing
 
                 if (tileType == "standard")
                 {
-                    Tile newTile = tileFactory.CreateStandard(Graphics, tile.Sprite.Texture, new Vector2(x * TILE_SIZE, y * TILE_SIZE), tile.TileSize);
+                    Tile newTile = new Standard(tile.Sprite.Texture, new Vector2(x * TILE_SIZE, y * TILE_SIZE), tile.TileSize, world);
                     EntityManager.AddEntity(newTile);
                 }
                 else if (tileType == "slopeleft")
                 {
-                    Tile newTile = tileFactory.CreateSlopeLeft(Graphics, new Vector2(x * TILE_SIZE, y * TILE_SIZE), tile.TileSize);
+                    Tile newTile = new SlopeLeft(tile.Sprite.Texture, new Vector2(x * TILE_SIZE, y * TILE_SIZE), tile.TileSize, world);
                     EntityManager.AddEntity(newTile);
                 }
                 else if (tileType == "sloperight")
                 {
-                    Tile newTile = tileFactory.CreateSlopeRight(Graphics, new Vector2(x * TILE_SIZE, y * TILE_SIZE), tile.TileSize);
+                    Tile newTile = new SlopeRight(tile.Sprite.Texture, new Vector2(x * TILE_SIZE, y * TILE_SIZE), tile.TileSize, world);
                     EntityManager.AddEntity(newTile);
                 }
 
@@ -363,14 +362,10 @@ namespace HoboKing
             }
         }
 
-        private void ToggleBoundingBoxes()
-        {
-            EntityManager.SetShowBoundingBox(showBoundingBox);
-            showBoundingBox = !showBoundingBox;
-        }
-
         public override void Initialize()
         {
+            world = new World(Vector2.UnitY * 9.8f);
+            debugView = new DebugView(world);
             EntityManager = new EntityManager();
             CritterBuilder = new CritterBuilder();
             Graphics = hoboKingGame.graphics.GraphicsDevice;
@@ -388,7 +383,7 @@ namespace HoboKing
             ContentLoader.LoadContent(hoboKingGame.Content);
             CreateTileTypes();
             CreateMap();
-            CreateMainPlayer();
+            player = CreateMainPlayer();
             CreateDebugCritter();
             UpdateTextures();
             
@@ -400,8 +395,7 @@ namespace HoboKing
             if (InputController.KeyPressed(Keys.Escape))
                 hoboKingGame.SwitchScene(hoboKingGame.menuScene);
 
-            if (InputController.KeyPressed(Keys.F1))
-                ToggleBoundingBoxes();
+            world.Step((float)gameTime.ElapsedGameTime.TotalSeconds);
 
             EntityManager.Update(gameTime);
             base.Update(gameTime);
@@ -412,6 +406,7 @@ namespace HoboKing
             hoboKingGame.spriteBatch.Begin();
             hoboKingGame.spriteBatch.Draw(ContentLoader.Background, new Rectangle(0, 0, HoboKingGame.GAME_WINDOW_WIDTH, HoboKingGame.GAME_WINDOW_HEIGHT), Color.White);
             EntityManager.Draw(hoboKingGame.spriteBatch);
+            EntityManager.DrawDebug(debugView, Graphics, hoboKingGame.Content);
             hoboKingGame.spriteBatch.End();
             base.Draw(gameTime);
         }

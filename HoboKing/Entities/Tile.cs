@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using tainicom.Aether.Physics2D.Dynamics;
 
 namespace HoboKing.Entities
 {
@@ -12,10 +13,10 @@ namespace HoboKing.Entities
         public int TileSize { get; set; }
         public Sprite Sprite { get; set; }
 
-        public Tile(GraphicsDevice graphics, Texture2D texture, Vector2 position, int tileSize)
+        public Tile(Texture2D texture, Vector2 position, int tileSize, World world)
         {
             TileSize = tileSize;
-            Sprite = new Sprite(graphics, texture, position, tileSize);
+            Sprite = new Sprite(texture, position, world, tileSize);
         }
 
         public void Update(GameTime gameTime)
