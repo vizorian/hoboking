@@ -367,7 +367,7 @@ namespace HoboKing
             debugView = new DebugView(world);
             EntityManager = new EntityManager();
             CritterBuilder = new CritterBuilder();
-            Graphics = hoboKingGame.graphics.GraphicsDevice;
+            Graphics = hoboKingGame.Graphics.GraphicsDevice;
 
             VisibleTilesX = HoboKingGame.GAME_WINDOW_WIDTH / TILE_SIZE; // 64
             VisibleTilesY = HoboKingGame.GAME_WINDOW_HEIGHT / TILE_SIZE; // 50
@@ -404,11 +404,11 @@ namespace HoboKing
 
         public override void Draw(GameTime gameTime)
         {
-            hoboKingGame.spriteBatch.Begin(transformMatrix: camera.Transform);
-            hoboKingGame.spriteBatch.Draw(ContentLoader.Background, new Rectangle(0, 0, HoboKingGame.GAME_WINDOW_WIDTH, HoboKingGame.GAME_WINDOW_HEIGHT), Color.White);
-            EntityManager.Draw(hoboKingGame.spriteBatch);
+            hoboKingGame.SpriteBatch.Begin(transformMatrix: camera.Transform);
+            hoboKingGame.SpriteBatch.Draw(ContentLoader.Background, new Rectangle(0, 0, HoboKingGame.GAME_WINDOW_WIDTH, HoboKingGame.GAME_WINDOW_HEIGHT), Color.White);
+            EntityManager.Draw(hoboKingGame.SpriteBatch);
             EntityManager.DrawDebug(debugView, Graphics, hoboKingGame.Content);
-            hoboKingGame.spriteBatch.End();
+            hoboKingGame.SpriteBatch.End();
             base.Draw(gameTime);
         }
     }

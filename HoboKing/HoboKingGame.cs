@@ -17,8 +17,8 @@ namespace HoboKing
 {
     public class HoboKingGame : Game
     {
-        public GraphicsDeviceManager graphics;
-        public SpriteBatch spriteBatch;
+        public GraphicsDeviceManager Graphics;
+        public SpriteBatch SpriteBatch;
 
         // The app window size
         public const int WINDOW_WIDTH = 1920;
@@ -33,14 +33,13 @@ namespace HoboKing
         // approximate size to get a 1280x1080 game with side black bars
         public const int TILE_SIZE = 20;
 
-        private Player player;
         private bool isMultiplayer = false;
 
         public GameScene menuScene, optionsScene, mapScene;
 
         public HoboKingGame()
         {
-            graphics = new GraphicsDeviceManager(this);
+            Graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
         }
 
@@ -99,17 +98,17 @@ namespace HoboKing
                 ChangeComponentState(component, false);
             }
 
-            graphics.PreferredBackBufferWidth = GAME_WINDOW_WIDTH;
-            graphics.PreferredBackBufferHeight = GAME_WINDOW_HEIGHT;
-            graphics.IsFullScreen = false;
-            graphics.ApplyChanges();
+            Graphics.PreferredBackBufferWidth = GAME_WINDOW_WIDTH;
+            Graphics.PreferredBackBufferHeight = GAME_WINDOW_HEIGHT;
+            Graphics.IsFullScreen = false;
+            Graphics.ApplyChanges();
 
             base.Initialize();
         }
 
         protected override void LoadContent()
         {
-            spriteBatch = new SpriteBatch(GraphicsDevice);
+            SpriteBatch = new SpriteBatch(GraphicsDevice);
             SwitchScene(menuScene);
         }
 

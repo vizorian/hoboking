@@ -88,7 +88,7 @@ namespace HoboKing.Components
 
         public override void Draw(GameTime gameTime)
         {
-            hoboKingGame.spriteBatch.Begin();
+            hoboKingGame.SpriteBatch.Begin();
 
             foreach (MenuItem menuItem in menuItems)
             {
@@ -105,10 +105,10 @@ namespace HoboKing.Components
                     //if (menuItem.text.StartsWith(">"))
                         //menuItem.text = menuItem.text[1..];
                 //}
-                hoboKingGame.spriteBatch.DrawString(ContentLoader.MenuFont, menuItem.text, menuItem.position, color, 0.0f, new Vector2(0, 0), textScale, SpriteEffects.None, 0);
+                hoboKingGame.SpriteBatch.DrawString(ContentLoader.MenuFont, menuItem.text, menuItem.position, color, 0.0f, new Vector2(0, 0), textScale, SpriteEffects.None, 0);
             }
 
-            hoboKingGame.spriteBatch.End();
+            hoboKingGame.SpriteBatch.End();
             base.Draw(gameTime);
         }
     }
