@@ -30,12 +30,24 @@ namespace HoboKing
         // should be 1080, reduced for fitting in screen
         public const int GAME_WINDOW_HEIGHT = 1000;
 
-        private bool isMultiplayer = false;
-
         public GameScene menuScene, optionsScene, singleplayerScene, multiplayerScene;
+
+        public enum GameState
+        {
+            Singleplayer,
+            Multiplayer,
+            Options,
+            Menu,
+            Initialising,
+            Loading,
+            Unloading,
+        }
+
+        public GameState gameState;
 
         public HoboKingGame()
         {
+            gameState = GameState.Initialising;
             Graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
         }
@@ -109,10 +121,20 @@ namespace HoboKing
         {
             SpriteBatch = new SpriteBatch(GraphicsDevice);
             SwitchScene(menuScene);
+            gameState = GameState.Menu;
         }
 
         protected override void Update(GameTime gameTime)
         {
+            Console.WriteLine($"Current state is: {gameState}");
+
+            if(gameState == GameState.Unloading)
+            {
+                // Doesn't work
+                // singleplayerScene.ReturnComponents().ToList().ForEach(o => o.Dispose());
+                // multiplayerScene.ReturnComponents().ToList().ForEach(o => o.Dispose());
+                gameState = GameState.Menu;
+            }
             InputController.Update();
             base.Update(gameTime);
         }
