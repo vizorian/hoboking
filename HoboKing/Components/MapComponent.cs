@@ -33,7 +33,6 @@ namespace HoboKing
         private Camera camera;
 
         private HoboKingGame hoboKingGame;
-        private Texture2D background = ContentLoader.Background;
 
         public int VisibleTilesX { get; set; }
         public int VisibleTilesY { get; set; }
@@ -394,6 +393,8 @@ namespace HoboKing
         {
             if (InputController.KeyPressed(Keys.Escape))
                 hoboKingGame.SwitchScene(hoboKingGame.menuScene);
+            // future pause menu
+                //hoboKingGame.menuScene.AddComponent(hoboKingGame.pauseComponent);
 
             world.Step((float)gameTime.ElapsedGameTime.TotalSeconds);
             camera.Follow(EntityManager.mainPlayer.Sprite);

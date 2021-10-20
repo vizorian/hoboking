@@ -72,12 +72,15 @@ namespace HoboKing.Graphics
         public static Texture2D SandLeft { get; private set; }
         public static Texture2D SandRight { get; private set; }
 
+        // Fonts
+        public static SpriteFont MenuFont { get; private set; }
+        public static SpriteFont DebugFont { get; private set; }
+
         // Other
         public static Texture2D BatChest { get; private set; }
         public static Texture2D TileTexture { get; private set; }
         public static Texture2D TileLeftTexture { get; private set; }
         public static Texture2D TileRightTexture { get; private set; }
-        public static SpriteFont Font { get; private set; }
         public static Texture2D Woodcutter { get; private set; }
         public static Texture2D Background { get; private set; }
 
@@ -145,13 +148,16 @@ namespace HoboKing.Graphics
             SandLeft = contentManager.Load<Texture2D>("Sand blocks\\SandLeft");
             SandRight = contentManager.Load<Texture2D>("Sand blocks\\SandRight");
 
+            // Fonts
+            MenuFont = contentManager.Load<SpriteFont>("Fonts\\MenuFont");
+            DebugFont = contentManager.Load<SpriteFont>("Fonts\\Debug");
+
             // Other
             BatChest = contentManager.Load<Texture2D>("batchest");
             TileTexture = contentManager.Load<Texture2D>("ground");
             TileLeftTexture = contentManager.Load<Texture2D>("ground_left");
             TileRightTexture = contentManager.Load<Texture2D>("ground_right");
             Woodcutter = contentManager.Load<Texture2D>("Critters\\Hobo Woodcutter\\Woodcutter");
-            Font = contentManager.Load<SpriteFont>("Debug");
             Background = contentManager.Load<Texture2D>("Background");
         }
     }

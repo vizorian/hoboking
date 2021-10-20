@@ -1,4 +1,5 @@
-﻿using HoboKing.Control;
+﻿using HoboKing.Components;
+using HoboKing.Control;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using System;
@@ -10,10 +11,12 @@ namespace HoboKing.States
     public class MenuComponent : Microsoft.Xna.Framework.DrawableGameComponent
     {
         private HoboKingGame hoboKingGame;
+        private MenuItemsComponent menuItems;
 
-        public MenuComponent(HoboKingGame hoboKingGame) : base(hoboKingGame)
+        public MenuComponent(HoboKingGame hoboKingGame, MenuItemsComponent menuItems) : base(hoboKingGame)
         {
             this.hoboKingGame = hoboKingGame;
+            this.menuItems = menuItems;
         }
 
         public override void Initialize()
@@ -29,12 +32,32 @@ namespace HoboKing.States
         public override void Update(GameTime gameTime)
         {
             if (InputController.KeyPressed(Keys.Enter))
-                hoboKingGame.SwitchScene(hoboKingGame.mapScene);
+                switch (menuItems.selectedMenuItem.text)
+                {
+                    case "Start Singleplayer":
+                        hoboKingGame.SwitchScene(hoboKingGame.mapScene);
+                        break;
+                    case "Start Multiplayer":
+                        hoboKingGame.SwitchScene(hoboKingGame.mapScene);
+                        break;
+                    case "Options":
+                        hoboKingGame.SwitchScene(hoboKingGame.optionsScene);
+                        break;
+                    case "Return":
+                        hoboKingGame.SwitchScene(hoboKingGame.menuScene);
+                        break;
+                    case "Exit Game":
+                        hoboKingGame.Exit();
+                        break;
+                    default:
+                        break;
+                }
             base.Update(gameTime);
         }
 
         public override void Draw(GameTime gameTime)
         {
+            GraphicsDevice.Clear(Color.Black);
             base.Draw(gameTime);
         }
     }

@@ -36,7 +36,7 @@ namespace HoboKing
         private Player player;
         private bool isMultiplayer = false;
 
-        public GameScene menuScene, mapScene;
+        public GameScene menuScene, optionsScene, mapScene;
 
         public HoboKingGame()
         {
@@ -66,13 +66,31 @@ namespace HoboKing
 
         protected override void Initialize()
         {
-            // creating components
+            Vector2 MenuPosition = new Vector2(GraphicsDevice.Viewport.Width / 4, 600);
+
+            // Creating components
+            // Creating map component
+            // Add singleplayer and multiplayer (with connector component) scenes?
             MapComponent map = new MapComponent(this);
+            
             //ConnectorComponent connector = new ConnectorComponent(this);
-            MenuComponent menu = new MenuComponent(this);
+
+            // Creating main menu items and component
+            MenuItemsComponent mainMenuItems = new MenuItemsComponent(this, MenuPosition, Color.White, Color.Green, 1);
+            mainMenuItems.AddMenuItem("Start Singleplayer");
+            mainMenuItems.AddMenuItem("Start Multiplayer");
+            mainMenuItems.AddMenuItem("Options");
+            mainMenuItems.AddMenuItem("Exit Game");
+            MenuComponent mainMenu = new MenuComponent(this, mainMenuItems);
+
+            // Creating options menu items and component
+            MenuItemsComponent optionsMenuItems = new MenuItemsComponent(this, MenuPosition, Color.White, Color.Green, 1);
+            optionsMenuItems.AddMenuItem("Return");
+            MenuComponent optionsMenu = new MenuComponent(this, optionsMenuItems);
 
             // Game scenes
-            menuScene = new GameScene(this, menu);
+            menuScene = new GameScene(this, mainMenu, mainMenuItems);
+            optionsScene = new GameScene(this, optionsMenu, optionsMenuItems);
             mapScene = new GameScene(this, map);
 
             // Disabling components
