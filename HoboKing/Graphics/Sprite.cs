@@ -40,6 +40,13 @@ namespace HoboKing.Graphics
             CreatePhysicsObjects(world, bodyType);
         }
 
+        public Sprite(Texture2D texture, Vector2 position, int size = 0)
+        {
+            Texture = texture;
+            Position = position;
+            Size = size != 0 ? new Rectangle((int)Position.X, (int)Position.Y, size, size) : new Rectangle((int)Position.X, (int)Position.Y, Texture.Width, Texture.Height);
+        }
+
         private void CreatePhysicsObjects(World world, BodyType bodyType)
         {
             body = world.CreateBody(Position * pixelToUnit, 0, bodyType);
@@ -67,9 +74,16 @@ namespace HoboKing.Graphics
 
         public void Update()
         {
-            Size.X = Convert.ToInt32(body.Position.X * unitToPixel);
-            Size.Y = Convert.ToInt32(body.Position.Y * unitToPixel);
-            Position = new Vector2(Size.X, Size.Y);
+            if (body != null)
+            {
+                Size.X = Convert.ToInt32(body.Position.X * unitToPixel);
+                Size.Y = Convert.ToInt32(body.Position.Y * unitToPixel);
+                Position = new Vector2(Size.X, Size.Y);
+            } else
+            {
+                Size.X = (int)Position.X;
+                Size.Y = (int)Position.Y;
+            }
         }
 
         public virtual void Draw(SpriteBatch spriteBatch)

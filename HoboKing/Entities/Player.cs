@@ -16,26 +16,23 @@ namespace HoboKing.Entities
 
         private Movement movement;
 
-        public Player(GraphicsDevice graphics, Texture2D texture, Vector2 position, string connectionId, bool isOtherPlayer, World world)
+        public Player(Texture2D texture, Vector2 position, string connectionId, bool isOtherPlayer, World world)
         {
             // Recalculates tiles to absolute coordinates
             float realPosX = position.X * MapComponent.TILE_SIZE;
             float realPosY = position.Y * MapComponent.TILE_SIZE;
 
-            Sprite = new Sprite(texture, new Vector2(realPosX, realPosY), world, BodyType.Dynamic, 60);
             ConnectionId = connectionId;
             IsOtherPlayer = isOtherPlayer;
+            if (isOtherPlayer)
+            {
+                Sprite = new Sprite(texture, new Vector2(realPosX, realPosY), 60);
+            }
+            else {
+                Sprite = new Sprite(texture, new Vector2(realPosX, realPosY), world, BodyType.Dynamic, 60);
+            }
         }
 
-        public Player(GraphicsDevice graphics, Texture2D texture, Vector2 position, bool isOtherPlayer, World world)
-        {
-            // Recalculates tiles to absolute coordinates
-            float realPosX = position.X * MapComponent.TILE_SIZE;
-            float realPosY = position.Y * MapComponent.TILE_SIZE;
-
-            Sprite = new Sprite(texture, new Vector2(realPosX, realPosY), world, BodyType.Dynamic, 60);
-            IsOtherPlayer = isOtherPlayer;
-        }
 
         public void Draw(SpriteBatch spriteBatch)
         {

@@ -99,7 +99,7 @@ namespace HoboKing
         // Creates main player for singleplayer
         public Player CreateMainPlayer()
         {
-            Player player = new Player(Graphics, ContentLoader.BatChest, new Vector2(PLAYER_START_POSITION_X, PLAYER_START_POSITION_Y), null, false, World);
+            Player player = new Player(ContentLoader.BatChest, new Vector2(PLAYER_START_POSITION_X, PLAYER_START_POSITION_Y), null, false, World);
             
             EntityManager.AddEntity(player);
             player.SetMovementStrategy(new PlayerMovement(player, World));
@@ -122,7 +122,7 @@ namespace HoboKing
             {
                 if (EntityManager.players.Find(p => p.ConnectionId == id) == null)
                 {
-                    Player p = new Player(Graphics, ContentLoader.BatChest, new Vector2(PLAYER_START_POSITION_X, PLAYER_START_POSITION_Y), id, true, World);
+                    Player p = new Player(ContentLoader.BatChest, new Vector2(PLAYER_START_POSITION_X, PLAYER_START_POSITION_Y), id, true, World);
 
                     Console.WriteLine($"Added a new player with ID {id}");
                     EntityManager.AddEntity(p);
