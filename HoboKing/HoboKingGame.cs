@@ -30,12 +30,9 @@ namespace HoboKing
         // should be 1080, reduced for fitting in screen
         public const int GAME_WINDOW_HEIGHT = 1000;
 
-        // approximate size to get a 1280x1080 game with side black bars
-        public const int TILE_SIZE = 20;
-
         private bool isMultiplayer = false;
 
-        public GameScene menuScene, optionsScene, mapScene;
+        public GameScene menuScene, optionsScene, singleplayerScene, multiplayerScene;
 
         public HoboKingGame()
         {
@@ -68,13 +65,14 @@ namespace HoboKing
             Vector2 MenuPosition = new Vector2(GraphicsDevice.Viewport.Width / 4, 600);
 
             // Creating components
-            // Creating map component
-            // Add singleplayer and multiplayer (with connector component) scenes?
-            MapComponent map = new MapComponent(this);
-            
-            //ConnectorComponent connector = new ConnectorComponent(this);
+            // Creating connector component
+            ConnectorComponent connector = new ConnectorComponent(this);
 
-            // Creating main menu items and component
+            // Creating map component
+            MapComponent singleplayerGame = new MapComponent(this);
+            MapComponent multiplayerGame = new MapComponent(this, connector);
+
+            // Creating MAIN MENU items and components
             MenuItemsComponent mainMenuItems = new MenuItemsComponent(this, MenuPosition, Color.White, Color.Green, 1);
             mainMenuItems.AddMenuItem("Start Singleplayer");
             mainMenuItems.AddMenuItem("Start Multiplayer");
@@ -82,7 +80,7 @@ namespace HoboKing
             mainMenuItems.AddMenuItem("Exit Game");
             MenuComponent mainMenu = new MenuComponent(this, mainMenuItems);
 
-            // Creating options menu items and component
+            // Creating OPTIONS MENU items and components
             MenuItemsComponent optionsMenuItems = new MenuItemsComponent(this, MenuPosition, Color.White, Color.Green, 1);
             optionsMenuItems.AddMenuItem("Return");
             MenuComponent optionsMenu = new MenuComponent(this, optionsMenuItems);
@@ -90,7 +88,8 @@ namespace HoboKing
             // Game scenes
             menuScene = new GameScene(this, mainMenu, mainMenuItems);
             optionsScene = new GameScene(this, optionsMenu, optionsMenuItems);
-            mapScene = new GameScene(this, map);
+            singleplayerScene = new GameScene(this, singleplayerGame);
+            multiplayerScene = new GameScene(this, multiplayerGame, connector);
 
             // Disabling components
             foreach (GameComponent component in Components)

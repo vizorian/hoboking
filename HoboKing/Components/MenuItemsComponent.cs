@@ -65,8 +65,6 @@ namespace HoboKing.Components
                 selectedMenuItem = menuItems[menuItems.Count - 1];
         }
 
-        
-
         public override void Initialize()
         {
             base.Initialize();

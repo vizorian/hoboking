@@ -35,10 +35,10 @@ namespace HoboKing.States
                 switch (menuItems.selectedMenuItem.text)
                 {
                     case "Start Singleplayer":
-                        hoboKingGame.SwitchScene(hoboKingGame.mapScene);
+                        hoboKingGame.SwitchScene(hoboKingGame.singleplayerScene);
                         break;
                     case "Start Multiplayer":
-                        hoboKingGame.SwitchScene(hoboKingGame.mapScene);
+                        hoboKingGame.SwitchScene(hoboKingGame.multiplayerScene);
                         break;
                     case "Options":
                         hoboKingGame.SwitchScene(hoboKingGame.optionsScene);

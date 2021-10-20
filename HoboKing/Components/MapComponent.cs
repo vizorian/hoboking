@@ -19,42 +19,56 @@ namespace HoboKing
 {
     class MapComponent : DrawableGameComponent
     {
-        public const int HOBO_START_POSITION_X = 20;
-        public const int HOBO_START_POSITION_Y = 93;
+        public const int PLAYER_START_POSITION_X = 20;
+        public const int PLAYER_START_POSITION_Y = 93;
 
+        // approximate size to get a 1280x1080 game with side black bars
         public const int TILE_SIZE = 20;
+
         public const int MAP_WIDTH = 64;
         public const int MAP_HEIGHT = 100;
+
+        private HoboKingGame hoboKingGame;
 
         private EntityManager EntityManager;
         private CritterBuilder CritterBuilder;
         private GraphicsDevice Graphics;
 
-        private Camera camera;
+        private ConnectorComponent Connector;
 
-        private HoboKingGame hoboKingGame;
+        private Camera Camera;
 
-        public int VisibleTilesX { get; set; }
-        public int VisibleTilesY { get; set; }
-        public string Level { get; set; }
+        private int VisibleTilesX { get; set; }
+        private int VisibleTilesY { get; set; }
+        private string Level { get; set; }
 
-        readonly Dictionary<char, Tile> tiles = new Dictionary<char, Tile>();
+        readonly Dictionary<char, Tile> Tiles = new Dictionary<char, Tile>();
 
-        private enum GameState
+        public enum GameState
         {
+            NotPlaying,
             Playing,
-            Pause,
         }
 
-        private GameState gameState;
+        public GameState gameState;
 
-        private World world;
-        private DebugView debugView;
-        private Player player;
+        private bool hasConnected = false;
+
+        private World World;
+        private DebugView DebugView;
+        private Player Player;
 
         public MapComponent(HoboKingGame hoboKingGame) : base(hoboKingGame)
         {
             this.hoboKingGame = hoboKingGame;
+            gameState = GameState.NotPlaying;
+        }
+
+        public MapComponent(HoboKingGame hoboKingGame, ConnectorComponent connector) : base(hoboKingGame)
+        {
+            this.hoboKingGame = hoboKingGame;
+            this.Connector = connector;
+            gameState = GameState.NotPlaying;
         }
 
         // Reads map data from file
@@ -85,81 +99,81 @@ namespace HoboKing
         // Creates main player for singleplayer
         public Player CreateMainPlayer()
         {
-            Player player = new Player(Graphics, ContentLoader.BatChest, new Vector2(HOBO_START_POSITION_X, HOBO_START_POSITION_Y), false, world);
-
+            Player player = new Player(Graphics, ContentLoader.BatChest, new Vector2(PLAYER_START_POSITION_X, PLAYER_START_POSITION_Y), null, false, World);
+            
             EntityManager.AddEntity(player);
-            player.SetMovementStrategy(new PlayerMovement(player, world));
+            player.SetMovementStrategy(new PlayerMovement(player, World));
             return player;
         }
 
         public Critter CreateDebugCritter()
         {
-            Critter critter = CritterBuilder.AddTexture(ContentLoader.Woodcutter, new Vector2(HOBO_START_POSITION_X + 16, HOBO_START_POSITION_Y + 36), 100, world)
-                .AddMovement(new DebugMovement(null, world)).AddSpeech("Hello baj, I seek shelter.", 20).Build();
+            Critter critter = CritterBuilder.AddTexture(ContentLoader.Woodcutter, new Vector2(PLAYER_START_POSITION_X + 16, PLAYER_START_POSITION_Y + 36), 100, World)
+                .AddMovement(new DebugMovement(null, World)).AddSpeech("Hello baj, I seek shelter.", 20).Build();
 
             EntityManager.AddEntity(critter);
             return critter;
         }
 
-        //// Add Player objects for all other connected players
-        //public void AddConnectedPlayers(Connector connector)
-        //{
-        //    foreach (var id in connector.ConnectionsIds)
-        //    {
-        //        if (entityManager.players.Find(p => p.ConnectionId == id) == null)
-        //        {
-        //            Player p = new Player(graphics, ContentLoader.BatChest, new Vector2(HOBO_START_POSITION_X, HOBO_START_POSITION_Y), id, true);
+        // Add Player objects for all other connected players
+        public void AddConnectedPlayers()
+        {
+            foreach (var id in Connector.ConnectionsIds)
+            {
+                if (EntityManager.players.Find(p => p.ConnectionId == id) == null)
+                {
+                    Player p = new Player(Graphics, ContentLoader.BatChest, new Vector2(PLAYER_START_POSITION_X, PLAYER_START_POSITION_Y), id, true, World);
 
-        //            Console.WriteLine($"Added a new player with ID {id}");
-        //            entityManager.AddEntity(p);
-        //        }
-        //    }
-        //}
+                    Console.WriteLine($"Added a new player with ID {id}");
+                    EntityManager.AddEntity(p);
+                }
+            }
+        }
 
-        //// Update player positions by cycling through input list
-        //public void UpdateConnectedPlayers(Connector connector)
-        //{
-        //    foreach (Coordinate coordinate in connector.UnprocessedInputs)
-        //    {
-        //        // Handle first input and remove it
-        //        Player p = entityManager.players.Find(p => p.ConnectionId == coordinate.ConnectionID);
-        //        if (p != null)
-        //        {
-        //            p.Sprite.Position = new Vector2(coordinate.X, coordinate.Y);
-        //            connector.UnprocessedInputs.Remove(coordinate);
-        //            break;
-        //        }
-        //        // Remove first input with no users (if user left)
-        //        else
-        //        {
-        //            connector.UnprocessedInputs.Remove(coordinate);
-        //            break;
-        //        }
-        //    }
-        //}
+        // Update player positions by cycling through input list
+        public void UpdateConnectedPlayers()
+        {
+            foreach (Coordinate coordinate in Connector.UnprocessedInputs)
+            {
+                // Handle first input and remove it
+                Player p = EntityManager.players.Find(p => p.ConnectionId == coordinate.ConnectionID);
+                if (p != null)
+                {
+                    p.Sprite.Position = new Vector2(coordinate.X, coordinate.Y);
+                    Connector.UnprocessedInputs.Remove(coordinate);
+                    break;
+                }
+                // Remove first input with no users (if user left)
+                else
+                {
+                    Connector.UnprocessedInputs.Remove(coordinate);
+                    break;
+                }
+            }
+        }
 
-        //// Remove Player objects that don't have an owner and are not the main player
-        //public void RemoveConnectedPlayers(Connector connector)
-        //{
-        //    foreach (var player in entityManager.players)
-        //    {
-        //        if (player.IsOtherPlayer)
-        //        {
-        //            if (!connector.ConnectionsIds.Contains(player.ConnectionId))
-        //            {
-        //                entityManager.RemoveEntity(player);
-        //                break;
-        //            }
-        //        }
-        //    }
-        //}
+        // Remove Player objects that don't have an owner and are not the main player
+        public void RemoveConnectedPlayers()
+        {
+            foreach (var player in EntityManager.players)
+            {
+                if (player.IsOtherPlayer)
+                {
+                    if (!Connector.ConnectionsIds.Contains(player.ConnectionId))
+                    {
+                        EntityManager.RemoveEntity(player);
+                        break;
+                    }
+                }
+            }
+        }
 
         // This is where you can set tile types for now
         private void CreateTileTypes()
         {
-            tiles.Add('#', new Standard(ContentLoader.TileTexture, new Vector2(0, 0), TILE_SIZE, world));
-            tiles.Add('<', new SlopeLeft(ContentLoader.TileTexture, new Vector2(0, 0), TILE_SIZE, world));
-            tiles.Add('>', new SlopeRight(ContentLoader.TileTexture, new Vector2(0, 0), TILE_SIZE, world));
+            Tiles.Add('#', new Standard(ContentLoader.TileTexture, new Vector2(0, 0), TILE_SIZE, World));
+            Tiles.Add('<', new SlopeLeft(ContentLoader.TileTexture, new Vector2(0, 0), TILE_SIZE, World));
+            Tiles.Add('>', new SlopeRight(ContentLoader.TileTexture, new Vector2(0, 0), TILE_SIZE, World));
         }
 
         public void DrawEntities(SpriteBatch spriteBatch)
@@ -332,39 +346,39 @@ namespace HoboKing
             }
         }
 
-        private void AddTile(int x, int y, char TileID, string tileType)
+        private void AddTile(int x, int y, char tileID, string tileType)
         {
             // Draw platform blocks here
-            if (tiles.ContainsKey(TileID))
+            if (Tiles.ContainsKey(tileID))
             {
-                Tile tile = tiles[TileID];
+                Tile tile = Tiles[tileID];
 
                 if (tileType == "standard")
                 {
-                    Tile newTile = new Standard(tile.Sprite.Texture, new Vector2(x * TILE_SIZE, y * TILE_SIZE), tile.TileSize, world);
+                    Tile newTile = new Standard(tile.Sprite.Texture, new Vector2(x * TILE_SIZE, y * TILE_SIZE), tile.TileSize, World);
                     EntityManager.AddEntity(newTile);
                 }
                 else if (tileType == "slopeleft")
                 {
-                    Tile newTile = new SlopeLeft(ContentLoader.GrassLeft, new Vector2(x * TILE_SIZE, y * TILE_SIZE), tile.TileSize, world);
+                    Tile newTile = new SlopeLeft(ContentLoader.GrassLeft, new Vector2(x * TILE_SIZE, y * TILE_SIZE), tile.TileSize, World);
                     EntityManager.AddEntity(newTile);
                 }
                 else if (tileType == "sloperight")
                 {
-                    Tile newTile = new SlopeRight(ContentLoader.GrassRight, new Vector2(x * TILE_SIZE, y * TILE_SIZE), tile.TileSize, world);
+                    Tile newTile = new SlopeRight(ContentLoader.GrassRight, new Vector2(x * TILE_SIZE, y * TILE_SIZE), tile.TileSize, World);
                     EntityManager.AddEntity(newTile);
                 }
             }
             else
             {
-                throw new Exception($"Tile type ({TileID}) doesn't exist");
+                throw new Exception($"Tile type ({tileID}) doesn't exist");
             }
         }
 
         public override void Initialize()
         {
-            world = new World(Vector2.UnitY * 9.8f);
-            debugView = new DebugView(world);
+            World = new World(Vector2.UnitY * 9.8f);
+            DebugView = new DebugView(World);
             EntityManager = new EntityManager();
             CritterBuilder = new CritterBuilder();
             Graphics = hoboKingGame.Graphics.GraphicsDevice;
@@ -382,10 +396,12 @@ namespace HoboKing
             ContentLoader.LoadContent(hoboKingGame.Content);
             CreateTileTypes();
             CreateMap();
-            player = CreateMainPlayer();
+            Player = CreateMainPlayer();
             CreateDebugCritter();
             UpdateTextures();
-            camera = new Camera();
+            Camera = new Camera();
+            gameState = GameState.Playing;
+
             base.LoadContent();
         }
 
@@ -394,20 +410,36 @@ namespace HoboKing
             if (InputController.KeyPressed(Keys.Escape))
                 hoboKingGame.SwitchScene(hoboKingGame.menuScene);
             // future pause menu
-                //hoboKingGame.menuScene.AddComponent(hoboKingGame.pauseComponent);
+            //hoboKingGame.menuScene.AddComponent(hoboKingGame.pauseComponent);
 
-            world.Step((float)gameTime.ElapsedGameTime.TotalSeconds);
-            camera.Follow(EntityManager.mainPlayer.Sprite);
+
+            if (Connector != null && !hasConnected)
+            {
+                Connector.Connect();
+                Player.ConnectionId = Connector.GetConnectionId();
+                hasConnected = true;
+            }
+
+            if (Connector != null && hasConnected)
+            {
+                Connector.SendData(gameTime, Player.Sprite.Position);
+                AddConnectedPlayers();
+                UpdateConnectedPlayers();
+                RemoveConnectedPlayers();
+            }
+
+            World.Step((float)gameTime.ElapsedGameTime.TotalSeconds);
+            Camera.Follow(EntityManager.mainPlayer.Sprite);
             EntityManager.Update(gameTime);
             base.Update(gameTime);
         }
 
         public override void Draw(GameTime gameTime)
         {
-            hoboKingGame.SpriteBatch.Begin(transformMatrix: camera.Transform);
+            hoboKingGame.SpriteBatch.Begin(transformMatrix: Camera.Transform);
             hoboKingGame.SpriteBatch.Draw(ContentLoader.Background, new Rectangle(0, 0, HoboKingGame.GAME_WINDOW_WIDTH, HoboKingGame.GAME_WINDOW_HEIGHT), Color.White);
             EntityManager.Draw(hoboKingGame.SpriteBatch);
-            EntityManager.DrawDebug(debugView, Graphics, hoboKingGame.Content);
+            EntityManager.DrawDebug(DebugView, Graphics, hoboKingGame.Content);
             hoboKingGame.SpriteBatch.End();
             base.Draw(gameTime);
         }
