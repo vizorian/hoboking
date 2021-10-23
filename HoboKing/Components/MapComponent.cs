@@ -181,13 +181,13 @@ namespace HoboKing
                             // Empty blocks (background tiles)
                             break;
                         case '#':
-                            AddTile(x, y, TileID, "standard");
+                            AddTile(x, y, TileID);
                             break;
                         case '<':
-                            AddTile(x, y, TileID, "slopeleft");
+                            AddTile(x, y, TileID);
                             break;
                         case '>':
-                            AddTile(x, y, TileID, "sloperight");
+                            AddTile(x, y, TileID);
                             break;
                         default:
                             break;
@@ -333,27 +333,33 @@ namespace HoboKing
             }
         }
 
-        private void AddTile(int x, int y, char tileID, string tileType)
+        private void AddTile(int x, int y, char tileID)
         {
+            Vector2 tilePosition = new Vector2(x * TILE_SIZE, y * TILE_SIZE);
             // Draw platform blocks here
             if (Tiles.ContainsKey(tileID))
             {
                 Tile tile = Tiles[tileID];
 
-                if (tileType == "standard")
+                if (tile is Standard)
                 {
-                    Tile newTile = new Standard(tile.Sprite.Texture, new Vector2(x * TILE_SIZE, y * TILE_SIZE), tile.TileSize, World);
-                    EntityManager.AddEntity(newTile);
+                    Tile prototype = tile.DeepCopy() as Standard;
+                    prototype.Sprite.ChangePosition(tilePosition);
+                    EntityManager.AddEntity(prototype);
                 }
-                else if (tileType == "slopeleft")
+                else if (tile is SlopeLeft)
                 {
-                    Tile newTile = new SlopeLeft(ContentLoader.GrassLeft, new Vector2(x * TILE_SIZE, y * TILE_SIZE), tile.TileSize, World);
-                    EntityManager.AddEntity(newTile);
+                    Tile prototype = tile.DeepCopy() as SlopeLeft;
+                    prototype.Sprite.ChangePosition(tilePosition);
+                    prototype.Sprite.ChangeTexture(ContentLoader.GrassLeft);
+                    EntityManager.AddEntity(prototype);
                 }
-                else if (tileType == "sloperight")
+                else if (tile is SlopeRight)
                 {
-                    Tile newTile = new SlopeRight(ContentLoader.GrassRight, new Vector2(x * TILE_SIZE, y * TILE_SIZE), tile.TileSize, World);
-                    EntityManager.AddEntity(newTile);
+                    Tile prototype = tile.DeepCopy() as SlopeRight;
+                    prototype.Sprite.ChangePosition(tilePosition);
+                    prototype.Sprite.ChangeTexture(ContentLoader.GrassRight);
+                    EntityManager.AddEntity(prototype);
                 }
             }
             else

@@ -4,6 +4,7 @@ using HoboKing.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
 using tainicom.Aether.Physics2D.Dynamics;
 
 namespace HoboKing.Entities
@@ -17,6 +18,8 @@ namespace HoboKing.Entities
 
         private Movement movement;
         private bool isOnGround = true;
+
+        private World world;
 
         public Player(Texture2D texture, Vector2 position, string connectionId, bool isOtherPlayer, World world)
         {
@@ -35,6 +38,8 @@ namespace HoboKing.Entities
             }
 
             SetMovementStrategy(new PlayerMovement(this));
+
+            this.world = world;
         }
 
 
@@ -63,6 +68,26 @@ namespace HoboKing.Entities
                 }
             }
             movement.AcceptInputs(gameTime);
+        }
+
+        public IGameEntity ShallowCopy()
+        {
+            return MemberwiseClone() as Player;
+        }
+
+        public IGameEntity DeepCopy()
+        {
+            var clone = MemberwiseClone() as Player;
+            if (IsOtherPlayer)
+            {
+                clone.Sprite = new Sprite(Sprite.Texture, Sprite.Position, 60);
+            }
+            else
+            {
+                clone.Sprite = new Sprite(Sprite.Texture, Sprite.Position, world, BodyType.Dynamic, 60);
+            }
+            clone.ConnectionId = new string(ConnectionId);
+            return clone;
         }
     }
 }

@@ -20,12 +20,14 @@ namespace HoboKing.Graphics
         public Body body;
         private Rectangle Size;
         private Fixture fixture;
+        private int tileSize;
 
         // If size = 0, sprite stays default, if size is specified, then the sprite is resized
         public Sprite(Texture2D texture, Vector2 position, World world, int size = 0)
         {
             Texture = texture;
             Position = position;
+            tileSize = size;
             Size = size != 0 ? new Rectangle((int)Position.X, (int)Position.Y, size, size) : new Rectangle((int)Position.X, (int)Position.Y, Texture.Width, Texture.Height);
             CreatePhysicsObjects(world, BodyType.Static);
         }
@@ -34,6 +36,8 @@ namespace HoboKing.Graphics
         {
             Texture = texture;
             Position = position;
+            tileSize = size;
+
             Size = size != 0 ? new Rectangle((int)Position.X, (int)Position.Y, size, size) : new Rectangle((int)Position.X, (int)Position.Y, Texture.Width, Texture.Height);
             CreatePhysicsObjects(world, bodyType);
         }
@@ -43,6 +47,8 @@ namespace HoboKing.Graphics
         {
             Texture = texture;
             Position = position;
+            tileSize = size;
+
             Size = size != 0 ? new Rectangle((int)Position.X, (int)Position.Y, size, size) : new Rectangle((int)Position.X, (int)Position.Y, Texture.Width, Texture.Height);
         }
 
@@ -85,6 +91,13 @@ namespace HoboKing.Graphics
         public void ChangeTexture(Texture2D texture)
         {
             Texture = texture;
+        }
+
+        public void ChangePosition(Vector2 newPosition)
+        {
+            Position = newPosition;
+            Size = tileSize != 0 ? new Rectangle((int)Position.X, (int)Position.Y, tileSize, tileSize) : new Rectangle((int)Position.X, (int)Position.Y, Texture.Width, Texture.Height);
+            body.Position = newPosition * pixelToUnit;
         }
 
         public void UseGravity(bool useGravity)
