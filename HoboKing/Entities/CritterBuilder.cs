@@ -1,4 +1,5 @@
 ﻿using HoboKing.Control;
+using HoboKing.Control.Strategy;
 using HoboKing.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -11,31 +12,30 @@ namespace HoboKing.Entities
 {
     class CritterBuilder
     {
+        private Critter critter;
         public CritterBuilder()
         {
             Reset();
         }
 
-        private Critter critter;
-
         public void Reset()
         {
-            this.critter = new Critter();
+            critter = new Critter();
         }
 
-        public CritterBuilder AddTexture(Texture2D texture, Vector2 position, int size, World world)
+        public CritterBuilder AddTexture(Texture2D texture, Vector2 position, int size)
         {
             // Recalculates tiles to absolute coordinates
             position.X *= MapComponent.TILE_SIZE;
             position.Y *= MapComponent.TILE_SIZE;
 
-            critter.Sprite = new Sprite(texture, position, world, size);
+            critter.Sprite = new Sprite(texture, position, size);
             return this;
         }
 
-        public CritterBuilder AddMovement(Movement movement)
+        public CritterBuilder AddMovement()
         {
-            critter.SetMovementStrategy(movement);
+            critter.SetMovementStrategy(new CritterMovement(critter));
             return this;
         }
 
@@ -46,8 +46,8 @@ namespace HoboKing.Entities
 
         public Critter Build()
         {
-            Critter finalCritter = this.critter;
-            this.Reset();
+            Critter finalCritter = critter;
+            Reset();
             return finalCritter;
         }
     }

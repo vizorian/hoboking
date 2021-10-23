@@ -1,4 +1,5 @@
 ﻿using HoboKing.Control;
+using HoboKing.Control.Strategy;
 using HoboKing.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -15,6 +16,7 @@ namespace HoboKing.Entities
         public bool IsOtherPlayer { get; set; }
 
         private Movement movement;
+        private bool isOnGround = true;
 
         public Player(Texture2D texture, Vector2 position, string connectionId, bool isOtherPlayer, World world)
         {
@@ -31,6 +33,8 @@ namespace HoboKing.Entities
             else {
                 Sprite = new Sprite(texture, new Vector2(realPosX, realPosY), world, BodyType.Dynamic, 60);
             }
+
+            SetMovementStrategy(new PlayerMovement(this));
         }
 
 
@@ -45,51 +49,20 @@ namespace HoboKing.Entities
         }
 
         public void Update(GameTime gameTime)
-        {    
-            InputControls(gameTime);
-        }
-
-        private void InputControls(GameTime gameTime)
         {
-            // JUMP
-            if (InputController.KeyPressed(Keys.Space))
+            // Switches between movements when F2 is pressed.
+            if (InputController.KeyPressed(Keys.F2))
             {
-                movement.Up(gameTime);
+                if (movement is PlayerMovement)
+                {
+                    SetMovementStrategy(new DebugMovement(this));
+                }
+                else if (movement is DebugMovement)
+                {
+                    SetMovementStrategy(new PlayerMovement(this));
+                }
             }
-            if (InputController.KeyReleased(Keys.Space))
-            {
-            }
-
-            // LEFT, RIGHT
-            if (InputController.KeyPressedDown(Keys.A))
-            {
-                movement.Walk("left", gameTime);
-            }
-            if (InputController.KeyPressedDown(Keys.D))
-            {
-                movement.Walk("right", gameTime);
-            }
-            if (InputController.KeyReleased(Keys.A) || InputController.KeyReleased(Keys.D))
-            {
-            }
-
-            // DOWN
-            if (InputController.KeyPressedDown(Keys.S))
-            {
-                movement.Down(gameTime);
-            }
-            if (InputController.KeyReleased(Keys.S))
-            {
-            }
-
-            // UP
-            if (InputController.KeyPressedDown(Keys.W))
-            {
-                movement.Up(gameTime);
-            }
-            if (InputController.KeyReleased(Keys.W))
-            {
-            }
+            movement.AcceptInputs(gameTime);
         }
     }
 }

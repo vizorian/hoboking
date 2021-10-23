@@ -1,9 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
-using tainicom.Aether.Physics2D.Diagnostics;
 using tainicom.Aether.Physics2D.Dynamics;
 
 namespace HoboKing.Graphics
@@ -40,6 +38,7 @@ namespace HoboKing.Graphics
             CreatePhysicsObjects(world, bodyType);
         }
 
+        // No physics constructor
         public Sprite(Texture2D texture, Vector2 position, int size = 0)
         {
             Texture = texture;
@@ -61,15 +60,6 @@ namespace HoboKing.Graphics
                 fixture.Restitution = RESTITUTION;
                 fixture.Friction = FRICTION;
             }
-        }
-
-        public void DrawDebug(DebugView debugView, GraphicsDevice graphics, ContentManager content)
-        {
-            //debugView.LoadContent(graphics, content);
-            //Matrix projection = Matrix.CreateOrthographic(500, 500, 0, 0);
-            //debugView.BeginCustomDraw(projection, Matrix.view)
-            //debugView.RenderDebugData(ref projection);
-            //debugView.DrawShape(fixture, body.GetTransform(), Color.Black);
         }
 
         public void Update()
@@ -95,6 +85,11 @@ namespace HoboKing.Graphics
         public void ChangeTexture(Texture2D texture)
         {
             Texture = texture;
+        }
+
+        public void UseGravity(bool useGravity)
+        {
+            body.IgnoreGravity = !useGravity;
         }
     }
 }

@@ -13,7 +13,7 @@ using System.IO;
 using System.Text;
 using tainicom.Aether.Physics2D.Dynamics;
 using tainicom.Aether.Physics2D.Diagnostics;
-
+using HoboKing.Control.Strategy;
 
 namespace HoboKing
 {
@@ -55,7 +55,6 @@ namespace HoboKing
         private bool hasConnected = false;
 
         private World World;
-        private DebugView DebugView;
         private Player Player;
 
         public MapComponent(HoboKingGame hoboKingGame) : base(hoboKingGame)
@@ -100,16 +99,14 @@ namespace HoboKing
         public Player CreateMainPlayer()
         {
             Player player = new Player(ContentLoader.BatChest, new Vector2(PLAYER_START_POSITION_X, PLAYER_START_POSITION_Y), null, false, World);
-            
             EntityManager.AddEntity(player);
-            player.SetMovementStrategy(new PlayerMovement(player, World));
             return player;
         }
 
         public Critter CreateDebugCritter()
         {
-            Critter critter = CritterBuilder.AddTexture(ContentLoader.Woodcutter, new Vector2(PLAYER_START_POSITION_X + 16, PLAYER_START_POSITION_Y + 36), 100, World)
-                .AddMovement(new DebugMovement(null, World)).AddSpeech("Hello baj, I seek shelter.", 20).Build();
+            Critter critter = CritterBuilder.AddTexture(ContentLoader.Woodcutter, new Vector2(PLAYER_START_POSITION_X + 16, PLAYER_START_POSITION_Y - 2), 100)
+                .AddMovement().AddSpeech("Hello baj, I seek shelter.", 20).Build();
 
             EntityManager.AddEntity(critter);
             return critter;
@@ -378,7 +375,6 @@ namespace HoboKing
         public override void Initialize()
         {
             World = new World(Vector2.UnitY * 9.8f);
-            DebugView = new DebugView(World);
             EntityManager = new EntityManager();
             CritterBuilder = new CritterBuilder();
             Graphics = hoboKingGame.Graphics.GraphicsDevice;
@@ -439,7 +435,6 @@ namespace HoboKing
             hoboKingGame.SpriteBatch.Begin(transformMatrix: Camera.Transform);
             hoboKingGame.SpriteBatch.Draw(ContentLoader.Background, new Rectangle(0, 0, HoboKingGame.GAME_WINDOW_WIDTH, HoboKingGame.GAME_WINDOW_HEIGHT), Color.White);
             EntityManager.Draw(hoboKingGame.SpriteBatch);
-            EntityManager.DrawDebug(DebugView, Graphics, hoboKingGame.Content);
             hoboKingGame.SpriteBatch.End();
             base.Draw(gameTime);
         }
