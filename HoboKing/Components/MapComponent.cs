@@ -44,14 +44,6 @@ namespace HoboKing
 
         readonly Dictionary<char, Tile> Tiles = new Dictionary<char, Tile>();
 
-        public enum GameState
-        {
-            NotPlaying,
-            Playing,
-        }
-
-        public GameState gameState;
-
         private bool hasConnected = false;
 
         private World World;
@@ -60,14 +52,12 @@ namespace HoboKing
         public MapComponent(HoboKingGame hoboKingGame) : base(hoboKingGame)
         {
             this.hoboKingGame = hoboKingGame;
-            gameState = GameState.NotPlaying;
         }
 
         public MapComponent(HoboKingGame hoboKingGame, ConnectorComponent connector) : base(hoboKingGame)
         {
             this.hoboKingGame = hoboKingGame;
             this.Connector = connector;
-            gameState = GameState.NotPlaying;
         }
 
         // Reads map data from file
@@ -374,6 +364,8 @@ namespace HoboKing
 
         public override void Initialize()
         {
+            hoboKingGame.gameState = HoboKingGame.GameState.Loading;
+
             World = new World(Vector2.UnitY * 9.8f);
             EntityManager = new EntityManager();
             CritterBuilder = new CritterBuilder();
@@ -396,15 +388,16 @@ namespace HoboKing
             CreateDebugCritter();
             UpdateTextures();
             Camera = new Camera();
-            gameState = GameState.Playing;
-
             base.LoadContent();
         }
 
         public override void Update(GameTime gameTime)
         {
             if (InputController.KeyPressed(Keys.Escape))
+            {
                 hoboKingGame.SwitchScene(hoboKingGame.menuScene);
+                hoboKingGame.gameState = HoboKingGame.GameState.Unloading;
+            }
             // future pause menu
             //hoboKingGame.menuScene.AddComponent(hoboKingGame.pauseComponent);
 
@@ -414,6 +407,7 @@ namespace HoboKing
                 Connector.Connect();
                 Player.ConnectionId = Connector.GetConnectionId();
                 hasConnected = true;
+                hoboKingGame.gameState = HoboKingGame.GameState.Multiplayer;
             }
 
             if (Connector != null && hasConnected)
