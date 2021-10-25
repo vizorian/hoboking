@@ -1,4 +1,5 @@
 ﻿using HoboKing.Control;
+using HoboKing.Control.Strategy;
 using HoboKing.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -11,19 +12,19 @@ namespace HoboKing.Entities
 {
     class ObjectBuilder : StuffBuilder
     {
-        public override StuffBuilder AddMovement(Movement movement)
+        public override StuffBuilder AddMovement()
         {
-            (entity as Object).SetMovementStrategy(movement);
+            (entity as Object).SetMovementStrategy(new CritterMovement(entity));
             return this;
         }
 
-        public override StuffBuilder AddTexture(Texture2D texture, Vector2 position, int size, World world)
+        public override StuffBuilder AddTexture(Texture2D texture, Vector2 position, int size)
         {
             // Recalculates tiles to absolute coordinates
             position.X *= MapComponent.TILE_SIZE;
             position.Y *= MapComponent.TILE_SIZE;
 
-            entity.Sprite = new Sprite(texture, position, world, size);
+            entity.Sprite = new Sprite(texture, position, size);
             return this;
         }
 

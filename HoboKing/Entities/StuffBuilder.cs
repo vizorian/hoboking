@@ -20,8 +20,8 @@ namespace HoboKing.Entities
 
         public abstract void Reset();
 
-        public abstract StuffBuilder AddTexture(Texture2D texture, Vector2 position, int size, World world);
-        public abstract StuffBuilder AddMovement(Movement movement);
+        public abstract StuffBuilder AddTexture(Texture2D texture, Vector2 position, int size);
+        public abstract StuffBuilder AddMovement();
 
         public abstract IGameEntity Build();
     }

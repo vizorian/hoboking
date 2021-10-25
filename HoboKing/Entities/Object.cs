@@ -32,5 +32,17 @@ namespace HoboKing.Entities
         {
             Sprite.Update();
         }
+
+        public IGameEntity ShallowCopy()
+        {
+            return MemberwiseClone() as Object;
+        }
+
+        public IGameEntity DeepCopy()
+        {
+            var clone = MemberwiseClone() as Object;
+            clone.Sprite = new Sprite(Sprite.Texture, Sprite.Position, 60);
+            return clone;
+        }
     }
 }

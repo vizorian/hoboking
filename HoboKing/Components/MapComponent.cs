@@ -95,8 +95,8 @@ namespace HoboKing
 
         public Entities.Object CreateDebugCritter()
         {
-            Entities.Object @object = ObjectBuilder.AddTexture(ContentLoader.Woodcutter, new Vector2(PLAYER_START_POSITION_X + 16, PLAYER_START_POSITION_Y + 30), 100, World)
-                .AddMovement().Build() as Entities.Object;
+            Entities.Object @object = ObjectBuilder.AddTexture(ContentLoader.Woodcutter, new Vector2(PLAYER_START_POSITION_X + 16, PLAYER_START_POSITION_Y - 2), 100)
+                .AddMovement().Build() as Entities.Object;  
 
             EntityManager.AddEntity(@object);
             return @object;
