@@ -1,8 +1,10 @@
 ﻿using HoboKing.Control;
+using HoboKing.Control.Strategy;
 using HoboKing.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
 using tainicom.Aether.Physics2D.Dynamics;
 
 namespace HoboKing.Entities
@@ -15,6 +17,9 @@ namespace HoboKing.Entities
         public bool IsOtherPlayer { get; set; }
 
         private Movement movement;
+        private bool isOnGround = true;
+
+        private World world;
 
         public Player(Texture2D texture, Vector2 position, string connectionId, bool isOtherPlayer, World world)
         {
@@ -31,6 +36,10 @@ namespace HoboKing.Entities
             else {
                 Sprite = new Sprite(texture, new Vector2(realPosX, realPosY), world, BodyType.Dynamic, 60);
             }
+
+            SetMovementStrategy(new PlayerMovement(this));
+
+            this.world = world;
         }
 
 
@@ -45,51 +54,40 @@ namespace HoboKing.Entities
         }
 
         public void Update(GameTime gameTime)
-        {    
-            InputControls(gameTime);
+        {
+            // Switches between movements when F2 is pressed.
+            if (InputController.KeyPressed(Keys.F2))
+            {
+                if (movement is PlayerMovement)
+                {
+                    SetMovementStrategy(new DebugMovement(this));
+                }
+                else if (movement is DebugMovement)
+                {
+                    SetMovementStrategy(new PlayerMovement(this));
+                }
+            }
+            movement.AcceptInputs(gameTime);
         }
 
-        private void InputControls(GameTime gameTime)
+        public IGameEntity ShallowCopy()
         {
-            // JUMP
-            if (InputController.KeyPressed(Keys.Space))
-            {
-                movement.Up(gameTime);
-            }
-            if (InputController.KeyReleased(Keys.Space))
-            {
-            }
+            return MemberwiseClone() as Player;
+        }
 
-            // LEFT, RIGHT
-            if (InputController.KeyPressedDown(Keys.A))
+        public IGameEntity DeepCopy()
+        {
+            var clone = MemberwiseClone() as Player;
+            if (IsOtherPlayer)
             {
-                movement.Walk("left", gameTime);
+                clone.Sprite = new Sprite(Sprite.Texture, Sprite.Position, 60);
             }
-            if (InputController.KeyPressedDown(Keys.D))
+            else
             {
-                movement.Walk("right", gameTime);
+                clone.Sprite = new Sprite(Sprite.Texture, Sprite.Position, world, BodyType.Dynamic, 60);
             }
-            if (InputController.KeyReleased(Keys.A) || InputController.KeyReleased(Keys.D))
-            {
-            }
-
-            // DOWN
-            if (InputController.KeyPressedDown(Keys.S))
-            {
-                movement.Down(gameTime);
-            }
-            if (InputController.KeyReleased(Keys.S))
-            {
-            }
-
-            // UP
-            if (InputController.KeyPressedDown(Keys.W))
-            {
-                movement.Up(gameTime);
-            }
-            if (InputController.KeyReleased(Keys.W))
-            {
-            }
+            clone.ConnectionId = new string(ConnectionId);
+            return clone;
         }
     }
 }

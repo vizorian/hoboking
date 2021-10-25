@@ -1,9 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
-using tainicom.Aether.Physics2D.Diagnostics;
 using tainicom.Aether.Physics2D.Dynamics;
 
 namespace HoboKing.Graphics
@@ -22,12 +20,14 @@ namespace HoboKing.Graphics
         public Body body;
         private Rectangle Size;
         private Fixture fixture;
+        private int tileSize;
 
         // If size = 0, sprite stays default, if size is specified, then the sprite is resized
         public Sprite(Texture2D texture, Vector2 position, World world, int size = 0)
         {
             Texture = texture;
             Position = position;
+            tileSize = size;
             Size = size != 0 ? new Rectangle((int)Position.X, (int)Position.Y, size, size) : new Rectangle((int)Position.X, (int)Position.Y, Texture.Width, Texture.Height);
             CreatePhysicsObjects(world, BodyType.Static);
         }
@@ -36,14 +36,19 @@ namespace HoboKing.Graphics
         {
             Texture = texture;
             Position = position;
+            tileSize = size;
+
             Size = size != 0 ? new Rectangle((int)Position.X, (int)Position.Y, size, size) : new Rectangle((int)Position.X, (int)Position.Y, Texture.Width, Texture.Height);
             CreatePhysicsObjects(world, bodyType);
         }
 
+        // No physics constructor
         public Sprite(Texture2D texture, Vector2 position, int size = 0)
         {
             Texture = texture;
             Position = position;
+            tileSize = size;
+
             Size = size != 0 ? new Rectangle((int)Position.X, (int)Position.Y, size, size) : new Rectangle((int)Position.X, (int)Position.Y, Texture.Width, Texture.Height);
         }
 
@@ -61,15 +66,6 @@ namespace HoboKing.Graphics
                 fixture.Restitution = RESTITUTION;
                 fixture.Friction = FRICTION;
             }
-        }
-
-        public void DrawDebug(DebugView debugView, GraphicsDevice graphics, ContentManager content)
-        {
-            //debugView.LoadContent(graphics, content);
-            //Matrix projection = Matrix.CreateOrthographic(500, 500, 0, 0);
-            //debugView.BeginCustomDraw(projection, Matrix.view)
-            //debugView.RenderDebugData(ref projection);
-            //debugView.DrawShape(fixture, body.GetTransform(), Color.Black);
         }
 
         public void Update()
@@ -95,6 +91,18 @@ namespace HoboKing.Graphics
         public void ChangeTexture(Texture2D texture)
         {
             Texture = texture;
+        }
+
+        public void ChangePosition(Vector2 newPosition)
+        {
+            Position = newPosition;
+            Size = tileSize != 0 ? new Rectangle((int)Position.X, (int)Position.Y, tileSize, tileSize) : new Rectangle((int)Position.X, (int)Position.Y, Texture.Width, Texture.Height);
+            body.Position = newPosition * pixelToUnit;
+        }
+
+        public void UseGravity(bool useGravity)
+        {
+            body.IgnoreGravity = !useGravity;
         }
     }
 }

@@ -10,5 +10,8 @@ namespace HoboKing.Entities
 
         void Update(GameTime gameTime);
         void Draw(SpriteBatch spriteBatch);
+
+        public IGameEntity ShallowCopy();
+        public IGameEntity DeepCopy();
     }
 }

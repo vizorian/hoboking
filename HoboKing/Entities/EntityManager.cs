@@ -68,6 +68,10 @@ namespace HoboKing.Entities
                 {
                     entity.Update(gameTime);
                 }
+                if (entity is Critter)
+                {
+                    entity.Update(gameTime);
+                }
             }
             foreach (IGameEntity entity in _entitiesToAdd)
             {
@@ -88,14 +92,6 @@ namespace HoboKing.Entities
             foreach(IGameEntity entity in _entities)
             {
                 entity.Draw(spriteBatch);
-            }
-        }
-
-        public void DrawDebug(DebugView debugView, GraphicsDevice graphics, ContentManager content)
-        {
-            foreach (IGameEntity entity in _entities)
-            {
-                entity.Sprite.DrawDebug(debugView, graphics, content);
             }
         }
 

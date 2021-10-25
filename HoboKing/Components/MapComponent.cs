@@ -13,7 +13,7 @@ using System.IO;
 using System.Text;
 using tainicom.Aether.Physics2D.Dynamics;
 using tainicom.Aether.Physics2D.Diagnostics;
-
+using HoboKing.Control.Strategy;
 
 namespace HoboKing
 {
@@ -47,7 +47,6 @@ namespace HoboKing
         private bool hasConnected = false;
 
         private World World;
-        private DebugView DebugView;
         private Player Player;
 
         public MapComponent(HoboKingGame hoboKingGame) : base(hoboKingGame)
@@ -90,16 +89,14 @@ namespace HoboKing
         public Player CreateMainPlayer()
         {
             Player player = new Player(ContentLoader.BatChest, new Vector2(PLAYER_START_POSITION_X, PLAYER_START_POSITION_Y), null, false, World);
-            
             EntityManager.AddEntity(player);
-            player.SetMovementStrategy(new PlayerMovement(player, World));
             return player;
         }
 
         public Entities.Object CreateDebugCritter()
         {
             Entities.Object @object = ObjectBuilder.AddTexture(ContentLoader.Woodcutter, new Vector2(PLAYER_START_POSITION_X + 16, PLAYER_START_POSITION_Y + 30), 100, World)
-                .AddMovement(new DebugMovement(null, World)).Build() as Entities.Object;
+                .AddMovement().Build() as Entities.Object;
 
             EntityManager.AddEntity(@object);
             return @object;
@@ -184,13 +181,13 @@ namespace HoboKing
                             // Empty blocks (background tiles)
                             break;
                         case '#':
-                            AddTile(x, y, TileID, "standard");
+                            AddTile(x, y, TileID);
                             break;
                         case '<':
-                            AddTile(x, y, TileID, "slopeleft");
+                            AddTile(x, y, TileID);
                             break;
                         case '>':
-                            AddTile(x, y, TileID, "sloperight");
+                            AddTile(x, y, TileID);
                             break;
                         default:
                             break;
@@ -336,27 +333,33 @@ namespace HoboKing
             }
         }
 
-        private void AddTile(int x, int y, char tileID, string tileType)
+        private void AddTile(int x, int y, char tileID)
         {
+            Vector2 tilePosition = new Vector2(x * TILE_SIZE, y * TILE_SIZE);
             // Draw platform blocks here
             if (Tiles.ContainsKey(tileID))
             {
                 Tile tile = Tiles[tileID];
 
-                if (tileType == "standard")
+                if (tile is Standard)
                 {
-                    Tile newTile = new Standard(tile.Sprite.Texture, new Vector2(x * TILE_SIZE, y * TILE_SIZE), tile.TileSize, World);
-                    EntityManager.AddEntity(newTile);
+                    Tile prototype = tile.DeepCopy() as Standard;
+                    prototype.Sprite.ChangePosition(tilePosition);
+                    EntityManager.AddEntity(prototype);
                 }
-                else if (tileType == "slopeleft")
+                else if (tile is SlopeLeft)
                 {
-                    Tile newTile = new SlopeLeft(ContentLoader.GrassLeft, new Vector2(x * TILE_SIZE, y * TILE_SIZE), tile.TileSize, World);
-                    EntityManager.AddEntity(newTile);
+                    Tile prototype = tile.DeepCopy() as SlopeLeft;
+                    prototype.Sprite.ChangePosition(tilePosition);
+                    prototype.Sprite.ChangeTexture(ContentLoader.GrassLeft);
+                    EntityManager.AddEntity(prototype);
                 }
-                else if (tileType == "sloperight")
+                else if (tile is SlopeRight)
                 {
-                    Tile newTile = new SlopeRight(ContentLoader.GrassRight, new Vector2(x * TILE_SIZE, y * TILE_SIZE), tile.TileSize, World);
-                    EntityManager.AddEntity(newTile);
+                    Tile prototype = tile.DeepCopy() as SlopeRight;
+                    prototype.Sprite.ChangePosition(tilePosition);
+                    prototype.Sprite.ChangeTexture(ContentLoader.GrassRight);
+                    EntityManager.AddEntity(prototype);
                 }
             }
             else
@@ -370,7 +373,6 @@ namespace HoboKing
             hoboKingGame.gameState = HoboKingGame.GameState.Loading;
 
             World = new World(Vector2.UnitY * 9.8f);
-            DebugView = new DebugView(World);
             EntityManager = new EntityManager();
             ObjectBuilder = new ObjectBuilder();
             Graphics = hoboKingGame.Graphics.GraphicsDevice;
@@ -437,7 +439,6 @@ namespace HoboKing
             hoboKingGame.SpriteBatch.Begin(transformMatrix: Camera.Transform);
             hoboKingGame.SpriteBatch.Draw(ContentLoader.Background, new Rectangle(0, 0, HoboKingGame.GAME_WINDOW_WIDTH, HoboKingGame.GAME_WINDOW_HEIGHT), Color.White);
             EntityManager.Draw(hoboKingGame.SpriteBatch);
-            EntityManager.DrawDebug(DebugView, Graphics, hoboKingGame.Content);
             hoboKingGame.SpriteBatch.End();
             base.Draw(gameTime);
         }
