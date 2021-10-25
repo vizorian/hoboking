@@ -10,6 +10,7 @@ namespace SignalR_GameServer.Hubs
              
         public override Task OnConnectedAsync()
         {
+            // Attach?
             _PlayerHandler.ConnectedIds.Add(Context.ConnectionId);
 
             _ = SendMessage("Server", $"A new player has connected with ID {Context.ConnectionId}");
@@ -25,6 +26,7 @@ namespace SignalR_GameServer.Hubs
 
         public override Task OnDisconnectedAsync(Exception exception)
         {
+            // Detach?
             _PlayerHandler.ConnectedIds.Remove(Context.ConnectionId);
 
             _ = SendMessage("Server", $"Player with ID {Context.ConnectionId} has disconnected");

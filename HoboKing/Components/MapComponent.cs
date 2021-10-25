@@ -31,7 +31,7 @@ namespace HoboKing
         private HoboKingGame hoboKingGame;
 
         private EntityManager EntityManager;
-        private CritterBuilder CritterBuilder;
+        private ObjectBuilder ObjectBuilder;
         private GraphicsDevice Graphics;
 
         private ConnectorComponent Connector;
@@ -96,13 +96,13 @@ namespace HoboKing
             return player;
         }
 
-        public Critter CreateDebugCritter()
+        public Entities.Object CreateDebugCritter()
         {
-            Critter critter = CritterBuilder.AddTexture(ContentLoader.Woodcutter, new Vector2(PLAYER_START_POSITION_X + 16, PLAYER_START_POSITION_Y + 36), 100, World)
-                .AddMovement(new DebugMovement(null, World)).AddSpeech("Hello baj, I seek shelter.", 20).Build();
+            Entities.Object @object = ObjectBuilder.AddTexture(ContentLoader.Woodcutter, new Vector2(PLAYER_START_POSITION_X + 16, PLAYER_START_POSITION_Y + 30), 100, World)
+                .AddMovement(new DebugMovement(null, World)).Build() as Entities.Object;
 
-            EntityManager.AddEntity(critter);
-            return critter;
+            EntityManager.AddEntity(@object);
+            return @object;
         }
 
         // Add Player objects for all other connected players
@@ -372,7 +372,7 @@ namespace HoboKing
             World = new World(Vector2.UnitY * 9.8f);
             DebugView = new DebugView(World);
             EntityManager = new EntityManager();
-            CritterBuilder = new CritterBuilder();
+            ObjectBuilder = new ObjectBuilder();
             Graphics = hoboKingGame.Graphics.GraphicsDevice;
 
             VisibleTilesX = HoboKingGame.GAME_WINDOW_WIDTH / TILE_SIZE; // 64
@@ -402,16 +402,17 @@ namespace HoboKing
                 hoboKingGame.SwitchScene(hoboKingGame.menuScene);
                 hoboKingGame.gameState = HoboKingGame.GameState.Unloading;
             }
+
             // future pause menu
             //hoboKingGame.menuScene.AddComponent(hoboKingGame.pauseComponent);
 
 
             if (Connector != null && !hasConnected)
             {
+                hoboKingGame.gameState = HoboKingGame.GameState.Multiplayer;
                 Connector.Connect();
                 Player.ConnectionId = Connector.GetConnectionId();
                 hasConnected = true;
-                hoboKingGame.gameState = HoboKingGame.GameState.Multiplayer;
             }
 
             if (Connector != null && hasConnected)
@@ -423,7 +424,10 @@ namespace HoboKing
             }
 
             World.Step((float)gameTime.ElapsedGameTime.TotalSeconds);
-            Camera.Follow(EntityManager.mainPlayer.Sprite);
+            
+            if(EntityManager.mainPlayer != null)
+                Camera.Follow(EntityManager.mainPlayer.Sprite);
+
             EntityManager.Update(gameTime);
             base.Update(gameTime);
         }

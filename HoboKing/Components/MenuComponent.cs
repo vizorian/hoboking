@@ -36,6 +36,7 @@ namespace HoboKing.States
                 {
                     case "Start Singleplayer":
                         hoboKingGame.SwitchScene(hoboKingGame.singleplayerScene);
+                        hoboKingGame.gameState = HoboKingGame.GameState.Singleplayer;
                         break;
                     case "Start Multiplayer":
                         hoboKingGame.SwitchScene(hoboKingGame.multiplayerScene);
