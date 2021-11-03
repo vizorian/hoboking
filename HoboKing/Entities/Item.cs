@@ -8,9 +8,8 @@ using System.Text;
 
 namespace HoboKing.Entities
 {
-    class Item : IGameEntity
+    class Item : GameEntity
     {
-        public Sprite Sprite { get; set; }
         private Movement movement;
 
         //public Critter(GraphicsDevice graphics, Texture2D texture, Vector2 position)
@@ -30,30 +29,15 @@ namespace HoboKing.Entities
             movement = movementStrategy;
         }
 
-        public void SetSprite(Sprite sprite)
-        {
-            Sprite = sprite;
-        }
 
-        public void Draw(SpriteBatch spriteBatch)
-        {
-            Sprite.Draw(spriteBatch);
-        }
-
-        public void Update(GameTime gameTime)
-        {
-            Sprite.Update();
-        }
-
-        public IGameEntity ShallowCopy()
+        public override GameEntity ShallowCopy()
         {
             return MemberwiseClone() as Item;
         }
 
-        public IGameEntity DeepCopy()
+        public override GameEntity DeepCopy()
         {
             var clone = MemberwiseClone() as Item;
-            clone.Sprite = new Sprite(Sprite.Texture, Sprite.Position, 60);
             return clone;
         }
     }

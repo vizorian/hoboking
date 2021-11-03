@@ -9,7 +9,7 @@ namespace HoboKing.Graphics
     {
         public Matrix Transform { get; private set; }
 
-        public void Follow(Sprite target)
+        public void Follow(GameEntity target)
         {
             var offset = Matrix.CreateTranslation(0,0,0);
 

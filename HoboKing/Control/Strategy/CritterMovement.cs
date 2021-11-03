@@ -1,4 +1,5 @@
 ﻿using HoboKing.Entities;
+using HoboKing.Graphics;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,7 @@ namespace HoboKing.Control.Strategy
         const float CHANGE_DIRECTION = 2f; //every  2s.
         float currentTime = 0f;
 
-        public CritterMovement(IGameEntity target) : base(target)
+        public CritterMovement(GameEntity target) : base(target)
         {
         }
 
@@ -46,12 +47,12 @@ namespace HoboKing.Control.Strategy
 
         public override void Left()
         {
-            target.Sprite.Position += new Vector2(-HORIZONTAL_SPEED, 0);
+            target.ChangePosition(target.Position += new Vector2(-HORIZONTAL_SPEED, 0));
         }
 
         public override void Right()
         {
-            target.Sprite.Position += new Vector2(HORIZONTAL_SPEED, 0);
+            target.ChangePosition(target.Position += new Vector2(HORIZONTAL_SPEED, 0));
         }
 
         public override void Up()

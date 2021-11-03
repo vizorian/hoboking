@@ -32,6 +32,9 @@ namespace HoboKing
 
         private EntityManager EntityManager;
         private ObjectBuilder ObjectBuilder;
+
+        public CritterBuilder CritterBuilder;
+
         private GraphicsDevice Graphics;
 
         private ConnectorComponent Connector;
@@ -93,13 +96,16 @@ namespace HoboKing
             return player;
         }
 
-        public Entities.Object CreateDebugCritter()
+        public Critter CreateDebugCritter()
         {
-            Entities.Object @object = ObjectBuilder.AddTexture(ContentLoader.Woodcutter, new Vector2(PLAYER_START_POSITION_X + 16, PLAYER_START_POSITION_Y - 2), 100)
-                .AddMovement().Build() as Entities.Object;  
+            //Entities.Object @object = ObjectBuilder.AddTexture(ContentLoader.Woodcutter, new Vector2(PLAYER_START_POSITION_X + 16, PLAYER_START_POSITION_Y - 2), 100)
+            //    .AddMovement().Build() as Entities.Object;  
 
-            EntityManager.AddEntity(@object);
-            return @object;
+            //EntityManager.AddEntity(@object);
+
+            Critter critter = (Critter)CritterBuilder.AddTexture(ContentLoader.Woodcutter, new Vector2(PLAYER_START_POSITION_X + 16, PLAYER_START_POSITION_Y - 2), 100).AddMovement().Build();
+            EntityManager.AddEntity(critter);
+            return critter;
         }
 
         // Add Player objects for all other connected players
@@ -126,7 +132,7 @@ namespace HoboKing
                 Player p = EntityManager.players.Find(p => p.ConnectionId == coordinate.ConnectionID);
                 if (p != null)
                 {
-                    p.Sprite.Position = new Vector2(coordinate.X, coordinate.Y);
+                    p.ChangePosition(new Vector2(coordinate.X, coordinate.Y));
                     Connector.UnprocessedInputs.Remove(coordinate);
                     break;
                 }
@@ -208,7 +214,7 @@ namespace HoboKing
                     char TileID = GetTile(x, y);
                     if (TileID == '#')
                     {
-                        Tile specificTile = standardTiles.Find(o => o.Sprite.Position.X == x * 20 && o.Sprite.Position.Y == y * 20);
+                        Tile specificTile = standardTiles.Find(o => o.Position.X == x * 20 && o.Position.Y == y * 20);
 
                         bool hasNorth = false;
                         bool hasEast = false;
@@ -232,22 +238,22 @@ namespace HoboKing
                         // NW
                         if (!hasNorth && hasEast && hasSouth && !hasWest)
                         {
-                            specificTile.Sprite.ChangeTexture(ContentLoader.GrassNW); continue;
+                            specificTile.ChangeTexture(ContentLoader.GrassNW); continue;
                         }
                         // N
                         else if (!hasNorth && hasEast && hasSouth && hasWest)
                         {
-                            specificTile.Sprite.ChangeTexture(ContentLoader.GrassN); continue;
+                            specificTile.ChangeTexture(ContentLoader.GrassN); continue;
                         }
                         // NE
                         else if (!hasNorth && !hasEast && hasSouth && hasWest)
                         {
-                            specificTile.Sprite.ChangeTexture(ContentLoader.GrassNE); continue;
+                            specificTile.ChangeTexture(ContentLoader.GrassNE); continue;
                         }
                         // W
                         else if (hasNorth && hasEast && hasSouth && !hasWest)
                         {
-                            specificTile.Sprite.ChangeTexture(ContentLoader.GrassW); continue;
+                            specificTile.ChangeTexture(ContentLoader.GrassW); continue;
                         }
                         // Center
                         else if (hasNorth && hasEast && hasSouth && hasWest)
@@ -256,54 +262,54 @@ namespace HoboKing
                             // Corner NW
                             if (!hasNW && hasNE && hasSW && hasSE)
                             {
-                                specificTile.Sprite.ChangeTexture(ContentLoader.GrassCornerNW); continue;
+                                specificTile.ChangeTexture(ContentLoader.GrassCornerNW); continue;
                             }
                             // Corner ME
                             else if (hasNW && !hasNE && hasSW && hasSE)
                             {
-                                specificTile.Sprite.ChangeTexture(ContentLoader.GrassCornerNE); continue;
+                                specificTile.ChangeTexture(ContentLoader.GrassCornerNE); continue;
                             }
                             // Corner SW
                             else if (hasNW && hasNE && !hasSW && hasSE)
                             {
-                                specificTile.Sprite.ChangeTexture(ContentLoader.GrassCornerSW); continue;
+                                specificTile.ChangeTexture(ContentLoader.GrassCornerSW); continue;
                             }
                             // Corner SE
                             else if (hasNW && hasNE && hasSW && !hasSE)
                             {
-                                specificTile.Sprite.ChangeTexture(ContentLoader.GrassCornerSE); continue;
+                                specificTile.ChangeTexture(ContentLoader.GrassCornerSE); continue;
                             }
                             else
                             {
                                 // No corner tiles
-                                specificTile.Sprite.ChangeTexture(ContentLoader.GrassCenter); continue;
+                                specificTile.ChangeTexture(ContentLoader.GrassCenter); continue;
                             }
                         }
                         // E
                         else if (hasNorth && !hasEast && hasSouth && hasWest)
                         {
-                            specificTile.Sprite.ChangeTexture(ContentLoader.GrassE); continue;
+                            specificTile.ChangeTexture(ContentLoader.GrassE); continue;
                         }
                         // SW
                         else if (hasNorth && hasEast && !hasSouth && !hasWest)
                         {
-                            specificTile.Sprite.ChangeTexture(ContentLoader.GrassSW); continue;
+                            specificTile.ChangeTexture(ContentLoader.GrassSW); continue;
                         }
                         // S
                         else if (hasNorth && hasEast && !hasSouth && hasWest)
                         {
-                            specificTile.Sprite.ChangeTexture(ContentLoader.GrassS); continue;
+                            specificTile.ChangeTexture(ContentLoader.GrassS); continue;
                         }
                         // SE
                         else if (hasNorth && !hasEast && !hasSouth && hasWest)
                         {
-                            specificTile.Sprite.ChangeTexture(ContentLoader.GrassSE); continue;
+                            specificTile.ChangeTexture(ContentLoader.GrassSE); continue;
                         }
                         else
                         {
                             // Default value N for now
                             // To dynamically change according to current tile type, make default value a new blank texture and look for it do discern
-                            specificTile.Sprite.ChangeTexture(ContentLoader.GrassN);
+                            specificTile.ChangeTexture(ContentLoader.GrassN);
                         }
                     }
                 }
@@ -344,21 +350,21 @@ namespace HoboKing
                 if (tile is Standard)
                 {
                     Tile prototype = tile.DeepCopy() as Standard;
-                    prototype.Sprite.ChangePosition(tilePosition);
+                    prototype.ChangePosition(tilePosition);
                     EntityManager.AddEntity(prototype);
                 }
                 else if (tile is SlopeLeft)
                 {
                     Tile prototype = tile.DeepCopy() as SlopeLeft;
-                    prototype.Sprite.ChangePosition(tilePosition);
-                    prototype.Sprite.ChangeTexture(ContentLoader.GrassLeft);
+                    prototype.ChangePosition(tilePosition);
+                    prototype.ChangeTexture(ContentLoader.GrassLeft);
                     EntityManager.AddEntity(prototype);
                 }
                 else if (tile is SlopeRight)
                 {
                     Tile prototype = tile.DeepCopy() as SlopeRight;
-                    prototype.Sprite.ChangePosition(tilePosition);
-                    prototype.Sprite.ChangeTexture(ContentLoader.GrassRight);
+                    prototype.ChangePosition(tilePosition);
+                    prototype.ChangeTexture(ContentLoader.GrassRight);
                     EntityManager.AddEntity(prototype);
                 }
             }
@@ -375,6 +381,7 @@ namespace HoboKing
             World = new World(Vector2.UnitY * 9.8f);
             EntityManager = new EntityManager();
             ObjectBuilder = new ObjectBuilder();
+            CritterBuilder = new CritterBuilder();
             Graphics = hoboKingGame.Graphics.GraphicsDevice;
 
             VisibleTilesX = HoboKingGame.GAME_WINDOW_WIDTH / TILE_SIZE; // 64
@@ -419,7 +426,7 @@ namespace HoboKing
 
             if (Connector != null && hasConnected)
             {
-                Connector.SendData(gameTime, Player.Sprite.Position);
+                Connector.SendData(gameTime, Player.Position);
                 AddConnectedPlayers();
                 UpdateConnectedPlayers();
                 RemoveConnectedPlayers();
@@ -428,7 +435,7 @@ namespace HoboKing
             World.Step((float)gameTime.ElapsedGameTime.TotalSeconds);
             
             if(EntityManager.mainPlayer != null)
-                Camera.Follow(EntityManager.mainPlayer.Sprite);
+                Camera.Follow(EntityManager.mainPlayer);
 
             EntityManager.Update(gameTime);
             base.Update(gameTime);

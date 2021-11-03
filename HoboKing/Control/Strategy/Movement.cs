@@ -1,4 +1,5 @@
 ﻿using HoboKing.Entities;
+using HoboKing.Graphics;
 using Microsoft.Xna.Framework;
 
 namespace HoboKing.Control
@@ -6,9 +7,9 @@ namespace HoboKing.Control
     abstract class Movement
     {
         public int Gravity { get; set; }
-        protected IGameEntity target;
+        protected GameEntity target;
 
-        public Movement(IGameEntity target)
+        public Movement(GameEntity target)
         {
             this.target = target;
         }
@@ -21,7 +22,7 @@ namespace HoboKing.Control
 
         protected void SetVelocity(Vector2 newVelocity)
         {
-            target.Sprite.body.LinearVelocity = newVelocity;
+            target.body.LinearVelocity = newVelocity;
         }
     }
 }

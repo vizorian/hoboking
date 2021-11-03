@@ -14,18 +14,18 @@ namespace HoboKing.Entities
 {
     class EntityManager
     {
-        readonly static List<IGameEntity> _entities = new List<IGameEntity>();
-        readonly List<IGameEntity> _entitiesToAdd = new List<IGameEntity>();
-        readonly List<IGameEntity> _entitiesToRemove = new List<IGameEntity>();
+        readonly static List<GameEntity> _entities = new List<GameEntity>();
+        readonly List<GameEntity> _entitiesToAdd = new List<GameEntity>();
+        readonly List<GameEntity> _entitiesToRemove = new List<GameEntity>();
 
-        public static IEnumerable<IGameEntity> Entities => new ReadOnlyCollection<IGameEntity>(_entities);
+        public static IEnumerable<GameEntity> Entities => new ReadOnlyCollection<GameEntity>(_entities);
 
         public int PlayerCount { get; set; }
         public List<Player> players = new List<Player>();
 
         public Player mainPlayer;
 
-        public void AddEntity(IGameEntity entity)
+        public void AddEntity(GameEntity entity)
         {
             if (entity == null)
             {
@@ -45,7 +45,7 @@ namespace HoboKing.Entities
             _entitiesToAdd.Add(entity);
         }
 
-        public void RemoveEntity(IGameEntity entity)
+        public void RemoveEntity(GameEntity entity)
         {
             if (entity == null)
             {
@@ -62,23 +62,23 @@ namespace HoboKing.Entities
 
         public void Update(GameTime gameTime)
         {
-            foreach (IGameEntity entity in _entities)
+            foreach (var entity in _entities)
             {
                 if (entity is Player && (entity as Player).IsOtherPlayer == false)
                 {
-                    entity.Update(gameTime);
+                    (entity as Player).Update(gameTime);
                 }
                 if (entity is Critter)
                 {
-                    entity.Update(gameTime);
+                    (entity as Critter).Update(gameTime);
                 }
             }
-            foreach (IGameEntity entity in _entitiesToAdd)
+            foreach (var entity in _entitiesToAdd)
             {
                 _entities.Add(entity);
             }
             _entitiesToAdd.Clear();
-            foreach (IGameEntity entity in _entitiesToRemove)
+            foreach (var entity in _entitiesToRemove)
             {
 
                 _entities.Remove(entity);
@@ -89,7 +89,7 @@ namespace HoboKing.Entities
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            foreach(IGameEntity entity in _entities)
+            foreach(var entity in _entities)
             {
                 entity.Draw(spriteBatch);
             }

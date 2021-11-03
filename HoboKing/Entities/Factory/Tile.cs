@@ -8,41 +8,34 @@ using tainicom.Aether.Physics2D.Dynamics;
 
 namespace HoboKing.Entities
 {
-    public abstract class Tile : IGameEntity
+    public abstract class Tile : GameEntity
     {
-        public int TileSize { get; set; }
-        public Sprite Sprite { get; set; }
-
-        private World world;
-
-        public Tile(Texture2D texture, Vector2 position, int tileSize, World world)
+        public Tile(Texture2D texture, Vector2 position, int tileSize, World world) : base(texture, position, tileSize)
         {
-            TileSize = tileSize;
-            Sprite = new Sprite(texture, position, world, tileSize);
-
-            this.world = world;
+            CreatePhysicsObjects(world);
         }
 
-        public void Update(GameTime gameTime)
-        {
-            Sprite.Update();
-        }
-
-        public void Draw(SpriteBatch spriteBatch)
-        {
-            Sprite.Draw(spriteBatch);
-        }
-
-        public IGameEntity ShallowCopy()
+        public override GameEntity ShallowCopy()
         {
             return MemberwiseClone() as Tile;
         }
 
-        public IGameEntity DeepCopy()
+        public override GameEntity DeepCopy()
         {
             var clone = MemberwiseClone() as Tile;
-            clone.Sprite = new Sprite(Sprite.Texture, Sprite.Position, world, TileSize);
+            clone.CreatePhysicsObjects(world);
             return clone;
+        }
+
+        public void CreatePhysicsObjects(World world)
+        {
+            this.world = world;
+            body = world.CreateBody(Position * pixelToUnit, 0, BodyType.Static);
+            body.FixedRotation = true;
+
+            fixture = body.CreateRectangle(Size.Width * pixelToUnit, Size.Height * pixelToUnit, 1f, Vector2.Zero);
+            fixture.Restitution = RESTITUTION;
+            fixture.Friction = FRICTION;
         }
     }
 }

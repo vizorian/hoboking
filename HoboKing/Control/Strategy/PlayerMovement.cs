@@ -15,7 +15,7 @@ namespace HoboKing.Control
 
         public PlayerMovement(Player player) : base(player)
         {
-            player.Sprite.UseGravity(true);
+            player.UseGravity(true);
         }
 
         public override void AcceptInputs(GameTime gameTime)
@@ -39,7 +39,7 @@ namespace HoboKing.Control
 
             if (InputController.KeyReleased(Keys.A))
             {
-                SetVelocity(new Vector2(0, target.Sprite.body.LinearVelocity.Y));
+                SetVelocity(new Vector2(0, target.body.LinearVelocity.Y));
             }
 
             // RIGHT
@@ -50,7 +50,7 @@ namespace HoboKing.Control
 
             if (InputController.KeyReleased(Keys.D))
             {
-                SetVelocity(new Vector2(0, target.Sprite.body.LinearVelocity.Y));
+                SetVelocity(new Vector2(0, target.body.LinearVelocity.Y));
             }
         }
 
@@ -60,17 +60,17 @@ namespace HoboKing.Control
 
         public override void Left()
         {
-            SetVelocity(new Vector2(-HORIZONTAL_SPEED, target.Sprite.body.LinearVelocity.Y));
+            SetVelocity(new Vector2(-HORIZONTAL_SPEED, target.body.LinearVelocity.Y));
         }
 
         public override void Right()
         {
-            SetVelocity(new Vector2(HORIZONTAL_SPEED, target.Sprite.body.LinearVelocity.Y));
+            SetVelocity(new Vector2(HORIZONTAL_SPEED, target.body.LinearVelocity.Y));
         }
 
         public override void Up()
         {
-            target.Sprite.body.ApplyLinearImpulse(new Vector2(0, -MAX_JUMP));
+            target.body.ApplyLinearImpulse(new Vector2(0, -MAX_JUMP));
         }
     }
 }

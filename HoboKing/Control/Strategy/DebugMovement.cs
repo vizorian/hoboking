@@ -13,28 +13,26 @@ namespace HoboKing.Control
 
         public DebugMovement(Player player) : base(player)
         {
-            player.Sprite.UseGravity(false);
+            player.UseGravity(false);
         }
-
-
 
         public override void Up()
         {
-            SetVelocity(new Vector2(target.Sprite.body.LinearVelocity.X, -VERTICAL_SPEED));
+            SetVelocity(new Vector2(target.body.LinearVelocity.X, -VERTICAL_SPEED));
         }
         public override void Down()
         {
-            SetVelocity(new Vector2(target.Sprite.body.LinearVelocity.X, VERTICAL_SPEED));
+            SetVelocity(new Vector2(target.body.LinearVelocity.X, VERTICAL_SPEED));
         }
 
         public override void Left()
         {
-            SetVelocity(new Vector2(-HORIZONTAL_SPEED, target.Sprite.body.LinearVelocity.Y));
+            SetVelocity(new Vector2(-HORIZONTAL_SPEED, target.body.LinearVelocity.Y));
         }
 
         public override void Right()
         {
-            SetVelocity(new Vector2(HORIZONTAL_SPEED, target.Sprite.body.LinearVelocity.Y));
+            SetVelocity(new Vector2(HORIZONTAL_SPEED, target.body.LinearVelocity.Y));
         }
 
         public override void AcceptInputs(GameTime gameTime)
@@ -47,7 +45,7 @@ namespace HoboKing.Control
 
             if (InputController.KeyReleased(Keys.W))
             {
-                SetVelocity(new Vector2(target.Sprite.body.LinearVelocity.X, 0));
+                SetVelocity(new Vector2(target.body.LinearVelocity.X, 0));
             }
 
             // DOWN
@@ -58,7 +56,7 @@ namespace HoboKing.Control
 
             if (InputController.KeyReleased(Keys.S))
             {
-                SetVelocity(new Vector2(target.Sprite.body.LinearVelocity.X, 0));
+                SetVelocity(new Vector2(target.body.LinearVelocity.X, 0));
             }
 
             // LEFT
@@ -69,7 +67,7 @@ namespace HoboKing.Control
 
             if (InputController.KeyReleased(Keys.A))
             {
-                SetVelocity(new Vector2(0, target.Sprite.body.LinearVelocity.Y));
+                SetVelocity(new Vector2(0, target.body.LinearVelocity.Y));
             }
 
             // RIGHT
@@ -80,7 +78,7 @@ namespace HoboKing.Control
 
             if (InputController.KeyReleased(Keys.D))
             {
-                SetVelocity(new Vector2(0, target.Sprite.body.LinearVelocity.Y));
+                SetVelocity(new Vector2(0, target.body.LinearVelocity.Y));
             }
         }
     }

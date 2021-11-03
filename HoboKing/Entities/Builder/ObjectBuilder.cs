@@ -10,30 +10,21 @@ using tainicom.Aether.Physics2D.Dynamics;
 
 namespace HoboKing.Entities
 {
-    class ObjectBuilder : StuffBuilder
+    class ObjectBuilder : AbstractBuilder
     {
-        public override StuffBuilder AddMovement()
+        public override AbstractBuilder AddMovement()
         {
             (entity as Object).SetMovementStrategy(new CritterMovement(entity));
             return this;
         }
 
-        public override StuffBuilder AddTexture(Texture2D texture, Vector2 position, int size)
-        {
-            // Recalculates tiles to absolute coordinates
-            position.X *= MapComponent.TILE_SIZE;
-            position.Y *= MapComponent.TILE_SIZE;
 
-            entity.Sprite = new Sprite(texture, position, size);
-            return this;
-        }
-
-        public StuffBuilder AddSpeech(string speechText, int triggerSize)
+        public AbstractBuilder AddSpeech(string speechText, int triggerSize)
         {
             return this;
         }
 
-        public override IGameEntity Build()
+        public override GameEntity Build()
         {
             Object finalEntity = entity as Object;
             Reset();

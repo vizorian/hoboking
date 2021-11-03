@@ -5,9 +5,8 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace HoboKing.Entities
 {
-    class Critter : IGameEntity
+    class Critter : GameEntity
     {
-        public Sprite Sprite { get; set; }
         private Movement movement;
 
         public void SetMovementStrategy(Movement movementStrategy)
@@ -15,31 +14,19 @@ namespace HoboKing.Entities
             movement = movementStrategy;
         }
 
-        public void SetSprite(Sprite sprite)
-        {
-            Sprite = sprite;
-        }
-
-        public void Draw(SpriteBatch spriteBatch)
-        {
-            Sprite.Draw(spriteBatch);
-        }
-
         public void Update(GameTime gameTime)
         {
-            Sprite.Update();
             movement.AcceptInputs(gameTime);
         }
 
-        public IGameEntity ShallowCopy()
+        public override GameEntity ShallowCopy()
         {
             return MemberwiseClone() as Critter;
         }
 
-        public IGameEntity DeepCopy()
+        public override GameEntity DeepCopy()
         {
             var clone = MemberwiseClone() as Critter;
-            clone.Sprite = new Sprite(Sprite.Texture, Sprite.Position, 60);
             return clone;
         }
     }

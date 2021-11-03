@@ -2,70 +2,62 @@
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Text;
 using tainicom.Aether.Physics2D.Dynamics;
 
 namespace HoboKing.Graphics
 {
-    public class Sprite
+    public abstract class GameEntity
     {
-        const float FRICTION = 0.3f;
-        const float RESTITUTION = 0.1f;
+        protected const float FRICTION = 0.3f;
+        protected const float RESTITUTION = 0.1f;
 
-        const float unitToPixel = 100.0f;
-        const float pixelToUnit = 1 / unitToPixel;
+        protected const float unitToPixel = 100.0f;
+        protected const float pixelToUnit = 1 / unitToPixel;
 
+        public Texture2D Texture { get; protected set; }
         public Vector2 Position { get; set; }
-        public Texture2D Texture { get; private set; }
 
+        // Physics
         public Body body;
-        private Rectangle Size;
-        private Fixture fixture;
-        private int tileSize;
+        protected Fixture fixture;
+        protected World world;
 
-        // If size = 0, sprite stays default, if size is specified, then the sprite is resized
-        public Sprite(Texture2D texture, Vector2 position, World world, int size = 0)
+        // Rectangle for resizing the texture if necessary
+        protected Rectangle Size;
+        protected int tileSize;
+
+        public GameEntity() { }
+
+        public GameEntity(Texture2D texture, Vector2 position, int size = 0)
         {
-            Texture = texture;
-            Position = position;
-            tileSize = size;
-            Size = size != 0 ? new Rectangle((int)Position.X, (int)Position.Y, size, size) : new Rectangle((int)Position.X, (int)Position.Y, Texture.Width, Texture.Height);
-            CreatePhysicsObjects(world, BodyType.Static);
-        }
+            // Recalculates tiles to absolute coordinates
+            float realPosX = position.X * MapComponent.TILE_SIZE;
+            float realPosY = position.Y * MapComponent.TILE_SIZE;
 
-        public Sprite(Texture2D texture, Vector2 position, World world, BodyType bodyType, int size = 0)
-        {
+            Position = new Vector2(realPosX, realPosY);
             Texture = texture;
-            Position = position;
-            tileSize = size;
-
-            Size = size != 0 ? new Rectangle((int)Position.X, (int)Position.Y, size, size) : new Rectangle((int)Position.X, (int)Position.Y, Texture.Width, Texture.Height);
-            CreatePhysicsObjects(world, bodyType);
-        }
-
-        // No physics constructor
-        public Sprite(Texture2D texture, Vector2 position, int size = 0)
-        {
-            Texture = texture;
-            Position = position;
             tileSize = size;
 
             Size = size != 0 ? new Rectangle((int)Position.X, (int)Position.Y, size, size) : new Rectangle((int)Position.X, (int)Position.Y, Texture.Width, Texture.Height);
         }
 
-        private void CreatePhysicsObjects(World world, BodyType bodyType)
+
+        protected virtual void CreatePhysicsObjects(World world, BodyType bodyType)
         {
+            this.world = world;
             body = world.CreateBody(Position * pixelToUnit, 0, bodyType);
             body.FixedRotation = true;
             if (bodyType is BodyType.Dynamic)
             {
                 fixture = body.CreateCircle(Size.Width / 2f * pixelToUnit, 1f, new Vector2(Size.Width / 2f * pixelToUnit, Size.Height / 2f * pixelToUnit));
-                fixture.Restitution = RESTITUTION;
-                fixture.Friction = FRICTION;
-            } else {
-                fixture = body.CreateRectangle(Size.Width * pixelToUnit, Size.Height * pixelToUnit, 1f, Vector2.Zero);
-                fixture.Restitution = RESTITUTION;
-                fixture.Friction = FRICTION;
             }
+            else
+            {
+                fixture = body.CreateRectangle(Size.Width * pixelToUnit, Size.Height * pixelToUnit, 1f, Vector2.Zero);
+            }
+            fixture.Restitution = RESTITUTION;
+            fixture.Friction = FRICTION;
         }
 
         public void Update()
@@ -75,16 +67,16 @@ namespace HoboKing.Graphics
                 Size.X = Convert.ToInt32(body.Position.X * unitToPixel);
                 Size.Y = Convert.ToInt32(body.Position.Y * unitToPixel);
                 Position = new Vector2(Size.X, Size.Y);
-            } else
+            }
+            else
             {
                 Size.X = (int)Position.X;
                 Size.Y = (int)Position.Y;
             }
         }
 
-        public virtual void Draw(SpriteBatch spriteBatch)
+        public void Draw(SpriteBatch spriteBatch)
         {
-            Update();
             spriteBatch.Draw(Texture, Size, Color.White);
         }
 
@@ -97,12 +89,28 @@ namespace HoboKing.Graphics
         {
             Position = newPosition;
             Size = tileSize != 0 ? new Rectangle((int)Position.X, (int)Position.Y, tileSize, tileSize) : new Rectangle((int)Position.X, (int)Position.Y, Texture.Width, Texture.Height);
-            body.Position = newPosition * pixelToUnit;
+            if (body != null)
+            {
+                body.Position = newPosition * pixelToUnit;
+            }
+        }
+
+        public void ChangeSize(int newSize)
+        {
+            tileSize = newSize;
+            Size = tileSize != 0 ? new Rectangle((int)Position.X, (int)Position.Y, tileSize, tileSize) : new Rectangle((int)Position.X, (int)Position.Y, Texture.Width, Texture.Height);
         }
 
         public void UseGravity(bool useGravity)
         {
-            body.IgnoreGravity = !useGravity;
+            if (body != null)
+            {
+                body.IgnoreGravity = !useGravity;
+            }
         }
+
+        public abstract GameEntity ShallowCopy();
+
+        public abstract GameEntity DeepCopy();
     }
 }
