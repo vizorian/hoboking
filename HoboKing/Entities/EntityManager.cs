@@ -100,7 +100,7 @@ namespace HoboKing.Entities
             _entitiesToRemove.AddRange(_entities);
         }
 
-        public List<Tile> GetStandardTiles()
+        public List<Tile> GetTiles()
         {
             List<Tile> tiles = new List<Tile>();
             foreach(var entity in _entitiesToAdd)

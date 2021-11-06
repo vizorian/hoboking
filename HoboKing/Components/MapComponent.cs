@@ -205,17 +205,17 @@ namespace HoboKing
         // Cycle through standard tile entities and apply appropriate texture
         public void UpdateTextures()
         {
-            List<Tile> standardTiles = EntityManager.GetStandardTiles();
+            List<Tile> standardTiles = EntityManager.GetTiles();
             // Tile specificTile = standardTiles.Find(o => o.Sprite.Position.X == 2 && o.Sprite.Position.Y == 2);
             for (int x = 0; x < MAP_WIDTH; x++)
             {
                 for (int y = 0; y < MAP_HEIGHT; y++)
                 {
+                    Tile specificTile = standardTiles.Find(o => o.Position.X == x * 20 && o.Position.Y == y * 20);
+
                     char TileID = GetTile(x, y);
                     if (TileID == '#')
                     {
-                        Tile specificTile = standardTiles.Find(o => o.Position.X == x * 20 && o.Position.Y == y * 20);
-
                         bool hasNorth = false;
                         bool hasEast = false;
                         bool hasSouth = false;
@@ -312,6 +312,14 @@ namespace HoboKing
                             specificTile.ChangeTexture(ContentLoader.GrassN);
                         }
                     }
+                    else if(TileID == '<')
+                    {
+                        specificTile.ChangeTexture(ContentLoader.GrassLeft);
+                    }
+                    else if (TileID == '>')
+                    {
+                        specificTile.ChangeTexture(ContentLoader.GrassRight);
+                    }
                 }
             }
         }
@@ -357,14 +365,12 @@ namespace HoboKing
                 {
                     Tile prototype = tile.DeepCopy() as SlopeLeft;
                     prototype.ChangePosition(tilePosition);
-                    prototype.ChangeTexture(ContentLoader.GrassLeft);
                     EntityManager.AddEntity(prototype);
                 }
                 else if (tile is SlopeRight)
                 {
                     Tile prototype = tile.DeepCopy() as SlopeRight;
                     prototype.ChangePosition(tilePosition);
-                    prototype.ChangeTexture(ContentLoader.GrassRight);
                     EntityManager.AddEntity(prototype);
                 }
             }
