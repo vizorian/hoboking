@@ -14,7 +14,7 @@ namespace HoboKing.Factory
 
         public override void UpdateTextures()
         {
-            List<Tile> standardTiles = EntityManager.GetStandardTiles();
+            List<Tile> standardTiles = EntityManager.GetTiles();
             // Tile specificTile = standardTiles.Find(o => o.Sprite.Position.X == 2 && o.Sprite.Position.Y == 2);
             for (int x = 0; x < MAP_WIDTH; x++)
             {
