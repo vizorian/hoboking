@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Text;
 using tainicom.Aether.Physics2D.Dynamics;
 
-namespace HoboKing.Entities
+namespace HoboKing.Factory
 {
     public abstract class Tile : GameEntity
     {

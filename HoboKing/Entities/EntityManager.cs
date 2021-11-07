@@ -1,4 +1,4 @@
-﻿using HoboKing.Entities.Factory;
+﻿using HoboKing.Factory;
 using HoboKing.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;

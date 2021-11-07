@@ -6,9 +6,9 @@ using System.Text;
 
 namespace HoboKing.Factory
 {
-    class IceSection : Section
+    class GrassSection : Section
     {
-        public IceSection(EntityManager EntityManager, string Level, int MAP_WIDTH, int MAP_HEIGHT, int sectionStartPosition, int sectionEndPosition) : base(EntityManager, Level, MAP_WIDTH, MAP_HEIGHT, sectionStartPosition, sectionEndPosition)
+        public GrassSection(EntityManager EntityManager, string Level, int MAP_WIDTH, int MAP_HEIGHT, int sectionStartPosition, int sectionEndPosition) : base(EntityManager, Level, MAP_WIDTH, MAP_HEIGHT, sectionStartPosition, sectionEndPosition)
         {
         }
 
@@ -23,7 +23,7 @@ namespace HoboKing.Factory
                     char TileID = GetTile(x, y);
                     Tile specificTile = standardTiles.Find(o => o.Position.X == x * 20 && o.Position.Y == y * 20);
                     if (TileID == '#')
-                    {          
+                    {
                         bool hasNorth = false;
                         bool hasEast = false;
                         bool hasSouth = false;
@@ -46,22 +46,22 @@ namespace HoboKing.Factory
                         // NW
                         if (!hasNorth && hasEast && hasSouth && !hasWest)
                         {
-                            specificTile.ChangeTexture(ContentLoader.IceNW); continue;
+                            specificTile.ChangeTexture(ContentLoader.GrassNW); continue;
                         }
                         // N
                         else if (!hasNorth && hasEast && hasSouth && hasWest)
                         {
-                            specificTile.ChangeTexture(ContentLoader.IceN); continue;
+                            specificTile.ChangeTexture(ContentLoader.GrassN); continue;
                         }
                         // NE
                         else if (!hasNorth && !hasEast && hasSouth && hasWest)
                         {
-                            specificTile.ChangeTexture(ContentLoader.IceNE); continue;
+                            specificTile.ChangeTexture(ContentLoader.GrassNE); continue;
                         }
                         // W
                         else if (hasNorth && hasEast && hasSouth && !hasWest)
                         {
-                            specificTile.ChangeTexture(ContentLoader.IceW); continue;
+                            specificTile.ChangeTexture(ContentLoader.GrassW); continue;
                         }
                         // Center
                         else if (hasNorth && hasEast && hasSouth && hasWest)
@@ -70,64 +70,65 @@ namespace HoboKing.Factory
                             // Corner NW
                             if (!hasNW && hasNE && hasSW && hasSE)
                             {
-                                specificTile.ChangeTexture(ContentLoader.IceCornerNW); continue;
+                                specificTile.ChangeTexture(ContentLoader.GrassCornerNW); continue;
                             }
                             // Corner ME
                             else if (hasNW && !hasNE && hasSW && hasSE)
                             {
-                                specificTile.ChangeTexture(ContentLoader.IceCornerNE); continue;
+                                specificTile.ChangeTexture(ContentLoader.GrassCornerNE); continue;
                             }
                             // Corner SW
                             else if (hasNW && hasNE && !hasSW && hasSE)
                             {
-                                specificTile.ChangeTexture(ContentLoader.IceCornerSW); continue;
+                                specificTile.ChangeTexture(ContentLoader.GrassCornerSW); continue;
                             }
                             // Corner SE
                             else if (hasNW && hasNE && hasSW && !hasSE)
                             {
-                                specificTile.ChangeTexture(ContentLoader.IceCornerSE); continue;
+                                specificTile.ChangeTexture(ContentLoader.GrassCornerSE); continue;
                             }
                             else
                             {
                                 // No corner tiles
-                                specificTile.ChangeTexture(ContentLoader.IceCenter); continue;
+                                specificTile.ChangeTexture(ContentLoader.GrassCenter); continue;
                             }
                         }
                         // E
                         else if (hasNorth && !hasEast && hasSouth && hasWest)
                         {
-                            specificTile.ChangeTexture(ContentLoader.IceE); continue;
+                            specificTile.ChangeTexture(ContentLoader.GrassE); continue;
                         }
                         // SW
                         else if (hasNorth && hasEast && !hasSouth && !hasWest)
                         {
-                            specificTile.ChangeTexture(ContentLoader.IceSW); continue;
+                            specificTile.ChangeTexture(ContentLoader.GrassSW); continue;
                         }
                         // S
                         else if (hasNorth && hasEast && !hasSouth && hasWest)
                         {
-                            specificTile.ChangeTexture(ContentLoader.IceS); continue;
+                            specificTile.ChangeTexture(ContentLoader.GrassS); continue;
                         }
                         // SE
                         else if (hasNorth && !hasEast && !hasSouth && hasWest)
                         {
-                            specificTile.ChangeTexture(ContentLoader.IceSE); continue;
+                            specificTile.ChangeTexture(ContentLoader.GrassSE); continue;
                         }
                         else
                         {
                             // Default value N for now
                             // To dynamically change according to current tile type, make default value a new blank texture and look for it do discern
-                            specificTile.ChangeTexture(ContentLoader.IceN);
+                            specificTile.ChangeTexture(ContentLoader.GrassN);
                         }
                     }
                     if (TileID == '<')
                     {
-                        specificTile.ChangeTexture(ContentLoader.IceLeft);
+                        specificTile.ChangeTexture(ContentLoader.GrassLeft);
                     }
                     if (TileID == '>')
                     {
-                        specificTile.ChangeTexture(ContentLoader.IceRight);
+                        specificTile.ChangeTexture(ContentLoader.GrassRight);
                     }
+
                 }
             }
         }

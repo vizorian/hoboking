@@ -21,6 +21,10 @@ namespace HoboKing.Graphics
             {
                 offset = Matrix.CreateTranslation(0, -1000, 0);
             }
+            else if (target.Position.Y >= 2000 && target.Position.Y < 3000)
+            {
+                offset = Matrix.CreateTranslation(0, -2000, 0);
+            }
             //var position = Matrix.CreateTranslation(
             //    -target.Position.X - (target.Rectangle.Width / 2),
             //    -target.Position.Y - (target.Rectangle.Width / 2),

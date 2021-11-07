@@ -85,7 +85,7 @@ namespace HoboKing.Graphics
             Texture = texture;
         }
 
-        public void ChangePosition(Vector2 newPosition)
+        public virtual void ChangePosition(Vector2 newPosition)
         {
             Position = newPosition;
             Size = tileSize != 0 ? new Rectangle((int)Position.X, (int)Position.Y, tileSize, tileSize) : new Rectangle((int)Position.X, (int)Position.Y, Texture.Width, Texture.Height);
