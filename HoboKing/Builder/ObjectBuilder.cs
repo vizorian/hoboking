@@ -1,4 +1,4 @@
-﻿using HoboKing.Control;
+using HoboKing.Control;
 using HoboKing.Control.Strategy;
 using HoboKing.Graphics;
 using Microsoft.Xna.Framework;

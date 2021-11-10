@@ -109,7 +109,9 @@ namespace HoboKing.Graphics
             }
         }
 
-        public abstract GameEntity ShallowCopy();
+        public virtual GameEntity ShallowCopy() {
+            return base.MemberwiseClone() as GameEntity;   
+        }
 
         public abstract GameEntity DeepCopy();
     }

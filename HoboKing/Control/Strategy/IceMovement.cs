@@ -1,9 +1,6 @@
 ﻿using HoboKing.Entities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace HoboKing.Control.Strategy
 {
@@ -11,7 +8,6 @@ namespace HoboKing.Control.Strategy
     {
         private const float MAX_JUMP = 2.5f;
         private const float HORIZONTAL_SPEED = 3f;
-        private const float MAX_HORIZONTAL_SPEED = 1f;
 
         public IceMovement(Player player) : base(player)
         {
@@ -61,20 +57,11 @@ namespace HoboKing.Control.Strategy
         public override void Left()
         {
             SetVelocity(new Vector2(-HORIZONTAL_SPEED, target.body.LinearVelocity.Y));
-            //if (target.body.LinearVelocity.X > -MAX_HORIZONTAL_SPEED)
-            //{
-            //    target.body.ApplyLinearImpulse(new Vector2(-HORIZONTAL_SPEED, 0));
-            //}
         }
 
         public override void Right()
         {
             SetVelocity(new Vector2(HORIZONTAL_SPEED, target.body.LinearVelocity.Y));
-
-            if (target.body.LinearVelocity.X < MAX_HORIZONTAL_SPEED)
-            {
-                target.body.ApplyLinearImpulse(new Vector2(HORIZONTAL_SPEED, 0));
-            }
         }
 
         public override void Up()

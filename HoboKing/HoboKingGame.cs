@@ -100,7 +100,7 @@ namespace HoboKing
             // Game scenes
             menuScene = new GameScene(this, mainMenu, mainMenuItems);
             optionsScene = new GameScene(this, optionsMenu, optionsMenuItems);
-            singleplayerScene = new GameScene(this, singleplayerGame);
+            //singleplayerScene = new GameScene(this, singleplayerGame);
             multiplayerScene = new GameScene(this, multiplayerGame, connector);
 
             // Disabling components

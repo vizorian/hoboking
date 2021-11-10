@@ -17,7 +17,7 @@ namespace HoboKing.Factory
 
         public override GameEntity ShallowCopy()
         {
-            return MemberwiseClone() as Tile;
+            return base.MemberwiseClone() as Tile;
         }
 
         public override GameEntity DeepCopy()

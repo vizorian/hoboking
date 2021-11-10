@@ -1,4 +1,4 @@
-﻿using HoboKing.Entities;
+using HoboKing.Entities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using System;

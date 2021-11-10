@@ -6,7 +6,6 @@ namespace HoboKing.Control
 {
     abstract class Movement
     {
-        public int Gravity { get; set; }
         protected GameEntity target;
 
         public Movement(GameEntity target)
