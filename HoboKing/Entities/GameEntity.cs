@@ -20,7 +20,7 @@ namespace HoboKing.Graphics
 
         // Physics
         public Body body;
-        protected Fixture fixture;
+        public Fixture fixture;
         protected World world;
 
         // Rectangle for resizing the texture if necessary

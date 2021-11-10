@@ -236,6 +236,7 @@ namespace HoboKing
 
         private void AddTile(int x, int y, char tileID)
         {
+            bool demo = false;
             Vector2 tilePosition = new Vector2(x * TILE_SIZE, y * TILE_SIZE);
             // Draw platform blocks here
             if (Tiles.ContainsKey(tileID))
@@ -244,31 +245,31 @@ namespace HoboKing
 
                 if (tile is NormalTile)
                 {
-                    Tile prototype = tile.DeepCopy() as NormalTile;
+                    Tile prototype = !demo ? tile.DeepCopy() as NormalTile : tile.ShallowCopy() as NormalTile;
                     prototype.ChangePosition(tilePosition);
                     EntityManager.AddEntity(prototype);
                 }
                 else if (tile is LeftTile)
                 {
-                    Tile prototype = tile.DeepCopy() as LeftTile;
+                    Tile prototype = !demo ? tile.DeepCopy() as LeftTile : tile.ShallowCopy() as LeftTile;
                     prototype.ChangePosition(tilePosition);
                     EntityManager.AddEntity(prototype);
                 }
                 else if (tile is RightTile)
                 {
-                    Tile prototype = tile.DeepCopy() as RightTile;
+                    Tile prototype = !demo ? tile.DeepCopy() as RightTile : tile.ShallowCopy() as RightTile;
                     prototype.ChangePosition(tilePosition);
                     EntityManager.AddEntity(prototype);
                 }
                 else if (tile is FakeTile)
                 {
-                    Tile prototype = tile.DeepCopy() as FakeTile;
+                    Tile prototype = !demo ? tile.DeepCopy() as FakeTile : tile.ShallowCopy() as FakeTile;
                     prototype.ChangePosition(tilePosition);
                     EntityManager.AddEntity(prototype);
                 }
                 else if (tile is SpikeTile)
                 {
-                    Tile prototype = tile.DeepCopy() as SpikeTile;
+                    Tile prototype = !demo ? tile.DeepCopy() as SpikeTile : tile.ShallowCopy() as SpikeTile;
                     prototype.ChangePosition(tilePosition);
                     EntityManager.AddEntity(prototype);
                 }

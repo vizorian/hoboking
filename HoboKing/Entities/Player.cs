@@ -50,6 +50,10 @@ namespace HoboKing.Entities
             {
                 if (movement is PlayerMovement)
                 {
+                    SetMovementStrategy(new IceMovement(this));
+                }
+                else if (movement is IceMovement)
+                {
                     SetMovementStrategy(new DebugMovement(this));
                 }
                 else if (movement is DebugMovement)
