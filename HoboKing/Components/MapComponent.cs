@@ -78,15 +78,15 @@ namespace HoboKing
             }
         }
 
-        public void Print()
-        {
-            Console.WriteLine("Map Width: " + MAP_WIDTH);
-            Console.WriteLine("Map Height: " + MAP_HEIGHT);
-            Console.WriteLine("Tile Width: " + TILE_SIZE);
-            Console.WriteLine("Tile Height: " + TILE_SIZE);
-            Console.WriteLine("VisibleTilesX: " + VisibleTilesX);
-            Console.WriteLine("VisibleTilesY: " + VisibleTilesY);
-        }
+        //public void Print()
+        //{
+        //    Console.WriteLine("Map Width: " + MAP_WIDTH);
+        //    Console.WriteLine("Map Height: " + MAP_HEIGHT);
+        //    Console.WriteLine("Tile Width: " + TILE_SIZE);
+        //    Console.WriteLine("Tile Height: " + TILE_SIZE);
+        //    Console.WriteLine("VisibleTilesX: " + VisibleTilesX);
+        //    Console.WriteLine("VisibleTilesY: " + VisibleTilesY);
+        //}
 
         // Creates main player for singleplayer
         public Player CreateMainPlayer()
@@ -200,9 +200,6 @@ namespace HoboKing
                         case '?':
                             AddTile(x, y, TileID);
                             break;
-                        case '!':
-                            AddTile(x, y, TileID);
-                            break;
                         default:
                             break;
                     }
@@ -262,20 +259,6 @@ namespace HoboKing
             else return ' ';
         }
 
-        public string SetTile(int x, int y, char newTile)
-        {
-            StringBuilder sb = new StringBuilder(Level);
-            if (x >= 0 && x < MAP_WIDTH && y >= 0 && y < MAP_HEIGHT)
-            {
-                sb[y * MAP_WIDTH + x] = newTile;
-                return sb.ToString();
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException();
-            }
-        }
-
         private void AddTile(int x, int y, char tileID)
         {
             bool demo = false;
@@ -309,12 +292,6 @@ namespace HoboKing
                     prototype.ChangePosition(tilePosition);
                     EntityManager.AddEntity(prototype);
                 }
-                else if (tile is SpikeTile)
-                {
-                    Tile prototype = !demo ? tile.DeepCopy() as SpikeTile : tile.ShallowCopy() as SpikeTile;
-                    prototype.ChangePosition(tilePosition);
-                    EntityManager.AddEntity(prototype);
-                }
             }
             else
             {
@@ -325,14 +302,18 @@ namespace HoboKing
         public void AddSections()
         {
             Creator creator = new MapCreator();
-            
-            Section sandSection = creator.CreateMapSection(EntityManager, Level, MAP_WIDTH, MAP_HEIGHT, 0, 50);
+
+            Console.WriteLine(Level);
+
+            List<Tile> standardTiles = EntityManager.GetTiles();
+
+            Section sandSection = creator.CreateMapSection(standardTiles, Level, MAP_WIDTH, MAP_HEIGHT, 0, 50);
             sandSection.UpdateTextures();
 
-            Section iceSection = creator.CreateMapSection(EntityManager, Level, MAP_WIDTH, MAP_HEIGHT, 50, 100);
+            Section iceSection = creator.CreateMapSection(standardTiles, Level, MAP_WIDTH, MAP_HEIGHT, 50, 100);
             iceSection.UpdateTextures();
 
-            Section grassSection = creator.CreateMapSection(EntityManager, Level, MAP_WIDTH, MAP_HEIGHT, 100, 150);
+            Section grassSection = creator.CreateMapSection(standardTiles, Level, MAP_WIDTH, MAP_HEIGHT, 100, 150);
             grassSection.UpdateTextures();
 
         }

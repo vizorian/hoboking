@@ -7,15 +7,15 @@ namespace HoboKing.Factory
 {
     abstract class Section
     {
-        public EntityManager EntityManager;
+        public List<Tile> standardTiles;
         string Level;
         public int MAP_WIDTH;
         public int MAP_HEIGHT;
         public int sectionStartPosition;
         public int sectionEndPosition;
-        public Section(EntityManager EntityManager, string Level, int MAP_WIDTH, int MAP_HEIGHT, int sectionStartPosition, int sectionEndPosition)
+        public Section(List<Tile> standardTiles, string Level, int MAP_WIDTH, int MAP_HEIGHT, int sectionStartPosition, int sectionEndPosition)
         {
-            this.EntityManager = EntityManager;
+            this.standardTiles = standardTiles;
             this.Level = Level;
             this.MAP_WIDTH = MAP_WIDTH;
             this.MAP_HEIGHT = MAP_HEIGHT;
