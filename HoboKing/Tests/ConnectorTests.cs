@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using Xunit;
 
 namespace HoboKing.Tests
@@ -14,65 +15,38 @@ namespace HoboKing.Tests
     [ExcludeFromCodeCoverage]
     public class ConnectorTests
     {
-        private MapComponent map;
         private HoboKingGame game;
         private ConnectorComponent connector;
         public ConnectorTests()
         {
             game = new HoboKingGame();
             game.RunOneFrame();
-
-            map = game.multiplayerGame;
-            var components = game.multiplayerScene.ReturnComponents();
-            foreach (var component in components)
-            {
-                if (component is ConnectorComponent)
-                    connector = component as ConnectorComponent;
-            }
+            connector = new ConnectorComponent(game);
         }
 
         [Fact]
-        public void UpdateConnectedPlayers()
+        public void Connect()
         {
-            connector.ConnectionsIds.Add("testId");
-            map.AddConnectedPlayers();
-
-            var players = EntityManager.Entities.Where(p => p is Player);
-            foreach (var player in players)
-            {
-                var actualPlayer = player as Player;
-                if (actualPlayer.IsOtherPlayer && actualPlayer.ConnectionId == "testId")
-                {
-                    var testingPlayer = actualPlayer;
-
-                    connector.UnprocessedInputs.Add(new Coordinate("testId", 20, 20));
-                    map.UpdateConnectedPlayers();
-
-                    var expected = new Vector2(20, 20);
-
-                    Assert.Equal(expected, testingPlayer.Position);
-                }
-            }
+            connector.Connect();
+            Thread.Sleep(5000);
+            Assert.NotNull(connector.GetConnectionId());
         }
 
         [Fact]
-        public void RemoveConnectedPlayers()
+        public void SendData()
         {
-            connector.ConnectionsIds.Add("testId");
-            map.AddConnectedPlayers();
-
-            var players = EntityManager.Entities.Where(p => p is Player);
-            foreach (var player in players)
+            bool worked = true;
+            connector.Connect();
+            Thread.Sleep(5000);
+            try
             {
-                var actualPlayer = player as Player;
-                if (actualPlayer.IsOtherPlayer && actualPlayer.ConnectionId == "testId")
-                {
-                    connector.ConnectionsIds.Remove("testId");
-                    map.RemoveConnectedPlayers();
-
-                    Assert.Null(actualPlayer);
-                }
+                connector.SendData(new GameTime(new TimeSpan(0, 0, 10), new TimeSpan(0, 0, 5)), new Vector2(20, 20));
             }
+            catch (Exception)
+            {
+                worked = false;
+            }
+            Assert.True(worked);
         }
     }
 }

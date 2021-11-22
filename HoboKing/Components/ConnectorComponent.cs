@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework;
 using System.Windows;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace HoboKing.Entities
 {
@@ -32,6 +33,7 @@ namespace HoboKing.Entities
             this.hoboKingGame = hoboKingGame;
         }
 
+        [ExcludeFromCodeCoverage]
         public void CreateListeners()
         {
             // Create a connection to the Server's hub with automatic reconnection
@@ -74,6 +76,20 @@ namespace HoboKing.Entities
             catch (Exception)
             {
                 throw new Exception("Prisijungimo klaida!");
+            }
+            Console.WriteLine("Connection state: " + hubConnection.State);
+        }
+
+        // Attempts to stop connection
+        public async void Disconnect()
+        {
+            try
+            {
+                await hubConnection.StopAsync();
+            }
+            catch (Exception)
+            {
+                throw new Exception("Atsijungimo klaida!");
             }
             Console.WriteLine("Connection state: " + hubConnection.State);
         }
