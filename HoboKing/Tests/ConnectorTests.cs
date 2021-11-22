@@ -25,14 +25,6 @@ namespace HoboKing.Tests
         }
 
         [Fact]
-        public void Connect()
-        {
-            connector.Connect();
-            Thread.Sleep(5000);
-            Assert.NotNull(connector.GetConnectionId());
-        }
-
-        [Fact]
         public void SendData()
         {
             bool worked = true;
@@ -46,6 +38,8 @@ namespace HoboKing.Tests
             {
                 worked = false;
             }
+            connector.Disconnect();
+            Thread.Sleep(2500);
             Assert.True(worked);
         }
     }
