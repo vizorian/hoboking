@@ -4,20 +4,32 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using HoboKing;
+using HoboKing.Entities;
+using HoboKing.Graphics;
+using HoboKing.Scenes;
+using Microsoft.Xna.Framework;
 using Xunit;
 
 namespace HoboKing.Tests
 {
     public class PlayerCreationTests
     {
-        private readonly MapComponent map;
+        private MapComponent map;
         private HoboKingGame game;
+        private ConnectorComponent connector;
 
         public PlayerCreationTests()
         {
             game = new HoboKingGame();
             game.Run();
             map = game.multiplayerGame;
+
+            var components = game.multiplayerScene.ReturnComponents();
+            foreach (var component in components)
+            {
+                if (component is ConnectorComponent)
+                    connector = component as ConnectorComponent;
+            }
         }
 
         [Fact]
@@ -26,6 +38,69 @@ namespace HoboKing.Tests
             var player = map.CreateMainPlayer();
             Assert.False(player.IsOtherPlayer);
         }
+
+        [Fact]
+        public void CreateOtherPlayer()
+        {
+            connector.ConnectionsIds.Add("testId");
+            map.AddConnectedPlayers();
+
+            var players = EntityManager.Entities.Where(p => p is Player);
+            foreach (var player in players)
+            {
+                var actualPlayer = player as Player;
+                if (actualPlayer.IsOtherPlayer && actualPlayer.ConnectionId == "testId")
+                {
+                    Assert.Equal("testId", actualPlayer.ConnectionId);
+                }
+            }
+        }
+
+        [Fact]
+        public void UpdateConnectedPlayers()
+        {
+            connector.ConnectionsIds.Add("testId");
+            map.AddConnectedPlayers();
+
+            var players = EntityManager.Entities.Where(p => p is Player);
+            foreach (var player in players)
+            {
+                var actualPlayer = player as Player;
+                if (actualPlayer.IsOtherPlayer && actualPlayer.ConnectionId == "testId")
+                {
+                    var testingPlayer = actualPlayer;
+
+                    connector.UnprocessedInputs.Add(new Coordinate("testId", 20, 20));
+                    map.UpdateConnectedPlayers();
+
+                    var expected = new Vector2(20, 20);
+
+                    Assert.Equal(expected, testingPlayer.Position);
+                }
+            }
+        }
+
+        [Fact]
+        public void RemoveConnectedPlayers()
+        {
+            connector.ConnectionsIds.Add("testId");
+            map.AddConnectedPlayers();
+
+            var players = EntityManager.Entities.Where(p => p is Player);
+            foreach (var player in players)
+            {
+                var actualPlayer = player as Player;
+                if (actualPlayer.IsOtherPlayer && actualPlayer.ConnectionId == "testId")
+                {
+                    connector.ConnectionsIds.Remove("testId");
+                    map.RemoveConnectedPlayers();
+
+                    Assert.Null(actualPlayer);
+                }
+            }
+        }
+
+
 
         //[Theory]
         //[InlineData(6, 9)]
