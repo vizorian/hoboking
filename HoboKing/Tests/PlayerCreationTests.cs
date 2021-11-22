@@ -24,6 +24,7 @@ namespace HoboKing.Tests
         public void CreateMainPlayer()
         {
             var player = map.CreateMainPlayer();
+            game.Exit();
             Assert.False(player.IsOtherPlayer);
         }
 

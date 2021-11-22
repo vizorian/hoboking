@@ -22,8 +22,7 @@ namespace HoboKing.Entities
 
         public override GameEntity DeepCopy()
         {
-            var clone = MemberwiseClone() as Object;
-            return clone;
+            return ShallowCopy() as Object;
         }
     }
 }
