@@ -58,6 +58,49 @@ namespace HoboKing.Tests
             }
         }
 
+        [Fact]
+        public void UpdateConnectedPlayers()
+        {
+            connector.ConnectionsIds.Add("testId");
+            map.AddConnectedPlayers();
+
+            var players = EntityManager.Entities.Where(p => p is Player);
+            foreach (var player in players)
+            {
+                var actualPlayer = player as Player;
+                if (actualPlayer.IsOtherPlayer && actualPlayer.ConnectionId == "testId")
+                {
+                    var testingPlayer = actualPlayer;
+
+                    connector.UnprocessedInputs.Add(new Coordinate("testId", 20, 20));
+                    map.UpdateConnectedPlayers();
+
+                    var expected = new Vector2(20, 20);
+
+                    Assert.Equal(expected, testingPlayer.Position);
+                }
+            }
+        }
+
+        [Fact]
+        public void RemoveConnectedPlayers()
+        {
+            connector.ConnectionsIds.Add("testId");
+            map.AddConnectedPlayers();
+
+            var players = EntityManager.Entities.Where(p => p is Player);
+            foreach (var player in players)
+            {
+                var actualPlayer = player as Player;
+                if (actualPlayer.IsOtherPlayer && actualPlayer.ConnectionId == "testId")
+                {
+                    connector.ConnectionsIds.Remove("testId");
+                    map.RemoveConnectedPlayers();
+                    Assert.Null(actualPlayer);
+                }
+            }
+        }
+
         //[Theory]
         //[InlineData(6, 9)]
         //[InlineData(3, 2)]
