@@ -8,13 +8,12 @@ namespace HoboKing.Factory
 {
     class IceSection : Section
     {
-        public IceSection(EntityManager EntityManager, string Level, int MAP_WIDTH, int MAP_HEIGHT, int sectionStartPosition, int sectionEndPosition) : base(EntityManager, Level, MAP_WIDTH, MAP_HEIGHT, sectionStartPosition, sectionEndPosition)
+        public IceSection(List<Tile> standardTiles, string Level, int MAP_WIDTH, int MAP_HEIGHT, int sectionStartPosition, int sectionEndPosition) : base(standardTiles, Level, MAP_WIDTH, MAP_HEIGHT, sectionStartPosition, sectionEndPosition)
         {
         }
 
         public override void UpdateTextures()
         {
-            List<Tile> standardTiles = EntityManager.GetTiles();
             // Tile specificTile = standardTiles.Find(o => o.Sprite.Position.X == 2 && o.Sprite.Position.Y == 2);
             for (int x = 0; x < MAP_WIDTH; x++)
             {

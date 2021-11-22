@@ -42,7 +42,6 @@ namespace HoboKing.Control.Strategy
 
         public override void Down()
         {
-            throw new NotImplementedException();
         }
 
         public override void Left()
@@ -57,7 +56,6 @@ namespace HoboKing.Control.Strategy
 
         public override void Up()
         {
-            throw new NotImplementedException();
         }
     }
 }
