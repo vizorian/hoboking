@@ -2,7 +2,7 @@
 
 namespace HoboKing
 {
-    public static class Program
+    static class Program
     {
         [STAThread]
         static void Main()

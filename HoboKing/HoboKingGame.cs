@@ -15,7 +15,7 @@ using System.Threading;
 
 namespace HoboKing
 {
-    public class HoboKingGame : Game
+    class HoboKingGame : Game
     {
         public GraphicsDeviceManager Graphics;
         public SpriteBatch SpriteBatch;
@@ -44,6 +44,8 @@ namespace HoboKing
         }
 
         public GameState gameState;
+        public MapComponent singleplayerGame;
+        public MapComponent multiplayerGame;
 
         public HoboKingGame()
         {
@@ -81,8 +83,8 @@ namespace HoboKing
             ConnectorComponent connector = new ConnectorComponent(this);
 
             // Creating map component
-            MapComponent singleplayerGame = new MapComponent(this);
-            MapComponent multiplayerGame = new MapComponent(this, connector);
+            singleplayerGame = new MapComponent(this);
+            multiplayerGame = new MapComponent(this, connector);
 
             // Creating MAIN MENU items and components
             MenuItemsComponent mainMenuItems = new MenuItemsComponent(this, MenuPosition, Color.White, Color.Green, 1);

@@ -8,7 +8,7 @@ using System.Text;
 
 namespace HoboKing.States
 {
-    public class MenuComponent : Microsoft.Xna.Framework.DrawableGameComponent
+    class MenuComponent : DrawableGameComponent
     {
         private HoboKingGame hoboKingGame;
         private MenuItemsComponent menuItems;

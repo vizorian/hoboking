@@ -10,7 +10,7 @@ using System.Text;
 
 namespace HoboKing.Components
 {
-    public class MenuItemsComponent : Microsoft.Xna.Framework.DrawableGameComponent
+    class MenuItemsComponent : Microsoft.Xna.Framework.DrawableGameComponent
     {
         private HoboKingGame hoboKingGame;
 

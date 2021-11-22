@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework;
 
 namespace HoboKing.Scenes
 {
-    public class GameScene
+    class GameScene
     {
         private List<GameComponent> components;
         private HoboKingGame hoboKingGame;
