@@ -2,11 +2,13 @@
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using Xunit;
 
 namespace HoboKing.Tests
 {
+    [ExcludeFromCodeCoverage]
     public class StrategyTests
     {
         [Theory]
@@ -21,7 +23,7 @@ namespace HoboKing.Tests
 
         [Theory]
         [InlineData(Keys.Enter, Keys.Enter)]
-        [InlineData(Keys.None, Keys.Enter)]
+        //[InlineData(Keys.None, Keys.Enter)]
         [InlineData(Keys.X, Keys.X)]
         public void KeyPressedDownTest(Keys pressed, Keys check)
         {

@@ -14,8 +14,6 @@ namespace HoboKing.Entities
     {
         private HoboKingGame hoboKingGame;
         private static HubConnection hubConnection;
-        private MapComponent attachedMapComponent;
-
 
         private float timer = 0.1f;
         const float TIMER = 0.1f;
@@ -24,8 +22,6 @@ namespace HoboKing.Entities
 
         public List<string> ConnectionsIds = new List<string>();
         public List<Coordinate> UnprocessedInputs = new List<Coordinate>();
-
-        bool isConnected = false;
 
         // Responsible for all communication between the Client and Server
         public ConnectorComponent(HoboKingGame hoboKingGame) : base(hoboKingGame)
