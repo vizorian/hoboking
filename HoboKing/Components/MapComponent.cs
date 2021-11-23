@@ -304,8 +304,6 @@ namespace HoboKing
         {
             Creator creator = new MapCreator();
 
-            Console.WriteLine(Level);
-
             List<Tile> standardTiles = EntityManager.GetTiles();
 
             Section sandSection = creator.CreateMapSection(standardTiles, Level, MAP_WIDTH, MAP_HEIGHT, 0, 50);
