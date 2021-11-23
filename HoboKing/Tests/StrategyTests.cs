@@ -31,12 +31,12 @@ namespace HoboKing.Tests
         }
 
         [Theory]
-        [InlineData(Keys.Enter, Keys.Enter)]
-        [InlineData(Keys.X, Keys.X)]
+        [InlineData(Keys.None, Keys.Enter)]
+        [InlineData(Keys.W, Keys.X)]
         public void KeyPressedDownTest_Fail(Keys pressed, Keys check)
         {
             InputController.KeyboardState = new KeyboardState(pressed);
-            Assert.True(InputController.KeyPressedDown(check));
+            Assert.False(InputController.KeyPressedDown(check));
         }
 
         [Theory]
@@ -48,6 +48,17 @@ namespace HoboKing.Tests
             InputController.PreviousKeyboardState = new KeyboardState(previous);
             InputController.KeyboardState = new KeyboardState(current);
             Assert.True(InputController.KeyReleased(previous));
+        }
+
+        [Theory]
+        [InlineData(Keys.None, Keys.Enter)]
+        [InlineData(Keys.None, Keys.W)]
+        [InlineData(Keys.A, Keys.A)]
+        public void KeyReleasedTest_Fail(Keys previous, Keys current)
+        {
+            InputController.PreviousKeyboardState = new KeyboardState(previous);
+            InputController.KeyboardState = new KeyboardState(current);
+            Assert.False(InputController.KeyReleased(current));
         }
 
         [Fact]
