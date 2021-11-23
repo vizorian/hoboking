@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
 namespace HoboKing.Entities
 {
+    [ExcludeFromCodeCoverage]
     class Coordinate
     {
         public string ConnectionID { get; set; }

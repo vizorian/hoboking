@@ -31,6 +31,15 @@ namespace HoboKing.Tests
         }
 
         [Theory]
+        [InlineData(Keys.Enter, Keys.Enter)]
+        [InlineData(Keys.X, Keys.X)]
+        public void KeyPressedDownTest_Fail(Keys pressed, Keys check)
+        {
+            InputController.KeyboardState = new KeyboardState(pressed);
+            Assert.True(InputController.KeyPressedDown(check));
+        }
+
+        [Theory]
         [InlineData(Keys.Enter, Keys.None)]
         [InlineData(Keys.W, Keys.None)]
         [InlineData(Keys.A, Keys.None)]

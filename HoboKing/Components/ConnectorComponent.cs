@@ -10,9 +10,8 @@ using System.Diagnostics.CodeAnalysis;
 namespace HoboKing.Entities
 {
     // Singleton Connector class
-    class ConnectorComponent : GameComponent
+    class ConnectorComponent
     {
-        private HoboKingGame hoboKingGame;
         private static HubConnection hubConnection;
 
         private float timer = 0.1f;
@@ -24,9 +23,9 @@ namespace HoboKing.Entities
         public List<Coordinate> UnprocessedInputs = new List<Coordinate>();
 
         // Responsible for all communication between the Client and Server
-        public ConnectorComponent(HoboKingGame hoboKingGame) : base(hoboKingGame)
+        public ConnectorComponent()
         {
-            this.hoboKingGame = hoboKingGame;
+
         }
 
         [ExcludeFromCodeCoverage]
@@ -63,7 +62,7 @@ namespace HoboKing.Entities
         }
 
         // Attempts to initiate connection
-        public async void Connect()
+        public async Task Connect()
         {
             try
             {
@@ -108,33 +107,6 @@ namespace HoboKing.Entities
 
                 timer = TIMER;
             }
-        }
-
-        public override void Initialize()
-        {
-            CreateListeners();
-
-            // Find the attached MapComponent
-            //foreach (GameComponent component in hoboKingGame.multiplayerScene.ReturnComponents())
-            //{
-            //    if (component is MapComponent)
-            //        attachedMapComponent = component as MapComponent;
-            //}
-
-            base.Initialize();
-        }
-
-        public override void Update(GameTime gameTime)
-        {
-            // Do once depending on state
-            //if (attachedMapComponent.gameState == MapComponent.GameState.Playing && !isConnected)
-            //{
-            //    Connect();
-            //    isConnected = true;
-            //}
-
-            //SendData(gameTime);
-            base.Update(gameTime);
         }
     }
 }

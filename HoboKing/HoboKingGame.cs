@@ -80,7 +80,7 @@ namespace HoboKing
 
             // Creating components
             // Creating connector component
-            ConnectorComponent connector = new ConnectorComponent(this);
+            ConnectorComponent connector = new ConnectorComponent();
 
             // Creating map component
             singleplayerGame = new MapComponent(this);
@@ -103,7 +103,7 @@ namespace HoboKing
             menuScene = new GameScene(this, mainMenu, mainMenuItems);
             optionsScene = new GameScene(this, optionsMenu, optionsMenuItems);
             //singleplayerScene = new GameScene(this, singleplayerGame);
-            multiplayerScene = new GameScene(this, multiplayerGame, connector);
+            multiplayerScene = new GameScene(this, multiplayerGame);
 
             // Disabling components
             foreach (GameComponent component in Components)

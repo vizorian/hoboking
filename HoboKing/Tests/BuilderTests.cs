@@ -51,19 +51,6 @@ namespace HoboKing.Tests
             Assert.NotEqual(critter.GetHashCode(), copy.GetHashCode());
         }
 
-        [Fact]
-        public void CritterUpdateTest()
-        {
-            var game = new HoboKingGame();
-            game.RunOneFrame();
-            var critter = new CritterBuilder().AddTexture(ContentLoader.GrassLeft,
-                new Vector2(0, 0)).AddMovement().Build() as Critter;
-            var oldPosition = critter.Position.X;
-            critter.Update(new GameTime());
-            var newPosition = critter.Position.X;
-            Assert.NotEqual(oldPosition, newPosition);
-        }
-
         // OBJECT
 
         [Fact]

@@ -61,6 +61,7 @@ namespace HoboKing
         {
             this.hoboKingGame = hoboKingGame;
             this.Connector = connector;
+            Connector.CreateListeners();
         }
 
         // Reads map data from file
@@ -364,6 +365,7 @@ namespace HoboKing
             if (Connector != null && !hasConnected)
             {
                 hoboKingGame.gameState = HoboKingGame.GameState.Multiplayer;
+                // !!!
                 Connector.Connect();
                 Player.ConnectionId = Connector.GetConnectionId();
                 hasConnected = true;
