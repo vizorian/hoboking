@@ -17,11 +17,6 @@ namespace HoboKing.Tests
     [ExcludeFromCodeCoverage]
     public class ConnectorTests
     {
-        public ConnectorTests()
-        {
-
-        }
-
         [Theory]
         [InlineData(10, 10)]
         [InlineData(10, 5)]

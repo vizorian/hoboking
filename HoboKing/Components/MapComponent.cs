@@ -37,7 +37,7 @@ namespace HoboKing
 
         private GraphicsDevice Graphics;
 
-        private ConnectorComponent Connector;
+        public ConnectorComponent Connector;
 
         private Camera Camera;
 

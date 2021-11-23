@@ -31,17 +31,17 @@ namespace HoboKing.Tests
             game = new HoboKingGame();
             game.RunOneFrame();
 
-            connector = new ConnectorComponent();
-            connector.CreateListeners();
+            //connector = new ConnectorComponent();
+            //connector.CreateListeners();
 
             var components = game.multiplayerScene.ReturnComponents();
             foreach (var component in components)
             {
-                //if (component is ConnectorComponent)
-                //    connector = component as ConnectorComponent;
                 if (component is MapComponent)
                     map = component as MapComponent;
             }
+
+            connector = map.Connector;
         }
 
         public void Dispose()
@@ -99,16 +99,16 @@ namespace HoboKing.Tests
         [Fact]
         public void CreateOtherPlayer()
         {
-            _data.connector.ConnectionsIds.Add("testId2");
+            _data.connector.ConnectionsIds.Add("testId");
             _data.map.AddConnectedPlayers();
 
             var players = EntityManager.Entities.Where(p => p is Player);
             foreach (var player in players)
             {
                 var actualPlayer = player as Player;
-                if (actualPlayer.IsOtherPlayer && actualPlayer.ConnectionId == "testId2")
+                if (actualPlayer.IsOtherPlayer && actualPlayer.ConnectionId == "testId")
                 {
-                    Assert.Equal("testId2", actualPlayer.ConnectionId);
+                    Assert.Equal("testId", actualPlayer.ConnectionId);
                 }
             }
         }
@@ -118,23 +118,19 @@ namespace HoboKing.Tests
         {
             _data.connector.ConnectionsIds.Add("testId");
             _data.map.AddConnectedPlayers();
+            _data.map.Update(new GameTime());
+
+            _data.connector.UnprocessedInputs.Add(new Coordinate("testId", 20, 20));
+            _data.connector.UnprocessedInputs.Add(new Coordinate("nonExistant", 20, 20));
+            _data.map.UpdateConnectedPlayers();
+
+            var expected = new Vector2(20, 20);
 
             var players = EntityManager.Entities.Where(p => p is Player);
-            foreach (var player in players)
-            {
-                var actualPlayer = player as Player;
-                if (actualPlayer.IsOtherPlayer && actualPlayer.ConnectionId == "testId")
-                {
-                    var testingPlayer = actualPlayer;
+            var player = players.FirstOrDefault(p => (p as Player).ConnectionId == "testId") as Player;
 
-                    _data.connector.UnprocessedInputs.Add(new Coordinate("testId", 20, 20));
-                    _data.map.UpdateConnectedPlayers();
-
-                    var expected = new Vector2(20, 20);
-
-                    Assert.Equal(expected, testingPlayer.Position);
-                }
-            }
+            Assert.Equal(expected, player.Position);
+            
         }
 
         [Fact]
@@ -142,18 +138,15 @@ namespace HoboKing.Tests
         {
             _data.connector.ConnectionsIds.Add("testId");
             _data.map.AddConnectedPlayers();
+            _data.map.Update(new GameTime());
+
+            _data.connector.ConnectionsIds.Remove("testId");
+            _data.map.RemoveConnectedPlayers();
 
             var players = EntityManager.Entities.Where(p => p is Player);
-            foreach (var player in players)
-            {
-                var actualPlayer = player as Player;
-                if (actualPlayer.IsOtherPlayer && actualPlayer.ConnectionId == "testId")
-                {
-                    _data.connector.ConnectionsIds.Remove("testId");
-                    _data.map.RemoveConnectedPlayers();
-                    Assert.Null(actualPlayer);
-                }
-            }
+            var player = players.FirstOrDefault(p => (p as Player).ConnectionId == "testId") as Player;
+
+            Assert.Equal("testId", player.ConnectionId);
         }
 
         [Theory]

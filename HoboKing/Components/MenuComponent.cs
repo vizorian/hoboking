@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
 namespace HoboKing.States
@@ -29,6 +30,7 @@ namespace HoboKing.States
             base.LoadContent();
         }
 
+        [ExcludeFromCodeCoverage]
         public override void Update(GameTime gameTime)
         {
             if (InputController.KeyPressed(Keys.Enter))
