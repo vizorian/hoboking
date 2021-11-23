@@ -20,10 +20,22 @@ namespace HoboKing.Tests
         public ConnectorTests()
         {
             game = new HoboKingGame();
-            game.RunOneFrame();
-            //connector = new ConnectorComponent(game);
 
-            connector = new ConnectorComponent(game);
+            //game.GraphicsDevice.Reset();
+
+            //connector = new ConnectorComponent(game);
+            //map = new MapComponent(game, connector);
+            //map.Initialize();
+
+
+            game.RunOneFrame();
+
+            var components = game.multiplayerScene.ReturnComponents();
+            foreach (var component in components)
+            {
+                if (component is ConnectorComponent)
+                    connector = component as ConnectorComponent;
+            }
         }
 
         [Fact]
