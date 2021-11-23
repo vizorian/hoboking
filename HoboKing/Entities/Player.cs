@@ -23,6 +23,7 @@ namespace HoboKing.Entities
 
         public Player(Texture2D texture, Vector2 position, string connectionId, bool isOtherPlayer, World world) : base(texture, position, PLAYER_SIZE)
         {
+            State = PlayerState.Idle;
             ConnectionId = connectionId;
             IsOtherPlayer = isOtherPlayer;
 
@@ -71,7 +72,7 @@ namespace HoboKing.Entities
 
         public override GameEntity DeepCopy()
         {
-            var clone = MemberwiseClone() as Player;
+            var clone = ShallowCopy() as Player;
             clone.ConnectionId = new string(ConnectionId);
             return clone;
         }
