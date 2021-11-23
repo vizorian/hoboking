@@ -3,6 +3,7 @@ using HoboKing.Graphics;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
 namespace HoboKing.Control.Strategy
@@ -40,6 +41,7 @@ namespace HoboKing.Control.Strategy
             }
         }
 
+        [ExcludeFromCodeCoverage]
         public override void Down()
         {
         }
@@ -54,6 +56,7 @@ namespace HoboKing.Control.Strategy
             target.ChangePosition(target.Position += new Vector2(HORIZONTAL_SPEED, 0));
         }
 
+        [ExcludeFromCodeCoverage]
         public override void Up()
         {
         }

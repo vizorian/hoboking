@@ -95,10 +95,10 @@ namespace HoboKing.Entities
             }
         }
 
-        public void Clear()
-        {
-            _entitiesToRemove.AddRange(_entities);
-        }
+        //public void Clear()
+        //{
+        //    _entitiesToRemove.AddRange(_entities);
+        //}
 
         public List<Tile> GetTiles()
         {

@@ -35,18 +35,10 @@ namespace HoboKing.Control.Strategy
                 Left();
             }
 
-            if (InputController.KeyReleased(Keys.A))
-            {
-            }
-
             // RIGHT
             if (InputController.KeyPressedDown(Keys.D))
             {
                 Right();
-            }
-
-            if (InputController.KeyReleased(Keys.D))
-            {
             }
         }
 
