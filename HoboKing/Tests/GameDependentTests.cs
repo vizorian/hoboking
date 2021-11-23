@@ -5,11 +5,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using HoboKing;
+using HoboKing.Control;
 using HoboKing.Entities;
 using HoboKing.Graphics;
 using HoboKing.Scenes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
+using tainicom.Aether.Physics2D.Dynamics;
 using Xunit;
 
 namespace HoboKing.Tests
@@ -59,9 +62,36 @@ namespace HoboKing.Tests
         [Fact]
         public void CreateMainPlayer()
         {
-
             var player = _data.map.CreateMainPlayer();
             Assert.False(player.IsOtherPlayer);
+        }
+
+        [Fact]
+        public void TestPlayerDeepCopy()
+        {
+            World world = new World();
+            Player p = new Player(null, new Vector2(0, 0), "", false, world);
+            Player deep = p.DeepCopy() as Player;
+            deep.ConnectionId = "Changed";
+            Assert.NotEqual(p.ConnectionId, deep.ConnectionId);
+        }
+
+        [Fact]
+        public void PlayerPressedF2Test()
+        {
+            World world = new World();
+            Player p = new Player(null, new Vector2(0, 0), "", false, world);
+
+            InputController.PreviousKeyboardState = new KeyboardState(Keys.None);
+            InputController.KeyboardState = new KeyboardState(Keys.F2);
+
+            p.Update(new GameTime());
+            p.Update(new GameTime());
+            p.Update(new GameTime());
+
+            Assert.True(true);
+            InputController.PreviousKeyboardState = new KeyboardState();
+            InputController.KeyboardState = new KeyboardState();
         }
 
         [Fact]
@@ -124,13 +154,16 @@ namespace HoboKing.Tests
             }
         }
 
-        [Fact]
-        public void CritterUpdateTest()
+        [Theory]
+        [InlineData(0)]
+        [InlineData(3)]
+        [InlineData(5)]
+        public void CritterUpdateTest(double time)
         {
             var critter = new CritterBuilder().AddTexture(ContentLoader.GrassLeft,
                 new Vector2(0, 0)).AddMovement().Build() as Critter;
             var oldPosition = critter.Position.X;
-            critter.Update(new GameTime());
+            critter.Update(new GameTime(TimeSpan.Zero, TimeSpan.FromSeconds(time)));
             var newPosition = critter.Position.X;
             Assert.NotEqual(oldPosition, newPosition);
         }
