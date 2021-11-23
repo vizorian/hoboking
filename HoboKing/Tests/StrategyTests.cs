@@ -2,11 +2,13 @@
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using Xunit;
 
 namespace HoboKing.Tests
 {
+    [ExcludeFromCodeCoverage]
     public class StrategyTests
     {
         [Theory]

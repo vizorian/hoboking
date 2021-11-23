@@ -21,6 +21,8 @@ namespace HoboKing.Tests
         {
             game = new HoboKingGame();
             game.RunOneFrame();
+            //connector = new ConnectorComponent(game);
+
             connector = new ConnectorComponent(game);
         }
 
@@ -38,8 +40,9 @@ namespace HoboKing.Tests
             {
                 worked = false;
             }
+
             connector.Disconnect();
-            Thread.Sleep(2500);
+            Thread.Sleep(5000);
             Assert.True(worked);
         }
     }

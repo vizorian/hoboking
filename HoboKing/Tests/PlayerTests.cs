@@ -9,6 +9,7 @@ using HoboKing.Entities;
 using HoboKing.Graphics;
 using HoboKing.Scenes;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Xunit;
 
 namespace HoboKing.Tests
@@ -23,20 +24,30 @@ namespace HoboKing.Tests
         public PlayerTests()
         {
             game = new HoboKingGame();
+
+            //game.GraphicsDevice.Reset();
+
+            //connector = new ConnectorComponent(game);
+            //map = new MapComponent(game, connector);
+            //map.Initialize();
+
+
             game.RunOneFrame();
 
-            map = game.multiplayerGame;
             var components = game.multiplayerScene.ReturnComponents();
             foreach (var component in components)
             {
                 if (component is ConnectorComponent)
                     connector = component as ConnectorComponent;
+                if (component is MapComponent)
+                    map = component as MapComponent;
             }
         }
 
         [Fact]
         public void CreateMainPlayer()
         {
+
             var player = map.CreateMainPlayer();
             Assert.False(player.IsOtherPlayer);
         }
@@ -44,16 +55,16 @@ namespace HoboKing.Tests
         [Fact]
         public void CreateOtherPlayer()
         {
-            connector.ConnectionsIds.Add("testId");
+            connector.ConnectionsIds.Add("testId2");
             map.AddConnectedPlayers();
 
             var players = EntityManager.Entities.Where(p => p is Player);
             foreach (var player in players)
             {
                 var actualPlayer = player as Player;
-                if (actualPlayer.IsOtherPlayer && actualPlayer.ConnectionId == "testId")
+                if (actualPlayer.IsOtherPlayer && actualPlayer.ConnectionId == "testId2")
                 {
-                    Assert.Equal("testId", actualPlayer.ConnectionId);
+                    Assert.Equal("testId2", actualPlayer.ConnectionId);
                 }
             }
         }
