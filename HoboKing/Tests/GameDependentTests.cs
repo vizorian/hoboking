@@ -5,11 +5,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using HoboKing;
+using HoboKing.Components;
+using HoboKing.Control;
 using HoboKing.Entities;
 using HoboKing.Graphics;
 using HoboKing.Scenes;
+using HoboKing.States;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using Xunit;
 
 namespace HoboKing.Tests
@@ -135,14 +139,58 @@ namespace HoboKing.Tests
             Assert.NotEqual(oldPosition, newPosition);
         }
 
-        //[Theory]
-        //[InlineData(6, 9)]
-        //[InlineData(3, 2)]
-        //public void CreateOtherPlayer(int x, int y)
-        //{
-        //    map.Connector
-        //    var player = map.CreateMainPlayer();
-        //    Assert.False(player.IsOtherPlayer);
-        //}
+        [Fact]
+        public void MenuItemsSelectNext()
+        {
+            MenuItemsComponent menu = new MenuItemsComponent(_data.game, new Vector2(0, 0), Color.White, Color.White, 1);
+            menu.AddMenuItem("one");
+            menu.AddMenuItem("two");
+
+            var oldSelection = menu.selectedMenuItem;
+            menu.SelectPrevious();
+            var newSelection = menu.selectedMenuItem;
+
+            Assert.NotEqual(oldSelection, newSelection);
+        }
+
+        [Fact]
+        public void MenuItemsSelectNextSingle()
+        {
+            MenuItemsComponent menu = new MenuItemsComponent(_data.game, new Vector2(0, 0), Color.White, Color.White, 1);
+            menu.AddMenuItem("one");
+
+            var oldSelection = menu.selectedMenuItem;
+            menu.SelectNext();
+            var newSelection = menu.selectedMenuItem;
+
+            Assert.Equal(oldSelection, newSelection);
+        }
+
+        [Fact]
+        public void MenuItemsSelectPrevious()
+        {
+            MenuItemsComponent menu = new MenuItemsComponent(_data.game, new Vector2(0, 0), Color.White, Color.White, 1);
+            menu.AddMenuItem("one");
+            menu.AddMenuItem("two");
+
+            var oldSelection = menu.selectedMenuItem;
+            menu.SelectNext();
+            var newSelection = menu.selectedMenuItem;
+
+            Assert.NotEqual(oldSelection, newSelection);
+        }
+
+        [Fact]
+        public void MenuItemsSelectPreviousSingle()
+        {
+            MenuItemsComponent menu = new MenuItemsComponent(_data.game, new Vector2(0, 0), Color.White, Color.White, 1);
+            menu.AddMenuItem("one");            
+
+            var oldSelection = menu.selectedMenuItem;
+            menu.SelectPrevious();
+            var newSelection = menu.selectedMenuItem;
+
+            Assert.Equal(oldSelection, newSelection);
+        }
     }
 }

@@ -9,6 +9,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace HoboKing.Tests
@@ -21,24 +22,65 @@ namespace HoboKing.Tests
 
         }
 
-        [Fact]
-        public async void SendData()
+        [Theory]
+        [InlineData(10, 10)]
+        [InlineData(10, 5)]
+        [InlineData(10, 0.05)]
+        public async void SendData(int totalTime, int elapsedTime)
         {
             ConnectorComponent connector = new ConnectorComponent();
             connector.CreateListeners();
-            bool worked = true;
             await connector.Connect();
-            try
-            {
-                connector.SendData(new GameTime(), new Vector2(20, 20));
-            }
-            catch (Exception)
-            {
-                worked = false;
-            }
 
-            connector.Disconnect();
-            Assert.True(worked);
+            var ex = await Record.ExceptionAsync(() => connector.SendData(new GameTime(new TimeSpan(0, 0, totalTime), new TimeSpan(0, 0, elapsedTime)), new Vector2(20, 20)));
+
+            Assert.Null(ex);
+        }
+
+        [Fact]
+        public async void Connect()
+        {
+            ConnectorComponent connector = new ConnectorComponent();
+            connector.CreateListeners();
+
+            var ex = await Record.ExceptionAsync(() => connector.Connect());
+            Assert.Null(ex);
+        }
+
+        [Fact]
+        public async void Disconnect()
+        {
+            ConnectorComponent connector = new ConnectorComponent();
+            connector.CreateListeners();
+
+            await connector.Connect();
+
+            var ex = await Record.ExceptionAsync(() => connector.Disconnect());
+            Assert.Null(ex);
+        }
+
+        [Fact]
+        public async void ConnectException()
+        {
+            ConnectorComponent connector = new ConnectorComponent();
+            await Assert.ThrowsAsync<Exception>(() => connector.Connect());
+        }
+
+        [Fact]
+        public async void DisconnectException()
+        {
+            ConnectorComponent connector = new ConnectorComponent();
+            await Assert.ThrowsAsync<Exception>(() => connector.Disconnect());
+        }
+
+        [Fact]
+        public async void GetConnectionId()
+        {
+            ConnectorComponent connector = new ConnectorComponent();
+            connector.CreateListeners();
+            await connector.Connect();
+
+            Assert.NotNull(connector.GetConnectionId());
         }
     }
 }

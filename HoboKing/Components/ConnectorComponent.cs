@@ -76,7 +76,7 @@ namespace HoboKing.Entities
         }
 
         // Attempts to stop connection
-        public async void Disconnect()
+        public async Task Disconnect()
         {
             try
             {
@@ -90,7 +90,7 @@ namespace HoboKing.Entities
         }
 
         // Send own positional coordinates every time interval
-        public async void SendData(GameTime gameTime, Vector2 position)
+        public async Task SendData(GameTime gameTime, Vector2 position)
         {
             float elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
             timer -= elapsed;
