@@ -1,14 +1,10 @@
 ﻿using HoboKing.Factory;
 using HoboKing.Graphics;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using tainicom.Aether.Physics2D.Diagnostics;
 
 namespace HoboKing.Entities
 {
@@ -21,10 +17,13 @@ namespace HoboKing.Entities
         public static IEnumerable<GameEntity> Entities => new ReadOnlyCollection<GameEntity>(_entities);
 
         public int PlayerCount { get; set; }
-        public List<Player> players = new List<Player>();
+        public List<Player> Players = new List<Player>();
+        public Player MainPlayer;
 
-        public Player mainPlayer;
-
+        /// <summary>
+        /// Add entity to an entity list
+        /// </summary>
+        /// <param name="entity">Entity</param>
         public void AddEntity(GameEntity entity)
         {
             if (entity == null)
@@ -33,18 +32,22 @@ namespace HoboKing.Entities
             }
             if (entity.GetType() == typeof(Player))
             {
-                Player player = (Player)entity;
-                players.Add(player);
+                var player = (Player)entity;
+                Players.Add(player);
                 PlayerCount++;
                 // Saves the main player in a variable.
                 if (player.IsOtherPlayer == false)
                 {
-                    mainPlayer = player;
+                    MainPlayer = player;
                 }
             }
             _entitiesToAdd.Add(entity);
         }
 
+        /// <summary>
+        /// Remove entity from an entity list
+        /// </summary>
+        /// <param name="entity">Entity</param>
         public void RemoveEntity(GameEntity entity)
         {
             if (entity == null)
@@ -54,12 +57,16 @@ namespace HoboKing.Entities
 
             if (entity.GetType() == typeof(Player))
             {
-                players.Remove((Player)entity);
+                Players.Remove((Player)entity);
                 PlayerCount--;
             }
             _entitiesToRemove.Add(entity);
         }
 
+        /// <summary>
+        /// Updates the entity manager
+        /// </summary>
+        /// <param name="gameTime">Game time</param>
         public void Update(GameTime gameTime)
         {
             foreach (var entity in _entities)
@@ -80,13 +87,15 @@ namespace HoboKing.Entities
             _entitiesToAdd.Clear();
             foreach (var entity in _entitiesToRemove)
             {
-
                 _entities.Remove(entity);
-
             }
             _entitiesToRemove.Clear();
         }
 
+        /// <summary>
+        /// Draws an entity
+        /// </summary>
+        /// <param name="spriteBatch">Sprite batch</param>
         public void Draw(SpriteBatch spriteBatch)
         {
             foreach(var entity in _entities)
@@ -95,27 +104,20 @@ namespace HoboKing.Entities
             }
         }
 
-        //public void Clear()
-        //{
-        //    _entitiesToRemove.AddRange(_entities);
-        //}
-
+        /// <summary>
+        /// Retrieves all tiles from the entity list
+        /// </summary>
+        /// <returns>All tiles</returns>
         public List<Tile> GetTiles()
         {
-            List<Tile> tiles = new List<Tile>();
+            var tiles = new List<Tile>();
             foreach(var entity in _entitiesToAdd)
             {
-                //if(entity.GetType() == typeof(NormalStandardTile) || entity.GetType() == typeof(IceStandardTile) || entity.GetType() == typeof(SlowStandardTile))
-                //{
-                //    tiles.Add(entity as Tile);
-                //}
-
                 if(entity is Tile)
                 {
                     tiles.Add(entity as Tile);
                 }
             }
-
             return tiles;
         }
     }
