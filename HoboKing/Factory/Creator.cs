@@ -1,15 +1,10 @@
-﻿using HoboKing.Entities;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using tainicom.Aether.Physics2D.Dynamics;
+﻿using System.Collections.Generic;
 
 namespace HoboKing.Factory
 {
-    abstract class Creator
+    internal abstract class Creator
     {
-        public abstract Section CreateMapSection(List<Tile> standardTiles, string Level, int MAP_WIDTH, int MAP_HEIGHT, int sectionStartPosition, int sectionEndPosition);
+        public abstract Section CreateMapSection(List<Tile> standardTiles, string level, int mapWidth, int mapHeight,
+            int sectionStartPosition, int sectionEndPosition);
     }
 }

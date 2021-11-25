@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace HoboKing.Entities
+﻿namespace HoboKing.Utils
 {
     public enum PlayerState
     {

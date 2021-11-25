@@ -1,24 +1,24 @@
-﻿using HoboKing.Components;
+﻿using System.Linq;
+using HoboKing.Components;
 using HoboKing.Control;
-using HoboKing.Entities;
-using HoboKing.Graphics;
-using HoboKing.Scenes;
-using HoboKing.States;
+using HoboKing.Utils;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using System;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading;
 
 namespace HoboKing
 {
-    class HoboKingGame : Game
+    internal class HoboKingGame : Game
     {
-        public GraphicsDeviceManager Graphics;
-        public SpriteBatch SpriteBatch;
+        public enum GameState
+        {
+            Singleplayer,
+            Multiplayer,
+            Options,
+            Menu,
+            Initialising,
+            Loading,
+            Unloading
+        }
 
         // The app window size
         public const int WINDOW_WIDTH = 1920;
@@ -30,26 +30,17 @@ namespace HoboKing
         // should be 1080, reduced for fitting in screen
         public const int GAME_WINDOW_HEIGHT = 1000;
 
-        public GameScene menuScene, optionsScene, singleplayerScene, multiplayerScene;
+        public GameState GState;
+        public GraphicsDeviceManager Graphics;
 
-        public enum GameState
-        {
-            Singleplayer,
-            Multiplayer,
-            Options,
-            Menu,
-            Initialising,
-            Loading,
-            Unloading,
-        }
-
-        public GameState gameState;
-        public MapComponent singleplayerGame;
-        public MapComponent multiplayerGame;
+        public GameScene MenuScene, OptionsScene, SingleplayerScene, MultiplayerScene;
+        public MapComponent MultiplayerGame;
+        public MapComponent SingleplayerGame;
+        public SpriteBatch SpriteBatch;
 
         public HoboKingGame()
         {
-            gameState = GameState.Initialising;
+            GState = GameState.Initialising;
             Graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
         }
@@ -58,56 +49,60 @@ namespace HoboKing
         private void ChangeComponentState(GameComponent component, bool state)
         {
             component.Enabled = state;
-            if (component is DrawableGameComponent)
-                ((DrawableGameComponent)component).Visible = state;
+            if (component is DrawableGameComponent gameComponent)
+                gameComponent.Visible = state;
         }
 
         /// Switches game scene
         public void SwitchScene(GameScene scene)
         {
-            GameComponent[] usedComponents = scene.ReturnComponents();
-            foreach (GameComponent component in Components)
+            var usedComponents = scene.ReturnComponents();
+            foreach (var gameComponent in Components)
             {
-                bool isUsed = usedComponents.Contains(component);
+                var component = (GameComponent) gameComponent;
+                var isUsed = usedComponents.Contains(component);
                 ChangeComponentState(component, isUsed);
             }
+
             InputController.PreviousKeyboardState = InputController.KeyboardState;
         }
 
         protected override void Initialize()
         {
-            Vector2 MenuPosition = new Vector2(GraphicsDevice.Viewport.Width / 4, 600);
+            var menuPosition = new Vector2(GraphicsDevice.Viewport.Width / 4, 600);
 
             // Creating components
             // Creating connector component
-            ConnectorComponent connector = new ConnectorComponent();
+            var connector = new ConnectorComponent();
 
             // Creating map component
-            singleplayerGame = new MapComponent(this);
-            multiplayerGame = new MapComponent(this, connector);
+            SingleplayerGame = new MapComponent(this);
+            MultiplayerGame = new MapComponent(this, connector);
 
             // Creating MAIN MENU items and components
-            MenuItemsComponent mainMenuItems = new MenuItemsComponent(this, MenuPosition, Color.White, Color.Green, 1);
+            var mainMenuItems = new MenuItemsComponent(this, menuPosition, Color.White, Color.Green, 1);
             mainMenuItems.AddMenuItem("Start Singleplayer");
             mainMenuItems.AddMenuItem("Start Multiplayer");
             mainMenuItems.AddMenuItem("Options");
             mainMenuItems.AddMenuItem("Exit Game");
-            MenuComponent mainMenu = new MenuComponent(this, mainMenuItems);
+            var mainMenu = new MenuComponent(this, mainMenuItems);
 
             // Creating OPTIONS MENU items and components
-            MenuItemsComponent optionsMenuItems = new MenuItemsComponent(this, MenuPosition, Color.White, Color.Green, 1);
+            var optionsMenuItems = new MenuItemsComponent(this, menuPosition, Color.White, Color.Green, 1);
             optionsMenuItems.AddMenuItem("Return");
-            MenuComponent optionsMenu = new MenuComponent(this, optionsMenuItems);
+            var optionsMenu = new MenuComponent(this, optionsMenuItems);
 
             // Game scenes
-            menuScene = new GameScene(this, mainMenu, mainMenuItems);
-            optionsScene = new GameScene(this, optionsMenu, optionsMenuItems);
+            MenuScene = new GameScene(this, mainMenu, mainMenuItems);
+            OptionsScene = new GameScene(this, optionsMenu, optionsMenuItems);
+
             //singleplayerScene = new GameScene(this, singleplayerGame);
-            multiplayerScene = new GameScene(this, multiplayerGame);
+            MultiplayerScene = new GameScene(this, MultiplayerGame);
 
             // Disabling components
-            foreach (GameComponent component in Components)
+            foreach (var gameComponent in Components)
             {
+                var component = (GameComponent) gameComponent;
                 ChangeComponentState(component, false);
             }
 
@@ -122,23 +117,21 @@ namespace HoboKing
         protected override void LoadContent()
         {
             SpriteBatch = new SpriteBatch(GraphicsDevice);
-            SwitchScene(menuScene);
-            gameState = GameState.Menu;
+            SwitchScene(MenuScene);
+            GState = GameState.Menu;
         }
 
         protected override void Update(GameTime gameTime)
         {
-            //Console.WriteLine($"Current state is: {gameState}");
+            //Console.WriteLine($"Current state is: {GState}");
 
-            if(gameState == GameState.Unloading)
-            {
+            if (GState == GameState.Unloading)
                 // Doesn't work
                 //singleplayerScene.ReturnComponents().ToList().ForEach(o => o.Dispose());
                 //singleplayerScene.ReturnComponents().ToList().ForEach(o => o.Initialize());
                 //multiplayerScene.ReturnComponents().ToList().ForEach(o => o.Dispose());
 
-                gameState = GameState.Menu;
-            }
+                GState = GameState.Menu;
             InputController.Update();
             base.Update(gameTime);
         }

@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace HoboKing.Control.Strategy
 {
-    class IceMovement : Movement
+    internal class IceMovement : Movement
     {
         private const float MAX_JUMP = 2.5f;
         private const float HORIZONTAL_SPEED = 3f;
@@ -18,28 +18,16 @@ namespace HoboKing.Control.Strategy
         public override void AcceptInputs(GameTime gameTime)
         {
             // UP
-            if (InputController.KeyPressed(Keys.Space) || InputController.KeyPressed(Keys.W))
-            {
-                Up();
-            }
+            if (InputController.KeyPressed(Keys.Space) || InputController.KeyPressed(Keys.W)) Up();
 
             // DOWN
-            if (InputController.KeyPressedDown(Keys.S))
-            {
-                Down();
-            }
+            if (InputController.KeyPressedDown(Keys.S)) Down();
 
             // LEFT
-            if (InputController.KeyPressedDown(Keys.A))
-            {
-                Left();
-            }
+            if (InputController.KeyPressedDown(Keys.A)) Left();
 
             // RIGHT
-            if (InputController.KeyPressedDown(Keys.D))
-            {
-                Right();
-            }
+            if (InputController.KeyPressedDown(Keys.D)) Right();
         }
 
         public override void Down()

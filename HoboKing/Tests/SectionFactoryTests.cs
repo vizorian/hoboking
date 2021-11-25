@@ -1,23 +1,21 @@
-﻿using HoboKing.Factory;
-using HoboKing.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using Xunit;
+﻿using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using HoboKing.Entities;
+using HoboKing.Factory;
+using Xunit;
 
 namespace HoboKing.Tests
 {
     [ExcludeFromCodeCoverage]
     public class SectionFactoryTests
     {
-        
-        int MAP_WIDTH = 64;
-        int MAP_HEIGHT = 150;
-        string Level = "#";
-        Creator creator = new MapCreator();
-        EntityManager entityManager = new EntityManager();
-        List<Tile> standardTiles;
+        private readonly Creator creator = new MapCreator();
+        private readonly EntityManager entityManager = new EntityManager();
+        private readonly string Level = "#";
+        private readonly int MAP_HEIGHT = 150;
+
+        private readonly int MAP_WIDTH = 64;
+        private readonly List<Tile> standardTiles;
 
         public SectionFactoryTests()
         {
@@ -26,8 +24,8 @@ namespace HoboKing.Tests
 
         [Fact]
         public void GrassSectionTest()
-        { 
-            Section sandSection = creator.CreateMapSection(standardTiles, Level, MAP_WIDTH, MAP_HEIGHT, 0, 50);
+        {
+            var sandSection = creator.CreateMapSection(standardTiles, Level, MAP_WIDTH, MAP_HEIGHT, 0, 50);
 
             Assert.NotNull(sandSection);
         }
@@ -35,7 +33,7 @@ namespace HoboKing.Tests
         [Fact]
         public void IceSectionTest()
         {
-            Section iceSection = creator.CreateMapSection(standardTiles, Level, MAP_WIDTH, MAP_HEIGHT, 50, 100);
+            var iceSection = creator.CreateMapSection(standardTiles, Level, MAP_WIDTH, MAP_HEIGHT, 50, 100);
 
             Assert.NotNull(iceSection);
         }
@@ -43,7 +41,7 @@ namespace HoboKing.Tests
         [Fact]
         public void SandSectionTest()
         {
-            Section grassSection = creator.CreateMapSection(standardTiles, Level, MAP_WIDTH, MAP_HEIGHT, 100, 150);
+            var grassSection = creator.CreateMapSection(standardTiles, Level, MAP_WIDTH, MAP_HEIGHT, 100, 150);
 
             Assert.NotNull(grassSection);
         }
@@ -51,7 +49,7 @@ namespace HoboKing.Tests
         [Fact]
         public void NullSectionTest()
         {
-            Section nullSection = creator.CreateMapSection(standardTiles, Level, MAP_WIDTH, MAP_HEIGHT, 200, 200);
+            var nullSection = creator.CreateMapSection(standardTiles, Level, MAP_WIDTH, MAP_HEIGHT, 200, 200);
 
             Assert.Null(nullSection);
         }

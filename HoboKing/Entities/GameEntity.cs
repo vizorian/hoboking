@@ -1,9 +1,10 @@
 ﻿using System;
+using HoboKing.Components;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using tainicom.Aether.Physics2D.Dynamics;
 
-namespace HoboKing.Graphics
+namespace HoboKing.Entities
 {
     public abstract class GameEntity
     {
@@ -11,9 +12,6 @@ namespace HoboKing.Graphics
         protected const float RESTITUTION = 0.1f;
         protected const float UNIT_TO_PIXEL = 100.0f;
         protected const float PIXEL_TO_UNIT = 1 / UNIT_TO_PIXEL;
-
-        public Texture2D Texture { get; protected set; }
-        public Vector2 Position { get; set; }
 
         // Physics
         public Body Body;
@@ -24,8 +22,11 @@ namespace HoboKing.Graphics
         protected int tileSize;
         protected World world;
 
-        public GameEntity() { }
-        public GameEntity(Texture2D texture, Vector2 position, int size = 0)
+        protected GameEntity()
+        {
+        }
+
+        protected GameEntity(Texture2D texture, Vector2 position, int size = 0)
         {
             Position = position * MapComponent.TILE_SIZE;
             Texture = texture;
@@ -34,24 +35,28 @@ namespace HoboKing.Graphics
             SetSizeRectangle(size);
         }
 
+        public Texture2D Texture { get; protected set; }
+        public Vector2 Position { get; set; }
+
         // Sets the size rectangle for the GameEntity.
         // If the size is specified then Rectangle is resized.
         // If size is 0, Rectangle is the size of Texture.
         private void SetSizeRectangle(int size)
         {
-            sizeRectangle = size != 0 ? new Rectangle((int)Position.X, (int)Position.Y, size, size) 
-                : new Rectangle((int)Position.X, (int)Position.Y, Texture.Width, Texture.Height);
+            sizeRectangle = size != 0
+                ? new Rectangle((int) Position.X, (int) Position.Y, size, size)
+                : new Rectangle((int) Position.X, (int) Position.Y, Texture.Width, Texture.Height);
         }
 
         /// <summary>
-        /// Creates physics objects for a GameEntity, based of BodyType.
+        ///     Creates physics objects for a GameEntity, based of BodyType.
         /// </summary>
-        /// <param name="world">Shared world object</param>
+        /// <param name="w">Shared w object</param>
         /// <param name="bodyType">BodyType.Static or BodyType.Dynamic</param>
-        protected virtual void CreatePhysicsObjects(World world, BodyType bodyType)
+        protected virtual void CreatePhysicsObjects(World w, BodyType bodyType)
         {
-            this.world = world;
-            Body = world.CreateBody(Position * PIXEL_TO_UNIT, 0, bodyType);
+            world = w;
+            Body = w.CreateBody(Position * PIXEL_TO_UNIT, 0, bodyType);
             Body.FixedRotation = true;
             if (bodyType is BodyType.Dynamic)
                 CreatePlayerFixture();
@@ -62,25 +67,26 @@ namespace HoboKing.Graphics
         }
 
         /// <summary>
-        /// Creates a Fixture for player physics
+        ///     Creates a Fixture for player physics
         /// </summary>
         public void CreatePlayerFixture()
         {
-            Fixture = Body.CreateCircle(sizeRectangle.Width / 2f * PIXEL_TO_UNIT, 1f, 
+            Fixture = Body.CreateCircle(sizeRectangle.Width / 2f * PIXEL_TO_UNIT, 1f,
                 new Vector2(sizeRectangle.Width / 2f * PIXEL_TO_UNIT, sizeRectangle.Height / 2f * PIXEL_TO_UNIT));
         }
 
         /// <summary>
-        /// Creates a Fixture for static object physics
+        ///     Creates a Fixture for static object physics
         /// </summary>
         public void CreateStaticFixture()
         {
-            Fixture = Body.CreateRectangle(sizeRectangle.Width * PIXEL_TO_UNIT, sizeRectangle.Height * PIXEL_TO_UNIT, 1f, Vector2.Zero);
+            Fixture = Body.CreateRectangle(sizeRectangle.Width * PIXEL_TO_UNIT, sizeRectangle.Height * PIXEL_TO_UNIT,
+                1f, Vector2.Zero);
         }
 
         /// <summary>
-        /// GameEntity update method, u[dates the position of sizeRectangle everyframe
-        /// also updates GameEntity.Position
+        ///     GameEntity update method, u[dates the position of sizeRectangle everyframe
+        ///     also updates GameEntity.Position
         /// </summary>
         public void Update()
         {
@@ -98,7 +104,7 @@ namespace HoboKing.Graphics
         }
 
         /// <summary>
-        /// Draws GameEntity
+        ///     Draws GameEntity
         /// </summary>
         /// <param name="spriteBatch">Shared game spriteBatch</param>
         public void Draw(SpriteBatch spriteBatch)
@@ -107,7 +113,7 @@ namespace HoboKing.Graphics
         }
 
         /// <summary>
-        /// Assigns a new texture.
+        ///     Assigns a new texture.
         /// </summary>
         /// <param name="texture">New Texture</param>
         public void ChangeTexture(Texture2D texture)
@@ -116,7 +122,7 @@ namespace HoboKing.Graphics
         }
 
         /// <summary>
-        /// Changes object position correctly
+        ///     Changes object position correctly
         /// </summary>
         /// <param name="newPosition">New Position</param>
         public virtual void ChangePosition(Vector2 newPosition)
@@ -128,7 +134,7 @@ namespace HoboKing.Graphics
         }
 
         /// <summary>
-        /// Changes tile size
+        ///     Changes tile size
         /// </summary>
         /// <param name="newSize">New Size</param>
         public void ChangeTileSize(int newSize)
@@ -138,7 +144,7 @@ namespace HoboKing.Graphics
         }
 
         /// <summary>
-        /// Let's you turn the gravity on or off.
+        ///     Let's you turn the gravity on or off.
         /// </summary>
         /// <param name="useGravity">If gravity should be used or not</param>
         public void UseGravity(bool useGravity)
@@ -148,15 +154,16 @@ namespace HoboKing.Graphics
         }
 
         /// <summary>
-        /// Derived classes need to implement ShallowCopy for prototype design pattern
+        ///     Derived classes need to implement ShallowCopy for prototype design pattern
         /// </summary>
         /// <returns></returns>
-        public virtual GameEntity ShallowCopy() {
-            return MemberwiseClone() as GameEntity;   
+        public virtual GameEntity ShallowCopy()
+        {
+            return MemberwiseClone() as GameEntity;
         }
 
         /// <summary>
-        /// Derived classes need to implement DeepCopy for prototype design pattern.
+        ///     Derived classes need to implement DeepCopy for prototype design pattern.
         /// </summary>
         /// <returns></returns>
         public abstract GameEntity DeepCopy();

@@ -1,21 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Text;
+﻿using System.Diagnostics.CodeAnalysis;
 
-namespace HoboKing.Entities
+namespace HoboKing.Utils
 {
     [ExcludeFromCodeCoverage]
-    class Coordinate
+    internal class Coordinate
     {
-        public string ConnectionID { get; set; }
-        public float X { get; set; }
-        public float Y { get; set; }
-        public Coordinate(string connectionID, float x, float y)
+        public Coordinate(string connectionId, float x, float y)
         {
-            ConnectionID = connectionID;
+            ConnectionId = connectionId;
             X = x;
             Y = y;
         }
+
+        public string ConnectionId { get; set; }
+        public float X { get; set; }
+        public float Y { get; set; }
     }
 }

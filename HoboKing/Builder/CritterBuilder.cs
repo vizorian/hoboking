@@ -1,30 +1,23 @@
-﻿using HoboKing.Control;
-using HoboKing.Control.Strategy;
-using HoboKing.Graphics;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using tainicom.Aether.Physics2D.Dynamics;
+﻿using HoboKing.Control.Strategy;
+using HoboKing.Entities;
 
-namespace HoboKing.Entities
+namespace HoboKing.Builder
 {
-    class CritterBuilder : AbstractBuilder
+    internal class CritterBuilder : AbstractBuilder
     {
         public CritterBuilder()
         {
             Reset();
         }
 
-        public override void Reset()
+        public sealed override void Reset()
         {
             entity = new Critter();
         }
 
         public override AbstractBuilder AddMovement()
         {
-            (entity as Critter).SetMovementStrategy(new CritterMovement(entity));
+            (entity as Critter)?.SetMovementStrategy(new CritterMovement(entity));
             return this;
         }
 
@@ -35,7 +28,7 @@ namespace HoboKing.Entities
 
         public override GameEntity Build()
         {
-            Critter finalCritter = entity as Critter;
+            var finalCritter = entity as Critter;
             Reset();
             return finalCritter;
         }

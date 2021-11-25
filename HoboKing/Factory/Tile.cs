@@ -1,23 +1,20 @@
-﻿using HoboKing.Graphics;
+﻿using HoboKing.Entities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using tainicom.Aether.Physics2D.Dynamics;
 
 namespace HoboKing.Factory
 {
     public abstract class Tile : GameEntity
     {
-        public Tile(Texture2D texture, Vector2 position, int tileSize, World world) : base(texture, position, tileSize)
+        protected Tile(Texture2D texture, Vector2 position, int tileSize, World world) : base(texture, position, tileSize)
         {
             CreatePhysicsObjects(world);
         }
 
         public override GameEntity ShallowCopy()
         {
-            return base.MemberwiseClone() as Tile;
+            return MemberwiseClone() as Tile;
         }
 
         public override GameEntity DeepCopy()
@@ -27,13 +24,14 @@ namespace HoboKing.Factory
             return clone;
         }
 
-        public void CreatePhysicsObjects(World world)
+        public void CreatePhysicsObjects(World w)
         {
-            this.world = world;
-            Body = world.CreateBody(Position * PIXEL_TO_UNIT, 0, BodyType.Static);
+            world = w;
+            Body = w.CreateBody(Position * PIXEL_TO_UNIT);
             Body.FixedRotation = true;
 
-            Fixture = Body.CreateRectangle(sizeRectangle.Width * PIXEL_TO_UNIT, sizeRectangle.Height * PIXEL_TO_UNIT, 1f, Vector2.Zero);
+            Fixture = Body.CreateRectangle(sizeRectangle.Width * PIXEL_TO_UNIT, sizeRectangle.Height * PIXEL_TO_UNIT,
+                1f, Vector2.Zero);
             Fixture.Restitution = RESTITUTION;
             Fixture.Friction = FRICTION;
         }

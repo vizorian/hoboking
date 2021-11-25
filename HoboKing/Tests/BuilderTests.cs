@@ -1,11 +1,5 @@
-﻿using HoboKing.Entities;
-using HoboKing.Graphics;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Text;
+﻿using System.Diagnostics.CodeAnalysis;
+using HoboKing.Builder;
 using Xunit;
 
 namespace HoboKing.Tests
@@ -13,11 +7,6 @@ namespace HoboKing.Tests
     [ExcludeFromCodeCoverage]
     public class BuilderTests
     {
-        public BuilderTests()
-        {
-
-        }
-
         // CRITTER
 
         [Fact]
@@ -79,7 +68,7 @@ namespace HoboKing.Tests
         [Fact]
         public void DeepCopyObjectTest()
         {
-            var obj = new Entities.Object();
+            var obj = new Object();
             var copy = obj.DeepCopy();
             Assert.NotEqual(obj.GetHashCode(), copy.GetHashCode());
         }

@@ -1,14 +1,13 @@
 ﻿using HoboKing.Entities;
-using HoboKing.Graphics;
 using Microsoft.Xna.Framework;
 
-namespace HoboKing.Control
+namespace HoboKing.Control.Strategy
 {
-    abstract class Movement
+    internal abstract class Movement
     {
         protected GameEntity target;
 
-        public Movement(GameEntity target)
+        protected Movement(GameEntity target)
         {
             this.target = target;
         }

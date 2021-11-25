@@ -1,21 +1,12 @@
-﻿using HoboKing.Control;
-using HoboKing.Graphics;
+﻿using HoboKing.Components;
+using HoboKing.Entities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using tainicom.Aether.Physics2D.Dynamics;
 
-namespace HoboKing.Entities
+namespace HoboKing.Builder
 {
-    abstract class AbstractBuilder
+    internal abstract class AbstractBuilder
     {
-        public AbstractBuilder()
-        {
-            Reset();
-        }
-
         protected GameEntity entity;
 
         public abstract void Reset();
@@ -28,10 +19,11 @@ namespace HoboKing.Entities
 
             entity.ChangeTexture(texture);
             entity.ChangePosition(positionInGrid);
-            entity.ChangeSize(size);
+            entity.ChangeTileSize(size);
 
             return this;
         }
+
         public abstract AbstractBuilder AddMovement();
 
         public abstract GameEntity Build();

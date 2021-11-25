@@ -1,11 +1,10 @@
-﻿using HoboKing.Control;
-using HoboKing.Graphics;
+﻿using HoboKing.Control.Strategy;
+using HoboKing.Entities;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
-namespace HoboKing.Entities
+namespace HoboKing.Builder
 {
-    class Critter : GameEntity
+    internal class Critter : GameEntity
     {
         private Movement movement;
 

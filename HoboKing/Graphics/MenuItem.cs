@@ -1,21 +1,18 @@
 ﻿using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace HoboKing.Entities
+namespace HoboKing.Graphics
 {
     public class MenuItem
     {
-        public string text;
-        public Vector2 position;
-        public float size;
+        public Vector2 Position;
+        public float Size;
+        public string Text;
 
         public MenuItem(string text, Vector2 position)
         {
-            this.text = text;
-            this.position = position;
-            size = 0.6f;
+            Text = text;
+            Position = position;
+            Size = 0.6f;
         }
     }
 }

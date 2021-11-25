@@ -1,18 +1,14 @@
-﻿using HoboKing.Components;
+﻿using System.Diagnostics.CodeAnalysis;
 using HoboKing.Control;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Text;
 
-namespace HoboKing.States
+namespace HoboKing.Components
 {
-    class MenuComponent : DrawableGameComponent
+    internal class MenuComponent : DrawableGameComponent
     {
-        private HoboKingGame hoboKingGame;
-        private MenuItemsComponent menuItems;
+        private readonly HoboKingGame hoboKingGame;
+        private readonly MenuItemsComponent menuItems;
 
         public MenuComponent(HoboKingGame hoboKingGame, MenuItemsComponent menuItems) : base(hoboKingGame)
         {
@@ -20,41 +16,30 @@ namespace HoboKing.States
             this.menuItems = menuItems;
         }
 
-        public override void Initialize()
-        {
-            base.Initialize();
-        }
-
-        protected override void LoadContent()
-        {
-            base.LoadContent();
-        }
-
         [ExcludeFromCodeCoverage]
         public override void Update(GameTime gameTime)
         {
             if (InputController.KeyPressed(Keys.Enter))
-                switch (menuItems.selectedMenuItem.text)
+                switch (menuItems.SelectedMenuItem.Text)
                 {
                     case "Start Singleplayer":
-                        hoboKingGame.SwitchScene(hoboKingGame.singleplayerScene);
-                        hoboKingGame.gameState = HoboKingGame.GameState.Singleplayer;
+                        hoboKingGame.SwitchScene(hoboKingGame.SingleplayerScene);
+                        hoboKingGame.GState = HoboKingGame.GameState.Singleplayer;
                         break;
                     case "Start Multiplayer":
-                        hoboKingGame.SwitchScene(hoboKingGame.multiplayerScene);
+                        hoboKingGame.SwitchScene(hoboKingGame.MultiplayerScene);
                         break;
                     case "Options":
-                        hoboKingGame.SwitchScene(hoboKingGame.optionsScene);
+                        hoboKingGame.SwitchScene(hoboKingGame.OptionsScene);
                         break;
                     case "Return":
-                        hoboKingGame.SwitchScene(hoboKingGame.menuScene);
+                        hoboKingGame.SwitchScene(hoboKingGame.MenuScene);
                         break;
                     case "Exit Game":
                         hoboKingGame.Exit();
                         break;
-                    default:
-                        break;
                 }
+
             base.Update(gameTime);
         }
 

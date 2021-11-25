@@ -1,16 +1,10 @@
-﻿using HoboKing.Control;
-using HoboKing.Graphics;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Text;
+﻿using System.Diagnostics.CodeAnalysis;
+using HoboKing.Control.Strategy;
 
 namespace HoboKing.Entities
 {
     [ExcludeFromCodeCoverage]
-    class Item : GameEntity
+    internal class Item : GameEntity
     {
         private Movement movement;
 
@@ -23,8 +17,6 @@ namespace HoboKing.Entities
         //    float realPosY = Sprite.Position.Y * Map.TILE_SIZE;
         //    Sprite.Position = new Vector2(realPosX, realPosY);
         //}
-
-        public Item() { }
 
         public void SetMovementStrategy(Movement movementStrategy)
         {

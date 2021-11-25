@@ -1,33 +1,22 @@
-﻿using HoboKing.Entities;
-using HoboKing.Factory;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using tainicom.Aether.Physics2D.Dynamics;
+﻿using System.Collections.Generic;
 
 namespace HoboKing.Factory
 {
-    class MapCreator : Creator
+    internal class MapCreator : Creator
     {
-        public override Section CreateMapSection(List<Tile> standardTiles, string Level, int MAP_WIDTH, int MAP_HEIGHT, int sectionStartPosition, int sectionEndPosition)
+        public override Section CreateMapSection(List<Tile> standardTiles, string level, int mapWidth, int mapHeight,
+            int sectionStartPosition, int sectionEndPosition)
         {
-            if (sectionStartPosition == 100)
+            return sectionStartPosition switch
             {
-                return new GrassSection(standardTiles, Level, MAP_WIDTH, MAP_HEIGHT, sectionStartPosition, sectionEndPosition);
-            }
-            else if (sectionStartPosition == 50)
-            {
-                return new IceSection(standardTiles, Level, MAP_WIDTH, MAP_HEIGHT, sectionStartPosition, sectionEndPosition);
-            }
-            else if (sectionStartPosition == 0)
-            {
-                return new SandSection(standardTiles, Level, MAP_WIDTH, MAP_HEIGHT, sectionStartPosition, sectionEndPosition);
-            }
-
-            return null;
+                100 => new GrassSection(standardTiles, level, mapWidth, mapHeight, sectionStartPosition,
+                    sectionEndPosition),
+                50 => new IceSection(standardTiles, level, mapWidth, mapHeight, sectionStartPosition,
+                    sectionEndPosition),
+                0 => new SandSection(standardTiles, level, mapWidth, mapHeight, sectionStartPosition,
+                    sectionEndPosition),
+                _ => null
+            };
         }
- 
     }
 }

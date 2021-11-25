@@ -1,23 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 
-namespace HoboKing.Scenes
+namespace HoboKing.Utils
 {
-    class GameScene
+    internal class GameScene
     {
-        private List<GameComponent> components;
-        private HoboKingGame hoboKingGame;
+        private readonly List<GameComponent> components;
+        private readonly HoboKingGame hoboKingGame;
 
         public GameScene(HoboKingGame hoboKingGame, params GameComponent[] components)
         {
             this.hoboKingGame = hoboKingGame;
             this.components = new List<GameComponent>();
-            foreach (GameComponent component in components)
-            {
-                AddComponent(component);
-            }
+            foreach (var component in components) AddComponent(component);
         }
 
         public void AddComponent(GameComponent component)

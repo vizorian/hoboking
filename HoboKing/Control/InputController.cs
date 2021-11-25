@@ -1,14 +1,8 @@
-using HoboKing.Entities;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Text;
 
 namespace HoboKing.Control
 {
-    static class InputController
+    internal static class InputController
     {
         public static MouseState MouseState { get; set; }
         public static MouseState PreviousMouseState { get; set; }

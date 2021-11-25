@@ -1,12 +1,9 @@
-﻿using HoboKing.Control;
-using HoboKing.Graphics;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using tainicom.Aether.Physics2D.Dynamics;
+﻿using HoboKing.Control.Strategy;
+using HoboKing.Entities;
 
-namespace HoboKing.Entities
+namespace HoboKing.Builder
 {
-    class Object : GameEntity
+    internal class Object : GameEntity
     {
         private Movement movement;
 
