@@ -12,13 +12,13 @@ namespace HoboKing.Factory
         public FakeTile(Texture2D texture, Vector2 position, int tileSize, World world) : base(texture, position, tileSize, world)
         {
             Vector2 pos = new Vector2(0, 0);
-            body.Position = pos * 0;
+            Body.Position = pos * 0;
         }
 
         public override void ChangePosition(Vector2 newPosition)
         {
             Position = newPosition;
-            Size = tileSize != 0 ? new Rectangle((int)Position.X, (int)Position.Y, tileSize, tileSize) : new Rectangle((int)Position.X, (int)Position.Y, Texture.Width, Texture.Height);       
+            sizeRectangle = tileSize != 0 ? new Rectangle((int)Position.X, (int)Position.Y, tileSize, tileSize) : new Rectangle((int)Position.X, (int)Position.Y, Texture.Width, Texture.Height);       
         }
     }
 }

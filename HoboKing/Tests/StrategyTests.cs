@@ -75,9 +75,9 @@ namespace HoboKing.Tests
             p.SetMovementStrategy(new DebugMovement(p));
             InputController.KeyboardState = new KeyboardState(key);
 
-            var oldVel = p.body.LinearVelocity.Y;
+            var oldVel = p.Body.LinearVelocity.Y;
             p.Update(new GameTime());
-            var newVel = p.body.LinearVelocity.Y;
+            var newVel = p.Body.LinearVelocity.Y;
             Assert.NotEqual(newVel, oldVel);
 
             InputController.KeyboardState = new KeyboardState();
@@ -93,9 +93,9 @@ namespace HoboKing.Tests
             p.SetMovementStrategy(new DebugMovement(p));
             InputController.KeyboardState = new KeyboardState(key);
 
-            var oldVel = p.body.LinearVelocity.X;
+            var oldVel = p.Body.LinearVelocity.X;
             p.Update(new GameTime());
-            var newVel = p.body.LinearVelocity.X;
+            var newVel = p.Body.LinearVelocity.X;
             Assert.NotEqual(newVel, oldVel);
 
             InputController.KeyboardState = new KeyboardState();
@@ -118,12 +118,12 @@ namespace HoboKing.Tests
 
             if (current == Keys.W || current == Keys.S)
             {
-                Assert.Equal(0, p.body.LinearVelocity.Y);
+                Assert.Equal(0, p.Body.LinearVelocity.Y);
             }
 
             if (current == Keys.A || current == Keys.D)
             {
-                Assert.Equal(0, p.body.LinearVelocity.X);
+                Assert.Equal(0, p.Body.LinearVelocity.X);
             }
 
             InputController.PreviousKeyboardState = new KeyboardState();
@@ -140,9 +140,9 @@ namespace HoboKing.Tests
             p.SetMovementStrategy(new IceMovement(p));
             InputController.KeyboardState = new KeyboardState(key);
 
-            var oldVel = p.body.LinearVelocity.Y;
+            var oldVel = p.Body.LinearVelocity.Y;
             p.Update(new GameTime());
-            var newVel = p.body.LinearVelocity.Y;
+            var newVel = p.Body.LinearVelocity.Y;
             Assert.NotEqual(newVel, oldVel);
 
             InputController.KeyboardState = new KeyboardState();
@@ -158,9 +158,9 @@ namespace HoboKing.Tests
             p.SetMovementStrategy(new IceMovement(p));
             InputController.KeyboardState = new KeyboardState(key);
 
-            var oldVel = p.body.LinearVelocity.X;
+            var oldVel = p.Body.LinearVelocity.X;
             p.Update(new GameTime());
-            var newVel = p.body.LinearVelocity.X;
+            var newVel = p.Body.LinearVelocity.X;
             Assert.NotEqual(newVel, oldVel);
 
             InputController.KeyboardState = new KeyboardState();
@@ -193,9 +193,9 @@ namespace HoboKing.Tests
             p.SetMovementStrategy(new PlayerMovement(p));
             InputController.KeyboardState = new KeyboardState(key);
 
-            var oldVel = p.body.LinearVelocity.Y;
+            var oldVel = p.Body.LinearVelocity.Y;
             p.Update(new GameTime());
-            var newVel = p.body.LinearVelocity.Y;
+            var newVel = p.Body.LinearVelocity.Y;
             Assert.NotEqual(newVel, oldVel);
 
             InputController.KeyboardState = new KeyboardState();
@@ -211,9 +211,9 @@ namespace HoboKing.Tests
             p.SetMovementStrategy(new PlayerMovement(p));
             InputController.KeyboardState = new KeyboardState(key);
 
-            var oldVel = p.body.LinearVelocity.X;
+            var oldVel = p.Body.LinearVelocity.X;
             p.Update(new GameTime());
-            var newVel = p.body.LinearVelocity.X;
+            var newVel = p.Body.LinearVelocity.X;
             Assert.NotEqual(newVel, oldVel);
 
             InputController.KeyboardState = new KeyboardState();
@@ -234,7 +234,7 @@ namespace HoboKing.Tests
 
             if (current == Keys.A || current == Keys.D)
             {
-                Assert.Equal(0, p.body.LinearVelocity.X);
+                Assert.Equal(0, p.Body.LinearVelocity.X);
             }
 
             InputController.PreviousKeyboardState = new KeyboardState();

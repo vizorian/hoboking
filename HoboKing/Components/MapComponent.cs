@@ -222,27 +222,27 @@ namespace HoboKing
             deep2.ChangePosition(new Vector2(5 * TILE_SIZE, (MAP_HEIGHT - 10) * TILE_SIZE));
             deep2.ChangeTexture(ContentLoader.IceCenter);
             Console.WriteLine("Gravity before change");
-            Console.WriteLine(String.Format("{0, -15} : {1, -20}", "Deep2.gravity", deep2.body.IgnoreGravity));
+            Console.WriteLine(String.Format("{0, -15} : {1, -20}", "Deep2.gravity", deep2.Body.IgnoreGravity));
             Console.WriteLine("--------------------------------------");
 
             var shallow = deep2.ShallowCopy() as NormalTile;
             shallow.ChangePosition(new Vector2((MAP_WIDTH - 6) * TILE_SIZE, (MAP_HEIGHT - 11) * TILE_SIZE));
-            shallow.body.IgnoreGravity = true;
+            shallow.Body.IgnoreGravity = true;
 
             Console.WriteLine(String.Format("{0, -15} : {1, -20}", "Deep1", deep1.GetHashCode()));
             Console.WriteLine(String.Format("{0, -15} : {1, -20}", "Deep1.texture", deep1.Texture.GetHashCode()));
-            Console.WriteLine(String.Format("{0, -15} : {1, -20}", "Deep1.body", deep1.body.GetHashCode()));
+            Console.WriteLine(String.Format("{0, -15} : {1, -20}", "Deep1.body", deep1.Body.GetHashCode()));
             Console.WriteLine("--------------------------------------");
             Console.WriteLine(String.Format("{0, -15} : {1, -20}", "Deep2", deep2.GetHashCode()));
             Console.WriteLine(String.Format("{0, -15} : {1, -20}", "Deep2.texture", deep2.Texture.GetHashCode()));
-            Console.WriteLine(String.Format("{0, -15} : {1, -20}", "Deep2.body", deep2.body.GetHashCode()));
-            Console.WriteLine(String.Format("{0, -15} : {1, -20}", "Deep2.gravity", deep2.body.IgnoreGravity));
+            Console.WriteLine(String.Format("{0, -15} : {1, -20}", "Deep2.body", deep2.Body.GetHashCode()));
+            Console.WriteLine(String.Format("{0, -15} : {1, -20}", "Deep2.gravity", deep2.Body.IgnoreGravity));
             Console.WriteLine("--------------------------------------");
             Console.WriteLine(String.Format("{0, -15} : {1, -20}", "Shallow", shallow.GetHashCode()));
             Console.WriteLine(String.Format("{0, -15} : {1, -20}", "Shallow.texture", shallow.Texture.GetHashCode()));
-            Console.WriteLine(String.Format("{0, -15} : {1, -20}", "Shallow.body", shallow.body.GetHashCode()));
+            Console.WriteLine(String.Format("{0, -15} : {1, -20}", "Shallow.body", shallow.Body.GetHashCode()));
             Console.WriteLine("Gravity is changed here");
-            Console.WriteLine(String.Format("{0, -15} : {1, -20}", "Shallow.gravity", shallow.body.IgnoreGravity));
+            Console.WriteLine(String.Format("{0, -15} : {1, -20}", "Shallow.gravity", shallow.Body.IgnoreGravity));
             Console.WriteLine("--------------------------------------");
 
 

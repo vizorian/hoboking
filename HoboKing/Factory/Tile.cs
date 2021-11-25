@@ -30,12 +30,12 @@ namespace HoboKing.Factory
         public void CreatePhysicsObjects(World world)
         {
             this.world = world;
-            body = world.CreateBody(Position * pixelToUnit, 0, BodyType.Static);
-            body.FixedRotation = true;
+            Body = world.CreateBody(Position * PIXEL_TO_UNIT, 0, BodyType.Static);
+            Body.FixedRotation = true;
 
-            fixture = body.CreateRectangle(Size.Width * pixelToUnit, Size.Height * pixelToUnit, 1f, Vector2.Zero);
-            fixture.Restitution = RESTITUTION;
-            fixture.Friction = FRICTION;
+            Fixture = Body.CreateRectangle(sizeRectangle.Width * PIXEL_TO_UNIT, sizeRectangle.Height * PIXEL_TO_UNIT, 1f, Vector2.Zero);
+            Fixture.Restitution = RESTITUTION;
+            Fixture.Friction = FRICTION;
         }
     }
 }

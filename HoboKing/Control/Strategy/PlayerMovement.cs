@@ -39,7 +39,7 @@ namespace HoboKing.Control
 
             if (InputController.KeyReleased(Keys.A))
             {
-                SetVelocity(new Vector2(0, target.body.LinearVelocity.Y));
+                SetVelocity(new Vector2(0, target.Body.LinearVelocity.Y));
             }
 
             // RIGHT
@@ -50,7 +50,7 @@ namespace HoboKing.Control
 
             if (InputController.KeyReleased(Keys.D))
             {
-                SetVelocity(new Vector2(0, target.body.LinearVelocity.Y));
+                SetVelocity(new Vector2(0, target.Body.LinearVelocity.Y));
             }
         }
 
@@ -60,17 +60,17 @@ namespace HoboKing.Control
 
         public override void Left()
         {
-            SetVelocity(new Vector2(-HORIZONTAL_SPEED, target.body.LinearVelocity.Y));
+            SetVelocity(new Vector2(-HORIZONTAL_SPEED, target.Body.LinearVelocity.Y));
         }
 
         public override void Right()
         {
-            SetVelocity(new Vector2(HORIZONTAL_SPEED, target.body.LinearVelocity.Y));
+            SetVelocity(new Vector2(HORIZONTAL_SPEED, target.Body.LinearVelocity.Y));
         }
 
         public override void Up()
         {
-            target.body.ApplyLinearImpulse(new Vector2(0, -MAX_JUMP));
+            target.Body.ApplyLinearImpulse(new Vector2(0, -MAX_JUMP));
         }
     }
 }
