@@ -12,7 +12,7 @@ namespace HoboKing.Control.Strategy
         public IceMovement(Player player) : base(player)
         {
             player.UseGravity(true);
-            player.fixture.Friction = 0.4f;
+            player.Fixture.Friction = 0.4f;
         }
 
         public override void AcceptInputs(GameTime gameTime)
@@ -48,17 +48,17 @@ namespace HoboKing.Control.Strategy
 
         public override void Left()
         {
-            SetVelocity(new Vector2(-HORIZONTAL_SPEED, target.body.LinearVelocity.Y));
+            SetVelocity(new Vector2(-HORIZONTAL_SPEED, target.Body.LinearVelocity.Y));
         }
 
         public override void Right()
         {
-            SetVelocity(new Vector2(HORIZONTAL_SPEED, target.body.LinearVelocity.Y));
+            SetVelocity(new Vector2(HORIZONTAL_SPEED, target.Body.LinearVelocity.Y));
         }
 
         public override void Up()
         {
-            target.body.ApplyLinearImpulse(new Vector2(0, -MAX_JUMP));
+            target.Body.ApplyLinearImpulse(new Vector2(0, -MAX_JUMP));
         }
     }
 }

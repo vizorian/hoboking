@@ -21,7 +21,7 @@ namespace HoboKing.Control
 
         protected void SetVelocity(Vector2 newVelocity)
         {
-            target.body.LinearVelocity = newVelocity;
+            target.Body.LinearVelocity = newVelocity;
         }
     }
 }

@@ -3,17 +3,12 @@ using HoboKing.Entities;
 using HoboKing.Factory;
 using HoboKing.Graphics;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using System.Text;
 using tainicom.Aether.Physics2D.Dynamics;
-using tainicom.Aether.Physics2D.Diagnostics;
-using HoboKing.Control.Strategy;
 
 namespace HoboKing
 {
@@ -28,29 +23,26 @@ namespace HoboKing
         public const int MAP_WIDTH = 64;
         public const int MAP_HEIGHT = 150;
 
-        private HoboKingGame hoboKingGame;
+        private readonly HoboKingGame hoboKingGame;
 
-        private EntityManager EntityManager;
-        private ObjectBuilder ObjectBuilder;
+        private EntityManager entityManager;
 
         public CritterBuilder CritterBuilder;
 
-        private GraphicsDevice Graphics;
-
         public ConnectorComponent Connector;
 
-        private Camera Camera;
+        private Camera camera;
 
-        private int VisibleTilesX { get; set; }
-        private int VisibleTilesY { get; set; }
-        private string Level { get; set; }
+        private int visibleTilesX { get; set; }
+        private int visibleTilesY { get; set; }
+        private string level { get; set; }
 
         readonly Dictionary<char, Tile> Tiles = new Dictionary<char, Tile>();
 
         private bool hasConnected = false;
 
-        private World World;
-        private Player Player;
+        private World world;
+        private Player player;
 
         public MapComponent(HoboKingGame hoboKingGame) : base(hoboKingGame)
         {
@@ -64,39 +56,48 @@ namespace HoboKing
             Connector.CreateListeners();
         }
 
-        // Reads map data from file
+        /// <summary>
+        /// Reads map data from file
+        /// </summary>
         public void ReadMapData()
         {
-            using (var stream = TitleContainer.OpenStream("map/map1.txt"))
+            using var stream = TitleContainer.OpenStream("map/map1.txt");
+            using var reader = new StreamReader(stream);
+            while (!reader.EndOfStream)
             {
-                using (var reader = new StreamReader(stream))
-                {
-                    while (!reader.EndOfStream)
-                    {
-                        Level += reader.ReadLine();
-                    }
-                }
+                level += reader.ReadLine();
             }
+            reader.Close();
         }
 
-        //public void Print()
-        //{
-        //    Console.WriteLine("Map Width: " + MAP_WIDTH);
-        //    Console.WriteLine("Map Height: " + MAP_HEIGHT);
-        //    Console.WriteLine("Tile Width: " + TILE_SIZE);
-        //    Console.WriteLine("Tile Height: " + TILE_SIZE);
-        //    Console.WriteLine("VisibleTilesX: " + VisibleTilesX);
-        //    Console.WriteLine("VisibleTilesY: " + VisibleTilesY);
-        //}
+        /// <summary>
+        /// Prints map data to console
+        /// </summary>
+        public void Print()
+        {
+            Console.WriteLine("Map Width: " + MAP_WIDTH);
+            Console.WriteLine("Map Height: " + MAP_HEIGHT);
+            Console.WriteLine("Tile Width: " + TILE_SIZE);
+            Console.WriteLine("Tile Height: " + TILE_SIZE);
+            Console.WriteLine("VisibleTilesX: " + visibleTilesX);
+            Console.WriteLine("VisibleTilesY: " + visibleTilesY);
+        }
 
-        // Creates main player for singleplayer
+        /// <summary>
+        /// Creates main player for singleplayer
+        /// </summary>
+        /// <returns>Main player object</returns>
         public Player CreateMainPlayer()
         {
-            Player player = new Player(ContentLoader.BatChest, new Vector2(PLAYER_START_POSITION_X, PLAYER_START_POSITION_Y), null, false, World);
-            EntityManager.AddEntity(player);
+            var player = new Player(ContentLoader.BatChest, new Vector2(PLAYER_START_POSITION_X, PLAYER_START_POSITION_Y), null, false, world);
+            entityManager.AddEntity(player);
             return player;
         }
 
+        /// <summary>
+        /// Creates a critter for debugging
+        /// </summary>
+        /// <returns>New critter object</returns>
         public Critter CreateDebugCritter()
         {
             //Entities.Object @object = ObjectBuilder.AddTexture(ContentLoader.Woodcutter, new Vector2(PLAYER_START_POSITION_X + 16, PLAYER_START_POSITION_Y - 2), 100)
@@ -104,33 +105,37 @@ namespace HoboKing
 
             //EntityManager.AddEntity(@object);
 
-            Critter critter = (Critter)CritterBuilder.AddTexture(ContentLoader.Woodcutter, new Vector2(PLAYER_START_POSITION_X + 16, MAP_HEIGHT-9), 100).AddMovement().Build();
-            EntityManager.AddEntity(critter);
+            var critter = (Critter)CritterBuilder.AddTexture(ContentLoader.Woodcutter, new Vector2(PLAYER_START_POSITION_X + 16, MAP_HEIGHT-9), 100).AddMovement().Build();
+            entityManager.AddEntity(critter);
             return critter;
         }
 
-        // Add Player objects for all other connected players
+        /// <summary>
+        /// Adds Player objects for all other connected players if they aren't added in already
+        /// </summary>
         public void AddConnectedPlayers()
         {
             foreach (var id in Connector.ConnectionsIds)
             {
-                if (EntityManager.players.Find(p => p.ConnectionId == id) == null)
+                if (entityManager.players.Find(p => p.ConnectionId == id) == null)
                 {
-                    Player p = new Player(ContentLoader.BatChest, new Vector2(PLAYER_START_POSITION_X, PLAYER_START_POSITION_Y), id, true, World);
+                    var p = new Player(ContentLoader.BatChest, new Vector2(PLAYER_START_POSITION_X, PLAYER_START_POSITION_Y), id, true, world);
 
                     Console.WriteLine($"Added a new player with ID {id}");
-                    EntityManager.AddEntity(p);
+                    entityManager.AddEntity(p);
                 }
             }
         }
 
-        // Update player positions by cycling through input list
+        /// <summary>
+        /// Updates player positions by cycling through the input list, clearing unasigned inputs
+        /// </summary>
         public void UpdateConnectedPlayers()
         {
-            foreach (Coordinate coordinate in Connector.UnprocessedInputs)
+            foreach (var coordinate in Connector.UnprocessedInputs)
             {
                 // Handle first input and remove it
-                Player p = EntityManager.players.Find(p => p.ConnectionId == coordinate.ConnectionID);
+                var p = entityManager.players.Find(p => p.ConnectionId == coordinate.ConnectionID);
                 if (p != null)
                 {
                     p.ChangePosition(new Vector2(coordinate.X, coordinate.Y));
@@ -146,40 +151,48 @@ namespace HoboKing
             }
         }
 
-        // Remove Player objects that don't have an owner and are not the main player
+        /// <summary>
+        /// Removes player objects that do not have an owner (they disconnected)
+        /// </summary>
         public void RemoveConnectedPlayers()
         {
-            foreach (var player in EntityManager.players)
+            foreach (var player in entityManager.players)
             {
-                if (player.IsOtherPlayer)
+                if (player.IsOtherPlayer && !Connector.ConnectionsIds.Contains(player.ConnectionId))
                 {
-                    if (!Connector.ConnectionsIds.Contains(player.ConnectionId))
-                    {
-                        EntityManager.RemoveEntity(player);
-                        break;
-                    }
+                    entityManager.RemoveEntity(player);
+                    break;
                 }
             }
         }
 
-        // This is where you can set tile types for now
+        /// <summary>
+        /// Sets tile types
+        /// </summary>
         private void CreateTileTypes()
         {
-            Tiles.Add('#', new NormalTile(ContentLoader.TileTexture, new Vector2(0, 0), TILE_SIZE, World));
-            Tiles.Add('<', new LeftTile(ContentLoader.TileTexture, new Vector2(0, 0), TILE_SIZE, World));
-            Tiles.Add('>', new RightTile(ContentLoader.TileTexture, new Vector2(0, 0), TILE_SIZE, World));
-            Tiles.Add('?', new FakeTile(ContentLoader.TileTexture, new Vector2(0, 0), TILE_SIZE, World));
+            Tiles.Add('#', new NormalTile(ContentLoader.TileTexture, new Vector2(0, 0), TILE_SIZE, world));
+            Tiles.Add('<', new LeftTile(ContentLoader.TileTexture, new Vector2(0, 0), TILE_SIZE, world));
+            Tiles.Add('>', new RightTile(ContentLoader.TileTexture, new Vector2(0, 0), TILE_SIZE, world));
+            Tiles.Add('?', new FakeTile(ContentLoader.TileTexture, new Vector2(0, 0), TILE_SIZE, world));
             //Tiles.Add('!', new NormalTile(ContentLoader.TileTexture, new Vector2(0, 0), TILE_SIZE, World));
         }
 
+        /// <summary>
+        /// Draws all entities from in manager
+        /// </summary>
+        /// <param name="spriteBatch"></param>
         public void DrawEntities(SpriteBatch spriteBatch)
         {
-            EntityManager.Draw(spriteBatch);
+            entityManager.Draw(spriteBatch);
         }
 
+        /// <summary>
+        /// Builds the map after loading
+        /// </summary>
         public void CreateMap()
         {
-            for (int x = 0; x < VisibleTilesX; x++)
+            for (int x = 0; x < visibleTilesX; x++)
             {
                 for (int y = 0; y < MAP_HEIGHT; y++)
                 {
@@ -210,6 +223,9 @@ namespace HoboKing
             PrototypeDemo();
         }
 
+        /// <summary>
+        /// Prepares and displays the Prototype design pattern demo
+        /// </summary>
         private void PrototypeDemo()
         {
             Console.WriteLine("PROTOTYPE");
@@ -222,76 +238,98 @@ namespace HoboKing
             deep2.ChangePosition(new Vector2(5 * TILE_SIZE, (MAP_HEIGHT - 10) * TILE_SIZE));
             deep2.ChangeTexture(ContentLoader.IceCenter);
             Console.WriteLine("Gravity before change");
-            Console.WriteLine(String.Format("{0, -15} : {1, -20}", "Deep2.gravity", deep2.body.IgnoreGravity));
+            Console.WriteLine(String.Format("{0, -15} : {1, -20}", "Deep2.gravity", deep2.Body.IgnoreGravity));
             Console.WriteLine("--------------------------------------");
 
             var shallow = deep2.ShallowCopy() as NormalTile;
             shallow.ChangePosition(new Vector2((MAP_WIDTH - 6) * TILE_SIZE, (MAP_HEIGHT - 11) * TILE_SIZE));
-            shallow.body.IgnoreGravity = true;
+            shallow.Body.IgnoreGravity = true;
 
             Console.WriteLine(String.Format("{0, -15} : {1, -20}", "Deep1", deep1.GetHashCode()));
             Console.WriteLine(String.Format("{0, -15} : {1, -20}", "Deep1.texture", deep1.Texture.GetHashCode()));
-            Console.WriteLine(String.Format("{0, -15} : {1, -20}", "Deep1.body", deep1.body.GetHashCode()));
+            Console.WriteLine(String.Format("{0, -15} : {1, -20}", "Deep1.body", deep1.Body.GetHashCode()));
             Console.WriteLine("--------------------------------------");
             Console.WriteLine(String.Format("{0, -15} : {1, -20}", "Deep2", deep2.GetHashCode()));
             Console.WriteLine(String.Format("{0, -15} : {1, -20}", "Deep2.texture", deep2.Texture.GetHashCode()));
-            Console.WriteLine(String.Format("{0, -15} : {1, -20}", "Deep2.body", deep2.body.GetHashCode()));
-            Console.WriteLine(String.Format("{0, -15} : {1, -20}", "Deep2.gravity", deep2.body.IgnoreGravity));
+            Console.WriteLine(String.Format("{0, -15} : {1, -20}", "Deep2.body", deep2.Body.GetHashCode()));
+            Console.WriteLine(String.Format("{0, -15} : {1, -20}", "Deep2.gravity", deep2.Body.IgnoreGravity));
             Console.WriteLine("--------------------------------------");
             Console.WriteLine(String.Format("{0, -15} : {1, -20}", "Shallow", shallow.GetHashCode()));
             Console.WriteLine(String.Format("{0, -15} : {1, -20}", "Shallow.texture", shallow.Texture.GetHashCode()));
-            Console.WriteLine(String.Format("{0, -15} : {1, -20}", "Shallow.body", shallow.body.GetHashCode()));
+            Console.WriteLine(String.Format("{0, -15} : {1, -20}", "Shallow.body", shallow.Body.GetHashCode()));
             Console.WriteLine("Gravity is changed here");
-            Console.WriteLine(String.Format("{0, -15} : {1, -20}", "Shallow.gravity", shallow.body.IgnoreGravity));
+            Console.WriteLine(String.Format("{0, -15} : {1, -20}", "Shallow.gravity", shallow.Body.IgnoreGravity));
             Console.WriteLine("--------------------------------------");
 
 
-            EntityManager.AddEntity(deep1);
-            EntityManager.AddEntity(deep2);
-            EntityManager.AddEntity(shallow);
+            entityManager.AddEntity(deep1);
+            entityManager.AddEntity(deep2);
+            entityManager.AddEntity(shallow);
         }
 
+        /// <summary>
+        /// Gets a tile at specific coordinates
+        /// </summary>
+        /// <param name="x">X coordinate</param>
+        /// <param name="y">Y coordinate</param>
+        /// <returns>Symbol of the tile</returns>
         public char GetTile(int x, int y)
         {
             if (x >= 0 && x < MAP_WIDTH && y >= 0 && y < MAP_HEIGHT)
             {
-                return Level[y * MAP_WIDTH + x];
+                return level[y * MAP_WIDTH + x];
             }
             else return ' ';
         }
 
+        /// <summary>
+        /// Adds a tile entity at specific coordinates
+        /// </summary>
+        /// <param name="x">X coordinate</param>
+        /// <param name="y">Y coordinates</param>
+        /// <param name="tileID">Tile type</param>
         private void AddTile(int x, int y, char tileID)
         {
-            bool demo = false;
-            Vector2 tilePosition = new Vector2(x * TILE_SIZE, y * TILE_SIZE);
+            var demo = false;
+            var tilePosition = new Vector2(x * TILE_SIZE, y * TILE_SIZE);
             // Draw platform blocks here
             if (Tiles.ContainsKey(tileID))
             {
-                Tile tile = Tiles[tileID];
+                var tile = Tiles[tileID];
 
-                if (tile is NormalTile)
+                switch (tile)
                 {
-                    Tile prototype = !demo ? tile.DeepCopy() as NormalTile : tile.ShallowCopy() as NormalTile;
-                    prototype.ChangePosition(tilePosition);
-                    EntityManager.AddEntity(prototype);
-                }
-                else if (tile is LeftTile)
-                {
-                    Tile prototype = !demo ? tile.DeepCopy() as LeftTile : tile.ShallowCopy() as LeftTile;
-                    prototype.ChangePosition(tilePosition);
-                    EntityManager.AddEntity(prototype);
-                }
-                else if (tile is RightTile)
-                {
-                    Tile prototype = !demo ? tile.DeepCopy() as RightTile : tile.ShallowCopy() as RightTile;
-                    prototype.ChangePosition(tilePosition);
-                    EntityManager.AddEntity(prototype);
-                }
-                else if (tile is FakeTile)
-                {
-                    Tile prototype = !demo ? tile.DeepCopy() as FakeTile : tile.ShallowCopy() as FakeTile;
-                    prototype.ChangePosition(tilePosition);
-                    EntityManager.AddEntity(prototype);
+                    case NormalTile _:
+                        {
+                            var prototype = !demo ? tile.DeepCopy() as NormalTile : tile.ShallowCopy() as NormalTile;
+                            prototype.ChangePosition(tilePosition);
+                            entityManager.AddEntity(prototype);
+                            break;
+                        }
+
+                    case LeftTile _:
+                        {
+                            var prototype = !demo ? tile.DeepCopy() as LeftTile : tile.ShallowCopy() as LeftTile;
+                            prototype.ChangePosition(tilePosition);
+                            entityManager.AddEntity(prototype);
+                            break;
+                        }
+
+                    case RightTile _:
+                        {
+                            var prototype = !demo ? tile.DeepCopy() as RightTile : tile.ShallowCopy() as RightTile;
+                            prototype.ChangePosition(tilePosition);
+                            entityManager.AddEntity(prototype);
+                            break;
+                        }
+
+                    case FakeTile _:
+                        {
+                            var prototype = !demo ? tile.DeepCopy() as FakeTile : tile.ShallowCopy() as FakeTile;
+                            prototype.ChangePosition(tilePosition);
+                            entityManager.AddEntity(prototype);
+                            break;
+                        }
                 }
             }
             else
@@ -300,54 +338,65 @@ namespace HoboKing
             }
         }
 
+        /// <summary>
+        /// Adds different sections of the map at specific heights
+        /// </summary>
         public void AddSections()
         {
-            Creator creator = new MapCreator();
+            var creator = new MapCreator();
 
-            List<Tile> standardTiles = EntityManager.GetTiles();
+            var standardTiles = entityManager.GetTiles();
 
-            Section sandSection = creator.CreateMapSection(standardTiles, Level, MAP_WIDTH, MAP_HEIGHT, 0, 50);
+            var sandSection = creator.CreateMapSection(standardTiles, level, MAP_WIDTH, MAP_HEIGHT, 0, 50);
             sandSection.UpdateTextures();
 
-            Section iceSection = creator.CreateMapSection(standardTiles, Level, MAP_WIDTH, MAP_HEIGHT, 50, 100);
+            var iceSection = creator.CreateMapSection(standardTiles, level, MAP_WIDTH, MAP_HEIGHT, 50, 100);
             iceSection.UpdateTextures();
 
-            Section grassSection = creator.CreateMapSection(standardTiles, Level, MAP_WIDTH, MAP_HEIGHT, 100, 150);
+            var grassSection = creator.CreateMapSection(standardTiles, level, MAP_WIDTH, MAP_HEIGHT, 100, 150);
             grassSection.UpdateTextures();
 
         }
 
+        /// <summary>
+        /// Loads the component's non-graphical resources
+        /// </summary>
         public override void Initialize()
         {
             hoboKingGame.gameState = HoboKingGame.GameState.Loading;
 
-            World = new World(Vector2.UnitY * 9.8f);
-            EntityManager = new EntityManager();
-            ObjectBuilder = new ObjectBuilder();
+            world = new World(Vector2.UnitY * 9.8f);
+            entityManager = new EntityManager();
             CritterBuilder = new CritterBuilder();
-            Graphics = hoboKingGame.Graphics.GraphicsDevice;
 
-            VisibleTilesX = HoboKingGame.GAME_WINDOW_WIDTH / TILE_SIZE; // 64
-            VisibleTilesY = HoboKingGame.GAME_WINDOW_HEIGHT / TILE_SIZE; // 50
+            visibleTilesX = HoboKingGame.GAME_WINDOW_WIDTH / TILE_SIZE; // 64
+            visibleTilesY = HoboKingGame.GAME_WINDOW_HEIGHT / TILE_SIZE; // 50
 
             ReadMapData();
             
             base.Initialize();
         }
 
+        /// <summary>
+        /// Loads the component's graphical resources
+        /// </summary>
         protected override void LoadContent()
         {
             ContentLoader.LoadContent(hoboKingGame.Content);
             CreateTileTypes();
             CreateMap();
             AddSections();
-            Player = CreateMainPlayer();
+            player = CreateMainPlayer();
             CreateDebugCritter();
             //UpdateTextures();
-            Camera = new Camera();
+            camera = new Camera();
             base.LoadContent();
         }
 
+        /// <summary>
+        /// Updates the component
+        /// </summary>
+        /// <param name="gameTime">Time of the game</param>
         public override void Update(GameTime gameTime)
         {
             if (InputController.KeyPressed(Keys.Escape))
@@ -365,32 +414,36 @@ namespace HoboKing
                 hoboKingGame.gameState = HoboKingGame.GameState.Multiplayer;
                 // !!!
                 Connector.Connect();
-                Player.ConnectionId = Connector.GetConnectionId();
+                player.ConnectionId = Connector.GetConnectionId();
                 hasConnected = true;
             }
 
             if (Connector != null && hasConnected)
             {
-                Connector.SendData(gameTime, Player.Position);
+                Connector.SendData(gameTime, player.Position);
                 AddConnectedPlayers();
                 UpdateConnectedPlayers();
                 RemoveConnectedPlayers();
             }
 
-            World.Step((float)gameTime.ElapsedGameTime.TotalSeconds);
+            world.Step((float)gameTime.ElapsedGameTime.TotalSeconds);
             
-            if(EntityManager.mainPlayer != null)
-                Camera.Follow(EntityManager.mainPlayer);
+            if(entityManager.mainPlayer != null)
+                camera.Follow(entityManager.mainPlayer);
 
-            EntityManager.Update(gameTime);
+            entityManager.Update(gameTime);
             base.Update(gameTime);
         }
 
+        /// <summary>
+        /// Draws the component
+        /// </summary>
+        /// <param name="gameTime"></param>
         public override void Draw(GameTime gameTime)
         {
-            hoboKingGame.SpriteBatch.Begin(transformMatrix: Camera.Transform);
+            hoboKingGame.SpriteBatch.Begin(transformMatrix: camera.Transform);
             hoboKingGame.SpriteBatch.Draw(ContentLoader.Background, new Rectangle(0, 0, HoboKingGame.GAME_WINDOW_WIDTH, HoboKingGame.GAME_WINDOW_HEIGHT), Color.White);
-            EntityManager.Draw(hoboKingGame.SpriteBatch);
+            entityManager.Draw(hoboKingGame.SpriteBatch);
             hoboKingGame.SpriteBatch.End();
             base.Draw(gameTime);
         }
