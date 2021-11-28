@@ -353,13 +353,13 @@ namespace HoboKing.Components
             var standardTiles = entityManager.GetTiles();
 
             var sandSection = creator.CreateMapSection(standardTiles, level, MAP_WIDTH, MAP_HEIGHT, 0, 50);
-            sandSection.UpdateTextures();
+            sandSection.TemplateMethod();
 
             var iceSection = creator.CreateMapSection(standardTiles, level, MAP_WIDTH, MAP_HEIGHT, 50, 100);
-            iceSection.UpdateTextures();
+            iceSection.TemplateMethod();
 
             var grassSection = creator.CreateMapSection(standardTiles, level, MAP_WIDTH, MAP_HEIGHT, 100, 150);
-            grassSection.UpdateTextures();
+            grassSection.TemplateMethod();
         }
 
         /// <summary>

@@ -11,136 +11,114 @@ namespace HoboKing.Factory
         {
         }
 
-        public override void UpdateTextures()
+        protected override void ReplaceLeft(Tile tile)
         {
-            // Tile specificTile = standardTiles.Find(o => o.Sprite.Position.X == 2 && o.Sprite.Position.Y == 2);
-            for (var x = 0; x < MapWidth; x++)
-            for (var y = SectionStartPosition; y < SectionEndPosition; y++)
+            tile.ChangeTexture(ContentLoader.IceLeft);
+        }
+
+        protected override void ReplaceRight(Tile tile)
+        {
+            tile.ChangeTexture(ContentLoader.IceRight);
+        }
+
+        protected override void UpdateTextures(Tile specificTile)
+        {
+            // NW
+            if (!hasNorth && hasEast && hasSouth && !hasWest)
             {
-                var tileId = GetTile(x, y);
-                var specificTile = StandardTiles.Find(o => o.Position.X == x * 20 && o.Position.Y == y * 20);
-                if (tileId == '#')
+                specificTile?.ChangeTexture(ContentLoader.IceNw);
+                return;
+            }
+            // N
+
+            if (!hasNorth && hasEast && hasSouth)
+            {
+                specificTile?.ChangeTexture(ContentLoader.IceN);
+                return;
+            }
+            // NE
+
+            if (!hasNorth && !hasEast && hasSouth && hasWest)
+            {
+                specificTile?.ChangeTexture(ContentLoader.IceNe);
+                return;
+            }
+            // W
+
+            if (hasNorth && hasEast && hasSouth && !hasWest)
+            {
+                specificTile?.ChangeTexture(ContentLoader.IceW);
+                return;
+            }
+            // Center
+
+            if (hasNorth && hasEast && hasSouth)
+            {
+                // Check for corners
+                // Corner NW
+                if (!hasNw && hasNe && hasSw && hasSe)
                 {
-                    var hasNorth = false;
-                    var hasEast = false;
-                    var hasSouth = false;
-                    var hasWest = false;
-                    var hasNw = false;
-                    var hasNe = false;
-                    var hasSw = false;
-                    var hasSe = false;
+                    specificTile?.ChangeTexture(ContentLoader.IceCornerNw);
+                    return;
+                }
+                // Corner ME
 
-                    if (GetTile(x, y - 1) != '.') hasNorth = true;
-                    if (GetTile(x + 1, y) != '.') hasEast = true;
-                    if (GetTile(x, y + 1) != '.') hasSouth = true;
-                    if (GetTile(x - 1, y) != '.') hasWest = true;
+                if (hasNw && !hasNe && hasSw && hasSe)
+                {
+                    specificTile?.ChangeTexture(ContentLoader.IceCornerNe);
+                    return;
+                }
+                // Corner SW
 
-                    if (GetTile(x - 1, y - 1) != '.') hasNw = true;
-                    if (GetTile(x + 1, y - 1) != '.') hasNe = true;
-                    if (GetTile(x - 1, y + 1) != '.') hasSw = true;
-                    if (GetTile(x + 1, y + 1) != '.') hasSe = true;
+                if (hasNw && hasNe && !hasSw && hasSe)
+                {
+                    specificTile?.ChangeTexture(ContentLoader.IceCornerSw);
+                    return;
+                }
+                // Corner SE
 
-                    // NW
-                    if (!hasNorth && hasEast && hasSouth && !hasWest)
-                    {
-                        specificTile?.ChangeTexture(ContentLoader.IceNw);
-                        continue;
-                    }
-                    // N
-
-                    if (!hasNorth && hasEast && hasSouth)
-                    {
-                        specificTile?.ChangeTexture(ContentLoader.IceN);
-                        continue;
-                    }
-                    // NE
-
-                    if (!hasNorth && !hasEast && hasSouth && hasWest)
-                    {
-                        specificTile?.ChangeTexture(ContentLoader.IceNe);
-                        continue;
-                    }
-                    // W
-
-                    if (hasNorth && hasEast && hasSouth && !hasWest)
-                    {
-                        specificTile?.ChangeTexture(ContentLoader.IceW);
-                        continue;
-                    }
-                    // Center
-
-                    if (hasNorth && hasEast && hasSouth)
-                    {
-                        // Check for corners
-                        // Corner NW
-                        if (!hasNw && hasNe && hasSw && hasSe)
-                        {
-                            specificTile?.ChangeTexture(ContentLoader.IceCornerNw);
-                            continue;
-                        }
-                        // Corner ME
-
-                        if (hasNw && !hasNe && hasSw && hasSe)
-                        {
-                            specificTile?.ChangeTexture(ContentLoader.IceCornerNe);
-                            continue;
-                        }
-                        // Corner SW
-
-                        if (hasNw && hasNe && !hasSw && hasSe)
-                        {
-                            specificTile?.ChangeTexture(ContentLoader.IceCornerSw);
-                            continue;
-                        }
-                        // Corner SE
-
-                        if (hasNw && hasNe && hasSw && !hasSe)
-                        {
-                            specificTile?.ChangeTexture(ContentLoader.IceCornerSe);
-                            continue;
-                        }
-
-                        // No corner tiles
-                        specificTile?.ChangeTexture(ContentLoader.IceCenter);
-                        continue;
-                    }
-                    // E
-
-                    if (hasNorth && !hasEast && hasSouth && hasWest)
-                    {
-                        specificTile?.ChangeTexture(ContentLoader.IceE);
-                        continue;
-                    }
-                    // SW
-
-                    if (hasNorth && hasEast && !hasWest)
-                    {
-                        specificTile?.ChangeTexture(ContentLoader.IceSw);
-                        continue;
-                    }
-                    // S
-
-                    if (hasNorth && hasEast)
-                    {
-                        specificTile?.ChangeTexture(ContentLoader.IceS);
-                        continue;
-                    }
-                    // SE
-
-                    if (hasNorth && !hasSouth && hasWest)
-                    {
-                        specificTile?.ChangeTexture(ContentLoader.IceSe);
-                        continue;
-                    }
-
-                    // Default value N for now
-                    // To dynamically change according to current tile type, make default value a new blank texture and look for it do discern
-                    specificTile?.ChangeTexture(ContentLoader.IceN);
+                if (hasNw && hasNe && hasSw && !hasSe)
+                {
+                    specificTile?.ChangeTexture(ContentLoader.IceCornerSe);
+                    return;
                 }
 
-                if (tileId == '<') specificTile?.ChangeTexture(ContentLoader.IceLeft);
-                if (tileId == '>') specificTile?.ChangeTexture(ContentLoader.IceRight);
+                // No corner tiles
+                specificTile?.ChangeTexture(ContentLoader.IceCenter);
+                return;
             }
+            // E
+
+            if (hasNorth && !hasEast && hasSouth && hasWest)
+            {
+                specificTile?.ChangeTexture(ContentLoader.IceE);
+                return;
+            }
+            // SW
+
+            if (hasNorth && hasEast && !hasWest)
+            {
+                specificTile?.ChangeTexture(ContentLoader.IceSw);
+                return;
+            }
+            // S
+
+            if (hasNorth && hasEast)
+            {
+                specificTile?.ChangeTexture(ContentLoader.IceS);
+                return;
+            }
+            // SE
+
+            if (hasNorth && !hasSouth && hasWest)
+            {
+                specificTile?.ChangeTexture(ContentLoader.IceSe);
+                return;
+            }
+
+            // Default value N for now
+            // To dynamically change according to current tile type, make default value a new blank texture and look for it do discern
+            specificTile?.ChangeTexture(ContentLoader.IceN);
         }
     }
 }

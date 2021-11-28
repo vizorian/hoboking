@@ -1,10 +1,21 @@
 ﻿using System.Collections.Generic;
+using HoboKing.Graphics;
 
 namespace HoboKing.Factory
 {
-    internal abstract class Section
+    public abstract class Section
     {
         private readonly string level;
+
+        protected bool hasEast;
+        protected bool hasNe;
+        protected bool hasNorth;
+        protected bool hasNw;
+        protected bool hasSe;
+        protected bool hasSouth;
+        protected bool hasSw;
+        protected bool hasWest;
+
         public int MapHeight;
         public int MapWidth;
         public int SectionEndPosition;
@@ -14,15 +25,38 @@ namespace HoboKing.Factory
         protected Section(List<Tile> standardTiles, string level, int mapWidth, int mapHeight, int sectionStartPosition,
             int sectionEndPosition)
         {
-            this.StandardTiles = standardTiles;
+            StandardTiles = standardTiles;
             this.level = level;
-            this.MapWidth = mapWidth;
-            this.MapHeight = mapHeight;
-            this.SectionStartPosition = sectionStartPosition;
-            this.SectionEndPosition = sectionEndPosition;
+            MapWidth = mapWidth;
+            MapHeight = mapHeight;
+            SectionStartPosition = sectionStartPosition;
+            SectionEndPosition = sectionEndPosition;
         }
 
-        public abstract void UpdateTextures();
+        public void TemplateMethod()
+        {
+            for (var x = 0; x < MapWidth; x++)
+            for (var y = SectionStartPosition; y < SectionEndPosition; y++)
+            {
+                var tileId = GetTile(x, y);
+                var specificTile = StandardTiles.Find(o => o.Position.X == x * 20 && o.Position.Y == y * 20);
+                switch (tileId)
+                {
+                    case '#':
+                    {
+                        SetBooleanValues(x, y);
+                        UpdateTextures(specificTile);
+                        break;
+                    }
+                    case '<':
+                        ReplaceLeft(specificTile);
+                        continue;
+                    case '>':
+                        ReplaceRight(specificTile);
+                        continue;
+                }
+            }
+        }
 
         public char GetTile(int x, int y)
         {
@@ -30,5 +64,33 @@ namespace HoboKing.Factory
                 return level[y * MapWidth + x];
             return ' ';
         }
+
+        protected void SetBooleanValues(int x, int y)
+        {
+            hasNorth = false;
+            hasEast = false;
+            hasSouth = false;
+            hasWest = false;
+            hasNw = false;
+            hasNe = false;
+            hasSw = false;
+            hasSe = false;
+
+            if (GetTile(x, y - 1) != '.') hasNorth = true;
+            if (GetTile(x + 1, y) != '.') hasEast = true;
+            if (GetTile(x, y + 1) != '.') hasSouth = true;
+            if (GetTile(x - 1, y) != '.') hasWest = true;
+
+            if (GetTile(x - 1, y - 1) != '.') hasNw = true;
+            if (GetTile(x + 1, y - 1) != '.') hasNe = true;
+            if (GetTile(x - 1, y + 1) != '.') hasSw = true;
+            if (GetTile(x + 1, y + 1) != '.') hasSe = true;
+        }
+
+        protected abstract void ReplaceLeft(Tile tile);
+
+        protected abstract void ReplaceRight(Tile tile);
+
+        protected abstract void UpdateTextures(Tile specificTile);
     }
 }
