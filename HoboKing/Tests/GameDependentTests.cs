@@ -29,7 +29,7 @@ namespace HoboKing.Tests
             //connector = new ConnectorComponent();
             //connector.CreateListeners();
 
-            var components = Game.MultiplayerScene.ReturnComponents();
+            var components = Game.Components;
             foreach (var component in components)
                 if (component is MapComponent mapComponent)
                     Map = mapComponent;

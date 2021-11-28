@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Xml.Serialization;
 using HoboKing.Components;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using tainicom.Aether.Physics2D.Dynamics;
+using tainicom.Aether.Physics2D.Dynamics.Joints;
 
 namespace HoboKing.Entities
 {
@@ -16,6 +18,8 @@ namespace HoboKing.Entities
         // Physics
         public Body Body;
         public Fixture Fixture;
+        private Fixture GroundContactFixture;
+        public bool OnGround;
 
         // Rectangle for resizing the texture if necessary
         protected Rectangle sizeRectangle;
@@ -69,7 +73,7 @@ namespace HoboKing.Entities
         /// <summary>
         ///     Creates a Fixture for player physics
         /// </summary>
-        public void CreatePlayerFixture()
+        private void CreatePlayerFixture()
         {
             Fixture = Body.CreateCircle(sizeRectangle.Width / 2f * PIXEL_TO_UNIT, 1f,
                 new Vector2(sizeRectangle.Width / 2f * PIXEL_TO_UNIT, sizeRectangle.Height / 2f * PIXEL_TO_UNIT));
@@ -78,17 +82,17 @@ namespace HoboKing.Entities
         /// <summary>
         ///     Creates a Fixture for static object physics
         /// </summary>
-        public void CreateStaticFixture()
+        private void CreateStaticFixture()
         {
             Fixture = Body.CreateRectangle(sizeRectangle.Width * PIXEL_TO_UNIT, sizeRectangle.Height * PIXEL_TO_UNIT,
                 1f, Vector2.Zero);
         }
 
         /// <summary>
-        ///     GameEntity update method, u[dates the position of sizeRectangle everyframe
+        ///     GameEntity update method, u[dates the position of sizeRectangle every frame
         ///     also updates GameEntity.Position
         /// </summary>
-        public void Update()
+        protected void Update()
         {
             if (Body != null)
             {

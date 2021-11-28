@@ -1,6 +1,7 @@
 ﻿using HoboKing.Entities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using tainicom.Aether.Physics2D.Dynamics;
 
 namespace HoboKing.Control.Strategy
 {

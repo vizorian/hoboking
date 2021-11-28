@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using HoboKing.Control;
+using HoboKing.State;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
@@ -19,28 +20,22 @@ namespace HoboKing.Components
         [ExcludeFromCodeCoverage]
         public override void Update(GameTime gameTime)
         {
-            if (InputController.KeyPressed(Keys.Enter))
-                switch (menuItems.SelectedMenuItem.Text)
-                {
-                    case "Start Singleplayer":
-                        hoboKingGame.SwitchScene(hoboKingGame.SingleplayerScene);
-                        hoboKingGame.GState = HoboKingGame.GameState.Singleplayer;
-                        break;
-                    case "Start Multiplayer":
-                        hoboKingGame.SwitchScene(hoboKingGame.MultiplayerScene);
-                        break;
-                    case "Options":
-                        hoboKingGame.SwitchScene(hoboKingGame.OptionsScene);
-                        break;
-                    case "Return":
-                        hoboKingGame.SwitchScene(hoboKingGame.MenuScene);
-                        break;
-                    case "Exit Game":
-                        hoboKingGame.Exit();
-                        break;
-                }
+        if (InputController.KeyPressed(Keys.Enter))
+            switch (menuItems.SelectedMenuItem.Text){
+                case "Start":
+                    hoboKingGame.ChangeStateAndDestroy(new Playing(hoboKingGame));
+                    break;
+                case "Return":
+                    hoboKingGame.ChangeStateAndDestroy(new Playing(hoboKingGame));
+                    break;
+                case "Options":
+                    break;
+                case "Exit Game":
+                    hoboKingGame.Exit();
+                    break;
+            }
 
-            base.Update(gameTime);
+        base.Update(gameTime);
         }
 
         public override void Draw(GameTime gameTime)

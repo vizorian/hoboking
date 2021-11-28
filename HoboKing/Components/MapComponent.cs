@@ -6,6 +6,7 @@ using HoboKing.Control;
 using HoboKing.Entities;
 using HoboKing.Factory;
 using HoboKing.Graphics;
+using HoboKing.State;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -32,7 +33,7 @@ namespace HoboKing.Components
 
         public ConnectorComponent Connector;
 
-        public CritterBuilder CritterBuilder;
+        private CritterBuilder critterBuilder;
 
         private EntityManager entityManager;
 
@@ -104,7 +105,7 @@ namespace HoboKing.Components
 
             //EntityManager.AddEntity(@object);
 
-            var critter = (Critter) CritterBuilder
+            var critter = (Critter) critterBuilder
                 .AddTexture(ContentLoader.Woodcutter, new Vector2(PLAYER_START_POSITION_X + 16, MAP_HEIGHT - 9), 100)
                 .AddMovement().Build();
             entityManager.AddEntity(critter);
@@ -366,11 +367,11 @@ namespace HoboKing.Components
         /// </summary>
         public override void Initialize()
         {
-            hoboKingGame.GState = HoboKingGame.GameState.Loading;
+            //hoboKingGame.GState = HoboKingGame.GameState.Loading;
 
             world = new World(Vector2.UnitY * 9.8f);
             entityManager = new EntityManager();
-            CritterBuilder = new CritterBuilder();
+            critterBuilder = new CritterBuilder();
 
             visibleTilesX = HoboKingGame.GAME_WINDOW_WIDTH / TILE_SIZE; // 64
             visibleTilesY = HoboKingGame.GAME_WINDOW_HEIGHT / TILE_SIZE; // 50
@@ -385,12 +386,12 @@ namespace HoboKing.Components
         /// </summary>
         protected override void LoadContent()
         {
-            ContentLoader.LoadContent(hoboKingGame.Content);
             CreateTileTypes();
             CreateMap();
             AddSections();
             player = CreateMainPlayer();
             CreateDebugCritter();
+            EntityManager.Reset();
             //UpdateTextures();
             camera = new Camera();
             base.LoadContent();
@@ -402,10 +403,11 @@ namespace HoboKing.Components
         /// <param name="gameTime">Time of the game</param>
         public override void Update(GameTime gameTime)
         {
-            if (InputController.KeyPressed(Keys.Escape))
+            if (InputController.KeyPressed(Keys.Escape) && hoboKingGame.gameState is Playing)
             {
-                hoboKingGame.SwitchScene(hoboKingGame.MenuScene);
-                hoboKingGame.GState = HoboKingGame.GameState.Unloading;
+                hoboKingGame.ChangeStateAndDestroy(new PauseMenu(hoboKingGame, GraphicsDevice));
+                //hoboKingGame.gameState.SetVisible(true);
+                //hoboKingGame.GState = HoboKingGame.GameState.Unloading;
             }
 
             // future pause menu
@@ -414,7 +416,7 @@ namespace HoboKing.Components
 
             if (Connector != null && !hasConnected)
             {
-                hoboKingGame.GState = HoboKingGame.GameState.Multiplayer;
+                //hoboKingGame.GState = HoboKingGame.GameState.Multiplayer;
                 // !!!
                 _ = Connector.Connect();
                 player.ConnectionId = Connector.GetConnectionId();
@@ -445,6 +447,7 @@ namespace HoboKing.Components
         public override void Draw(GameTime gameTime)
         {
             hoboKingGame.SpriteBatch.Begin(transformMatrix: camera.Transform);
+            GraphicsDevice.Clear(Color.AliceBlue);
             hoboKingGame.SpriteBatch.Draw(ContentLoader.Background,
                 new Rectangle(0, 0, HoboKingGame.GAME_WINDOW_WIDTH, HoboKingGame.GAME_WINDOW_HEIGHT), Color.White);
             entityManager.Draw(hoboKingGame.SpriteBatch);

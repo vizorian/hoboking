@@ -1,5 +1,7 @@
-﻿using HoboKing.Control;
+﻿using System;
+using HoboKing.Control;
 using HoboKing.Control.Strategy;
+using HoboKing.State;
 using HoboKing.Utils;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -11,13 +13,14 @@ namespace HoboKing.Entities
     internal sealed class Player : GameEntity
     {
         private const int PLAYER_SIZE = 60;
+        public string ConnectionId { get; set; }
+        public bool IsOtherPlayer { get; set; }
 
         private Movement movement;
 
         public Player(Texture2D texture, Vector2 position, string connectionId, bool isOtherPlayer, World world) : base(
             texture, position, PLAYER_SIZE)
         {
-            State = PlayerState.Idle;
             ConnectionId = connectionId;
             IsOtherPlayer = isOtherPlayer;
 
@@ -28,10 +31,6 @@ namespace HoboKing.Entities
                 SetMovementStrategy(new PlayerMovement(this));
             }
         }
-
-        public PlayerState State { get; set; }
-        public string ConnectionId { get; set; }
-        public bool IsOtherPlayer { get; set; }
 
         public void SetMovementStrategy(Movement movementStrategy)
         {
@@ -44,11 +43,18 @@ namespace HoboKing.Entities
             // Switches between movements when F2 is pressed.
             if (InputController.KeyPressed(Keys.F2))
             {
-                if (movement is PlayerMovement)
-                    SetMovementStrategy(new IceMovement(this));
-                else if (movement is IceMovement)
-                    SetMovementStrategy(new DebugMovement(this));
-                else if (movement is DebugMovement) SetMovementStrategy(new PlayerMovement(this));
+                switch (movement)
+                {
+                    case PlayerMovement _:
+                        SetMovementStrategy(new IceMovement(this));
+                        break;
+                    case IceMovement _:
+                        SetMovementStrategy(new DebugMovement(this));
+                        break;
+                    case DebugMovement _:
+                        SetMovementStrategy(new PlayerMovement(this));
+                        break;
+                }
             }
 
             movement.AcceptInputs(gameTime);

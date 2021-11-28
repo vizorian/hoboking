@@ -10,7 +10,7 @@ namespace HoboKing.Entities
 {
     internal class EntityManager
     {
-        private static readonly List<GameEntity> Entities = new List<GameEntity>();
+        private static List<GameEntity> Entities = new List<GameEntity>();
         private readonly List<GameEntity> entitiesToAdd = new List<GameEntity>();
         private readonly List<GameEntity> entitiesToRemove = new List<GameEntity>();
         public Player MainPlayer;
@@ -94,6 +94,11 @@ namespace HoboKing.Entities
                 if (entity is Tile tile)
                     tiles.Add(tile);
             return tiles;
+        }
+
+        public static void Reset()
+        {
+            Entities.Clear();
         }
     }
 }
