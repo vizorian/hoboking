@@ -7,6 +7,7 @@ using HoboKing.Entities;
 using HoboKing.Factory;
 using HoboKing.Graphics;
 using HoboKing.State;
+using HoboKing.Memento;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -40,9 +41,12 @@ namespace HoboKing.Components
         private bool hasConnected;
         private string level;
         private Player player;
-
+        private Caretaker caretaker;
         private int visibleTilesX;
         private int visibleTilesY;
+
+        float currentTime = 0f;
+        float backupDuration = 1f;
 
         private World world;
 
@@ -90,6 +94,10 @@ namespace HoboKing.Components
         {
             var mainPlayer = new Player(ContentLoader.BatChest,
                 new Vector2(PLAYER_START_POSITION_X, PLAYER_START_POSITION_Y), null, false, world);
+
+            caretaker = new Caretaker(mainPlayer);
+            caretaker.Restore();
+
             entityManager.AddEntity(mainPlayer);
             return mainPlayer;
         }
@@ -390,6 +398,8 @@ namespace HoboKing.Components
             CreateMap();
             AddSections();
             player = CreateMainPlayer();
+            
+            
             CreateDebugCritter();
             EntityManager.Reset();
             //UpdateTextures();
@@ -431,10 +441,21 @@ namespace HoboKing.Components
                 RemoveConnectedPlayers();
             }
 
+
+            currentTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
+            if (player.ConnectionId != null)
+            {
+                if (currentTime >= backupDuration)
+                {
+                    currentTime -= backupDuration;
+                    caretaker.Backup();
+                }
+            }
+
             world.Step((float) gameTime.ElapsedGameTime.TotalSeconds);
 
-            if (entityManager.MainPlayer != null)
-                camera.Follow(entityManager.MainPlayer);
+            if (player != null)
+                camera.Follow(player);
 
             entityManager.Update(gameTime);
             base.Update(gameTime);

@@ -12,7 +12,6 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <None Remove="Content\map.txt" />
     <None Remove="Icon.ico" />
     <None Remove="Icon.bmp" />
     <None Remove="Map\map1.txt" />
@@ -49,5 +48,10 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Memento\snapshot.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 </Project>

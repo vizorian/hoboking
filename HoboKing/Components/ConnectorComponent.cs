@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
+using HoboKing.Memento;
 using HoboKing.Utils;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Xna.Framework;
@@ -53,8 +54,8 @@ namespace HoboKing.Components
         public string GetConnectionId()
         {
             // fuck it, can't find a better way
-            //while (hubConnection.ConnectionId == null);
-            return hubConnection.ConnectionId;
+            while (hubConnection.ConnectionId == null);
+                return hubConnection.ConnectionId;
         }
 
         // Attempts to initiate connection
@@ -107,5 +108,7 @@ namespace HoboKing.Components
                 timer = TIMER;
             }
         }
+
+
     }
 }
