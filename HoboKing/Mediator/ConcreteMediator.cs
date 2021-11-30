@@ -15,7 +15,6 @@ namespace HoboKing.Mediator
             this.playerComponent = playerComponent;
             this.caretakerComponent = caretakerComponent;
             this.mapComponent = mapComponent;
-            //this.caretakerComponent = caretakerComponent;
         }
 
         private readonly MapComponent mapComponent;

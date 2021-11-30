@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Xml.Serialization;
 using HoboKing.Components;
+using HoboKing.Mediator;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using tainicom.Aether.Physics2D.Dynamics;
@@ -8,7 +9,7 @@ using tainicom.Aether.Physics2D.Dynamics.Joints;
 
 namespace HoboKing.Entities
 {
-    public abstract class GameEntity
+    public abstract class GameEntity : BaseComponent
     {
         protected const float FRICTION = 0.3f;
         protected const float RESTITUTION = 0.1f;

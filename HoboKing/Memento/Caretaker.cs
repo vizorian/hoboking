@@ -1,24 +1,15 @@
 ﻿using System;
 using System.IO;
 using HoboKing.Entities;
+using HoboKing.Mediator;
 using Microsoft.Xna.Framework;
 
 namespace HoboKing.Memento
 {
-    class Caretaker
+    class Caretaker : BaseComponent
     {
         private Snapshot snapshot;
         private Player player;
-
-        public Caretaker()
-        {
-            
-        }
-
-        public Caretaker(Player player)
-        {
-            this.player = player;
-        }
 
         public void SetPlayer(Player player)
         {

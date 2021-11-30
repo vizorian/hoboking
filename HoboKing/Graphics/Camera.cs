@@ -1,9 +1,10 @@
 ﻿using HoboKing.Entities;
+using HoboKing.Mediator;
 using Microsoft.Xna.Framework;
 
 namespace HoboKing.Graphics
 {
-    internal class Camera
+    internal class Camera : BaseComponent
     {
         public Matrix Transform { get; private set; }
 
