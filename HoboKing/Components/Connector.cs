@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
+using HoboKing.Mediator;
 using HoboKing.Memento;
 using HoboKing.Utils;
 using Microsoft.AspNetCore.SignalR.Client;
@@ -10,7 +11,7 @@ using Microsoft.Xna.Framework;
 namespace HoboKing.Components
 {
     // Singleton Connector class
-    internal class ConnectorComponent
+    internal class Connector : BaseComponent
     {
         private const float TIMER = 0.1f;
         private static HubConnection hubConnection;

@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using HoboKing.Builder;
 using HoboKing.Control;
 using HoboKing.Entities;
 using HoboKing.Factory;
 using HoboKing.Graphics;
+using HoboKing.Mediator;
 using HoboKing.State;
 using HoboKing.Memento;
 using Microsoft.Xna.Framework;
@@ -15,8 +17,11 @@ using tainicom.Aether.Physics2D.Dynamics;
 
 namespace HoboKing.Components
 {
-    internal class MapComponent : DrawableGameComponent
+    class MapComponent : DrawableGameComponent
     {
+        // Mediator stuff
+        protected ConcreteMediator mediator;
+
         public const int PLAYER_START_POSITION_X = 20;
         public const int PLAYER_START_POSITION_Y = 93;
 
@@ -30,37 +35,32 @@ namespace HoboKing.Components
 
         private readonly Dictionary<char, Tile> tiles = new Dictionary<char, Tile>();
 
-        private Camera camera;
+        public Connector Connector;
 
-        public ConnectorComponent Connector;
-
+        // Implement Mediator
         private CritterBuilder critterBuilder;
-
         private EntityManager entityManager;
-
+        
         private bool hasConnected;
         private string level;
-        private Player player;
-        private Caretaker caretaker;
         private int visibleTilesX;
         private int visibleTilesY;
-
-        float currentTime = 0f;
-        float backupDuration = 1f;
+        private float currentTime = 0f;
+        private const float backupDuration = 1f;
 
         private World world;
 
-        public MapComponent(HoboKingGame hoboKingGame) : base(hoboKingGame)
-        {
-            this.hoboKingGame = hoboKingGame;
-        }
-
-        public MapComponent(HoboKingGame hoboKingGame, ConnectorComponent connector) : base(hoboKingGame)
+        public MapComponent(HoboKingGame hoboKingGame, Connector connector) : base(hoboKingGame)
         {
             this.hoboKingGame = hoboKingGame;
             Connector = connector;
             Connector.CreateListeners();
         }
+
+        //public void SetMediator(IMediator mediator)
+        //{
+        //    this.mediator = mediator;
+        //}
 
         /// <summary>
         ///     Reads map data from file
@@ -94,10 +94,7 @@ namespace HoboKing.Components
         {
             var mainPlayer = new Player(ContentLoader.BatChest,
                 new Vector2(PLAYER_START_POSITION_X, PLAYER_START_POSITION_Y), null, false, world);
-
-            caretaker = new Caretaker(mainPlayer);
-            caretaker.Restore();
-
+            
             entityManager.AddEntity(mainPlayer);
             return mainPlayer;
         }
@@ -163,12 +160,11 @@ namespace HoboKing.Components
         /// </summary>
         public void RemoveConnectedPlayers()
         {
-            foreach (var p in entityManager.Players)
-                if (p.IsOtherPlayer && !Connector.ConnectionsIds.Contains(p.ConnectionId))
-                {
-                    entityManager.RemoveEntity(p);
-                    break;
-                }
+            foreach (var p in entityManager.Players.Where(p => p.IsOtherPlayer && !Connector.ConnectionsIds.Contains(p.ConnectionId)))
+            {
+                entityManager.RemoveEntity(p);
+                break;
+            }
         }
 
         /// <summary>
@@ -198,28 +194,28 @@ namespace HoboKing.Components
         public void CreateMap()
         {
             for (var x = 0; x < visibleTilesX; x++)
-            for (var y = 0; y < MAP_HEIGHT; y++)
-            {
-                var tileId = GetTile(x, y);
-                switch (tileId)
+                for (var y = 0; y < MAP_HEIGHT; y++)
                 {
-                    case '.':
-                        // Empty blocks (background tiles)
-                        break;
-                    case '#':
-                        AddTile(x, y, tileId);
-                        break;
-                    case '<':
-                        AddTile(x, y, tileId);
-                        break;
-                    case '>':
-                        AddTile(x, y, tileId);
-                        break;
-                    case '?':
-                        AddTile(x, y, tileId);
-                        break;
+                    var tileId = GetTile(x, y);
+                    switch (tileId)
+                    {
+                        case '.':
+                            // Empty blocks (background tiles)
+                            break;
+                        case '#':
+                            AddTile(x, y, tileId);
+                            break;
+                        case '<':
+                            AddTile(x, y, tileId);
+                            break;
+                        case '>':
+                            AddTile(x, y, tileId);
+                            break;
+                        case '?':
+                            AddTile(x, y, tileId);
+                            break;
+                    }
                 }
-            }
 
             //PrototypeDemo();
         }
@@ -397,13 +393,15 @@ namespace HoboKing.Components
             CreateTileTypes();
             CreateMap();
             AddSections();
-            player = CreateMainPlayer();
-            
-            
+
+            var player = CreateMainPlayer();
+            mediator = new ConcreteMediator(this, player, new Caretaker());
+            mediator.Notify(this, "assignPlayer");
+            mediator.Notify(this, "load");
+
             CreateDebugCritter();
             EntityManager.Reset();
             //UpdateTextures();
-            camera = new Camera();
             base.LoadContent();
         }
 
@@ -424,38 +422,35 @@ namespace HoboKing.Components
             //hoboKingGame.menuScene.AddComponent(hoboKingGame.pauseComponent);
 
 
-            if (Connector != null && !hasConnected)
+            if (!hasConnected)
             {
                 //hoboKingGame.GState = HoboKingGame.GameState.Multiplayer;
                 // !!!
                 _ = Connector.Connect();
-                player.ConnectionId = Connector.GetConnectionId();
+                mediator.SetId(Connector.GetConnectionId());
                 hasConnected = true;
             }
-
-            if (Connector != null && hasConnected)
+            else
             {
-                _ = Connector.SendData(gameTime, player.Position);
+                _ = Connector.SendData(gameTime, mediator.GetPosition());
                 AddConnectedPlayers();
                 UpdateConnectedPlayers();
                 RemoveConnectedPlayers();
             }
 
-
             currentTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
-            if (player.ConnectionId != null)
+            if (mediator.GetId() != null)
             {
                 if (currentTime >= backupDuration)
                 {
                     currentTime -= backupDuration;
-                    caretaker.Backup();
+                    mediator.Notify(this, "save");
                 }
             }
 
             world.Step((float) gameTime.ElapsedGameTime.TotalSeconds);
 
-            if (player != null)
-                camera.Follow(player);
+            mediator.Notify(this, "cameraFollow");
 
             entityManager.Update(gameTime);
             base.Update(gameTime);
@@ -467,7 +462,7 @@ namespace HoboKing.Components
         /// <param name="gameTime"></param>
         public override void Draw(GameTime gameTime)
         {
-            hoboKingGame.SpriteBatch.Begin(transformMatrix: camera.Transform);
+            hoboKingGame.SpriteBatch.Begin(transformMatrix: mediator.GetMatrix());
             GraphicsDevice.Clear(Color.AliceBlue);
             hoboKingGame.SpriteBatch.Draw(ContentLoader.Background,
                 new Rectangle(0, 0, HoboKingGame.GAME_WINDOW_WIDTH, HoboKingGame.GAME_WINDOW_HEIGHT), Color.White);

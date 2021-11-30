@@ -43,13 +43,13 @@ namespace HoboKing.State
 
     internal class Playing : GameState
     {
-        private ConnectorComponent connector;
+        private Connector connector;
         private MapComponent mapComponent;
 
         public Playing(HoboKingGame game)
         {
             Game = game;
-            connector = new ConnectorComponent();
+            connector = new Connector();
             mapComponent = new MapComponent(Game, connector);
             new GameScene(Game, mapComponent);
         }

@@ -9,7 +9,18 @@ namespace HoboKing.Memento
     {
         private Snapshot snapshot;
         private Player player;
+
+        public Caretaker()
+        {
+            
+        }
+
         public Caretaker(Player player)
+        {
+            this.player = player;
+        }
+
+        public void SetPlayer(Player player)
         {
             this.player = player;
         }

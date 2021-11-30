@@ -16,7 +16,7 @@ namespace HoboKing.Tests
 {
     public class TestsFixture : IDisposable
     {
-        internal ConnectorComponent Connector;
+        internal Connector Connector;
         internal HoboKingGame Game;
         internal MapComponent Map;
 
@@ -26,7 +26,7 @@ namespace HoboKing.Tests
             Game = new HoboKingGame();
             Game.RunOneFrame();
 
-            //connector = new ConnectorComponent();
+            //connector = new Connector();
             //connector.CreateListeners();
 
             var components = Game.Components;
