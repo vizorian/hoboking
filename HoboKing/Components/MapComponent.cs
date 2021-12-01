@@ -413,7 +413,7 @@ namespace HoboKing.Components
         {
             if (InputController.KeyPressed(Keys.Escape) && hoboKingGame.gameState is Playing)
             {
-                hoboKingGame.ChangeStateAndDestroy(new PauseMenu(hoboKingGame, GraphicsDevice));
+                //hoboKingGame.ChangeStateAndDestroy(new PauseMenu(hoboKingGame, GraphicsDevice));
                 //hoboKingGame.gameState.SetVisible(true);
                 //hoboKingGame.GState = HoboKingGame.GameState.Unloading;
             }
