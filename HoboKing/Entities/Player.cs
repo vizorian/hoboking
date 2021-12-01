@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Xml.Linq;
 using HoboKing.Control;
 using HoboKing.Control.Strategy;
 using HoboKing.State;
 using HoboKing.Utils;
+using HoboKing.Memento;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -70,6 +72,17 @@ namespace HoboKing.Entities
             var clone = ShallowCopy() as Player;
             clone.ConnectionId = new string(ConnectionId);
             return clone;
+        }
+
+        public Snapshot Save()
+        {
+            return new Snapshot(Position);
+        }
+
+        public void Restore(Snapshot snapshot)
+        {
+            Position = snapshot.GetPosition();
+            CreatePhysicsObjects(world, BodyType.Dynamic);
         }
     }
 }

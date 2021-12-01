@@ -15,7 +15,7 @@ namespace HoboKing.Tests
         [InlineData(10, 0.05)]
         public async void SendData(int totalTime, int elapsedTime)
         {
-            var connector = new ConnectorComponent();
+            var connector = new Connector();
             connector.CreateListeners();
             await connector.Connect();
 
@@ -29,7 +29,7 @@ namespace HoboKing.Tests
         [Fact]
         public async void Connect()
         {
-            var connector = new ConnectorComponent();
+            var connector = new Connector();
             connector.CreateListeners();
 
             var ex = await Record.ExceptionAsync(() => connector.Connect());
@@ -39,7 +39,7 @@ namespace HoboKing.Tests
         [Fact]
         public async void Disconnect()
         {
-            var connector = new ConnectorComponent();
+            var connector = new Connector();
             connector.CreateListeners();
 
             await connector.Connect();
@@ -51,21 +51,21 @@ namespace HoboKing.Tests
         [Fact]
         public async void ConnectException()
         {
-            var connector = new ConnectorComponent();
+            var connector = new Connector();
             await Assert.ThrowsAsync<Exception>(() => connector.Connect());
         }
 
         [Fact]
         public async void DisconnectException()
         {
-            var connector = new ConnectorComponent();
+            var connector = new Connector();
             await Assert.ThrowsAsync<Exception>(() => connector.Disconnect());
         }
 
         [Fact]
         public async void GetConnectionId()
         {
-            var connector = new ConnectorComponent();
+            var connector = new Connector();
             connector.CreateListeners();
             await connector.Connect();
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Xml.Serialization;
 using HoboKing.Components;
+using HoboKing.Mediator;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using tainicom.Aether.Physics2D.Dynamics;
@@ -8,23 +9,23 @@ using tainicom.Aether.Physics2D.Dynamics.Joints;
 
 namespace HoboKing.Entities
 {
-    public abstract class GameEntity
+    public abstract class GameEntity : BaseComponent
     {
         protected const float FRICTION = 0.3f;
         protected const float RESTITUTION = 0.1f;
         protected const float UNIT_TO_PIXEL = 100.0f;
         protected const float PIXEL_TO_UNIT = 1 / UNIT_TO_PIXEL;
 
-        // Physics
+        //Intrinsic state
+        protected int tileSize;
+        public Texture2D Texture { get; protected set; }
+
+        //Extrinsic state
+        protected World world;
         public Body Body;
         public Fixture Fixture;
-        private Fixture GroundContactFixture;
-        public bool OnGround;
-
-        // Rectangle for resizing the texture if necessary
         protected Rectangle sizeRectangle;
-        protected int tileSize;
-        protected World world;
+        public Vector2 Position { get; set; }
 
         protected GameEntity()
         {
@@ -38,9 +39,6 @@ namespace HoboKing.Entities
 
             SetSizeRectangle(size);
         }
-
-        public Texture2D Texture { get; protected set; }
-        public Vector2 Position { get; set; }
 
         // Sets the size rectangle for the GameEntity.
         // If the size is specified then Rectangle is resized.
