@@ -16,11 +16,11 @@ namespace HoboKing.Factory
         protected bool hasSw;
         protected bool hasWest;
 
-        public int MapHeight;
-        public int MapWidth;
-        public int SectionEndPosition;
-        public int SectionStartPosition;
-        public List<Tile> StandardTiles;
+        private readonly int MapHeight;
+        private readonly int MapWidth;
+        private readonly int SectionEndPosition;
+        private readonly int SectionStartPosition;
+        private readonly List<Tile> StandardTiles;
 
         protected Section(List<Tile> standardTiles, string level, int mapWidth, int mapHeight, int sectionStartPosition,
             int sectionEndPosition)
@@ -58,14 +58,14 @@ namespace HoboKing.Factory
             }
         }
 
-        public char GetTile(int x, int y)
+        private char GetTile(int x, int y)
         {
             if (x >= 0 && x < MapWidth && y >= 0 && y < MapHeight)
                 return level[y * MapWidth + x];
             return ' ';
         }
 
-        protected void SetBooleanValues(int x, int y)
+        private void SetBooleanValues(int x, int y)
         {
             hasNorth = false;
             hasEast = false;

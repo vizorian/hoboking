@@ -11,17 +11,17 @@ namespace HoboKing.Factory
         {
         }
 
-        protected override void ReplaceLeft(Tile tile)
+        protected sealed override void ReplaceLeft(Tile tile)
         {
             tile.ChangeTexture(ContentLoader.GrassLeft);
         }
 
-        protected override void ReplaceRight(Tile tile)
+        protected sealed override void ReplaceRight(Tile tile)
         {
             tile.ChangeTexture(ContentLoader.GrassRight);
         }
 
-        protected override void UpdateTextures(Tile specificTile)
+        protected sealed override void UpdateTextures(Tile specificTile)
         {
             // NW
             if (!hasNorth && hasEast && hasSouth && !hasWest)
