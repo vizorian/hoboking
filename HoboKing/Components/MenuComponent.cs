@@ -11,12 +11,14 @@ namespace HoboKing.Components
     internal class MenuComponent : DrawableGameComponent
     {
         private readonly HoboKingGame hoboKingGame;
-        private readonly MenuItemsComponent menuItems;
+        private MenuItemsComponent oldMenu;
+        private MenuItemsComponent menuItems;
 
         public MenuComponent(HoboKingGame hoboKingGame, MenuItemsComponent menuItems) : base(hoboKingGame)
         {
             this.hoboKingGame = hoboKingGame;
             this.menuItems = menuItems;
+            oldMenu = null;
         }
 
         [ExcludeFromCodeCoverage]
@@ -28,29 +30,47 @@ namespace HoboKing.Components
                         hoboKingGame.ChangeStateAndDestroy(new Playing(hoboKingGame));
                         break;
                     case "Return":
-                        hoboKingGame.ChangeStateAndDestroy(new Playing(hoboKingGame));
+                        switch (oldMenu)
+                        {
+                            case null:
+                                hoboKingGame.ChangeStateAndDestroy(new Playing(hoboKingGame));
+                                break;
+                            default:
+                                menuItems = oldMenu;
+                                oldMenu = null;
+                                break;
+                        }
                         break;
                     case "Options":
-                        //hoboKingGame.ChangeStateAndDestroy(new Options(hoboKingGame));
+                        oldMenu = menuItems;
+                        menuItems = menuItems.SelectedMenuItem as MenuItemsComponent;
                         break;
                     case "Exit Game":
                         hoboKingGame.Exit();
                         break;
+                    case "Exit To Menu":
+                        hoboKingGame.ChangeStateAndDestroy(new Menu(hoboKingGame, hoboKingGame.GraphicsDevice));
+                        break;
                 }
-            if(InputController.KeyPressed(Keys.Down))
+            if (InputController.KeyPressed(Keys.Down))
                 menuItems.Next();
             if (InputController.KeyPressed(Keys.Up))
                 menuItems.Previous();
+            base.Update(gameTime);
         }
 
         public override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.Black);
             hoboKingGame.SpriteBatch.Begin();
+
+            var color = Color.White;
+            hoboKingGame.SpriteBatch.DrawString(ContentLoader.MenuFont, menuItems.Text, new Vector2(menuItems.GetChild(0).Position.X, menuItems.GetChild(0).Position.Y - 70), color);
+
             for (int i = 0; i < menuItems.GetCount(); i++)
             {
+                color = Color.White;
                 var item = menuItems.GetChild(i);
-                var color = Color.White;
                 if (item == menuItems.SelectedMenuItem)
                     color = Color.Green;
 

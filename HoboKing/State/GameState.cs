@@ -26,13 +26,17 @@ namespace HoboKing.State
             var menuPosition = new Vector2(graphics.Viewport.Width / 4f, 600);
 
             // Main menu
-            mainMenuItems = new MenuItemsComponent("Main Menu", menuPosition, 2f);
-            mainMenuItems.Add(new MenuItem("Start", new Vector2(menuPosition.X, menuPosition.Y + 70), 0.6f));
-            mainMenuItems.Add(new MenuItemsComponent("Options", new Vector2(menuPosition.X, menuPosition.Y + 140), 0.6f));
-            mainMenuItems.Add(new MenuItem("Exit Game", new Vector2(menuPosition.X, menuPosition.Y + 210), 0.6f));
+            mainMenuItems = new MenuItemsComponent("Main Menu", menuPosition, 0.6f);
+            mainMenuItems.Add(new MenuItem("Start", new Vector2(menuPosition.X, menuPosition.Y += 70), 0.6f));
+            mainMenuItems.Add(new MenuItemsComponent("Options", new Vector2(menuPosition.X, menuPosition.Y += 70), 0.6f));
+            mainMenuItems.Add(new MenuItem("Exit Game", new Vector2(menuPosition.X, menuPosition.Y += 70), 0.6f));
 
             // Options menu
-
+            menuPosition = new Vector2(graphics.Viewport.Width / 4f, 600);
+            mainMenuItems.GetChild(1).Add(new MenuItem("Option A", new Vector2(menuPosition.X, menuPosition.Y += 70), 0.6f));
+            mainMenuItems.GetChild(1).Add(new MenuItem("Option B", new Vector2(menuPosition.X, menuPosition.Y += 70), 0.6f));
+            mainMenuItems.GetChild(1).Add(new MenuItem("Option C", new Vector2(menuPosition.X, menuPosition.Y += 70), 0.6f));
+            mainMenuItems.GetChild(1).Add(new MenuItem("Return", new Vector2(menuPosition.X, menuPosition.Y += 70), 0.6f));
 
             mainMenuItems.Print();
             mainMenu = new MenuComponent(game, mainMenuItems);
@@ -48,34 +52,6 @@ namespace HoboKing.State
             mainMenu.Visible = visible;
         }
     }
-
-    //internal class Options : GameState
-    //{
-    //    private MenuComponent mainMenu;
-    //    private MenuItemsComponent mainMenuItems;
-
-    //    public Options(HoboKingGame game, GraphicsDevice graphics)
-    //    {
-    //        Game = game;
-    //        var menuPosition = new Vector2(graphics.Viewport.Width / 4f, 600);
-    //        mainMenuItems = new MenuItemsComponent("Main Menu", menuPosition, 2f);
-    //        mainMenuItems.Add(new MenuItem("Start", new Vector2(menuPosition.X, menuPosition.Y + 70), 0.6f));
-    //        mainMenuItems.Add(new MenuItem("Options", new Vector2(menuPosition.X, menuPosition.Y + 140), 0.6f));
-    //        mainMenuItems.Add(new MenuItem("Exit Game", new Vector2(menuPosition.X, menuPosition.Y + 210), 0.6f));
-    //        mainMenuItems.Print();
-    //        mainMenu = new MenuComponent(game, mainMenuItems);
-    //        new GameScene(Game, mainMenu);
-    //    }
-
-    //    public override void Destroy()
-    //    {
-    //        Game.Components.Remove(mainMenu);
-    //    }
-    //    public override void SetVisible(bool visible)
-    //    {
-    //        mainMenu.Visible = visible;
-    //    }
-    //}
 
     internal class Playing : GameState
     {
@@ -103,31 +79,36 @@ namespace HoboKing.State
     }
 
 
-    //internal class PauseMenu : GameState
-    //{
-    //    private MenuComponent OptionsMenu;
-    //    private MenuItemsComponent optionsMenuItems;
+    internal class PauseMenu : GameState
+    {
+        private MenuComponent optionsMenu;
+        private MenuItemsComponent optionsMenuItems;
 
-    //    public PauseMenu(HoboKingGame game, GraphicsDevice graphics)
-    //    {
-    //        Game = game;
-    //        var menuPosition = new Vector2(graphics.Viewport.Width / 4f, 600);
-    //        optionsMenuItems = new MenuItemsComponent(game, menuPosition, Color.White, Color.Green, 1);
-    //        optionsMenuItems.AddItem("Return");
-    //        optionsMenuItems.AddItem("Exit Game");
-    //        OptionsMenu = new MenuComponent(game, optionsMenuItems);
-    //        //Game.Components.Add(OptionsMenu);
-    //        new GameScene(game, OptionsMenu, optionsMenuItems);
-    //    }
+        public PauseMenu(HoboKingGame game, GraphicsDevice graphics)
+        {
+            Game = game;
+            var menuPosition = new Vector2(graphics.Viewport.Width / 4f, 600);
 
-    //    public override void Destroy()
-    //    {
-    //        Game.Components.Remove(OptionsMenu);
-    //    }
+            // Main menu
+            optionsMenuItems = new MenuItemsComponent("Pause Menu", menuPosition, 0.6f);
+            optionsMenuItems.Add(new MenuItem("Return", new Vector2(menuPosition.X, menuPosition.Y += 70), 0.6f));
+            optionsMenuItems.Add(new MenuItem("Exit To Menu", new Vector2(menuPosition.X, menuPosition.Y += 70), 0.6f));
+            optionsMenuItems.Add(new MenuItem("Exit Game", new Vector2(menuPosition.X, menuPosition.Y += 70), 0.6f));
 
-    //    public override void SetVisible(bool visible)
-    //    {
-    //        OptionsMenu.Visible = visible;
-    //    }
-    //}
+            optionsMenuItems.Print();
+
+            optionsMenu = new MenuComponent(game, optionsMenuItems);
+            new GameScene(game, optionsMenu);
+        }
+
+        public override void Destroy()
+        {
+            Game.Components.Remove(optionsMenu);
+        }
+
+        public override void SetVisible(bool visible)
+        {
+            optionsMenu.Visible = visible;
+        }
+    }
 }
