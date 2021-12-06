@@ -1,4 +1,5 @@
-﻿using HoboKing.Entities;
+﻿using System;
+using HoboKing.Entities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
@@ -46,7 +47,10 @@ namespace HoboKing.Control.Strategy
 
         public override void Up()
         {
-            target.Body.ApplyLinearImpulse(new Vector2(0, -MAX_JUMP));
+            if (Math.Abs(target.Body.LinearVelocity.Y) <= 0.1)
+            {
+                target.Body.ApplyLinearImpulse(new Vector2(0, -MAX_JUMP));
+            }
         }
     }
 }
