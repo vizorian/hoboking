@@ -7,8 +7,6 @@ namespace HoboKing.Builder
     {
         private Movement movement;
 
-        
-
         public void SetMovementStrategy(Movement movementStrategy)
         {
             movement = movementStrategy;
