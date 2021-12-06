@@ -13,8 +13,7 @@ namespace HoboKing.State
     internal abstract class GameState
     {
         protected HoboKingGame Game{ get; set; }
-        public abstract  void Destroy();
-        public abstract void SetVisible(bool visible);
+        public abstract void Destroy();
     }
 
     internal class Menu : GameState
@@ -83,10 +82,6 @@ namespace HoboKing.State
         {
             Game.Components.Remove(mainMenu);
         }
-        public override void SetVisible(bool visible)
-        {
-            mainMenu.Visible = visible;
-        }
     }
 
     internal class Playing : GameState
@@ -106,11 +101,6 @@ namespace HoboKing.State
         {
             Game.Components.Remove(mapComponent);
             _ = connector.Disconnect();
-        }
-
-        public override void SetVisible(bool visible)
-        {
-            mapComponent.Visible = visible;
         }
     }
 
@@ -140,11 +130,6 @@ namespace HoboKing.State
         public override void Destroy()
         {
             Game.Components.Remove(optionsMenu);
-        }
-
-        public override void SetVisible(bool visible)
-        {
-            optionsMenu.Visible = visible;
         }
     }
 }

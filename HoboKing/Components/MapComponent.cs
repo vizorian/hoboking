@@ -380,6 +380,8 @@ namespace HoboKing.Components
             entityManager = new EntityManager();
             critterBuilder = new CritterBuilder();
 
+            _ = Connector.Connect();
+
             visibleTilesX = HoboKingGame.GAME_WINDOW_WIDTH / TILE_SIZE; // 64
             visibleTilesY = HoboKingGame.GAME_WINDOW_HEIGHT / TILE_SIZE; // 50
 
@@ -396,6 +398,8 @@ namespace HoboKing.Components
             CreateTileTypes();
             CreateMap();
             AddSections();
+
+
 
             var player = CreateMainPlayer();
             mediator = new ConcreteMediator(this, player, new Caretaker());
@@ -426,7 +430,9 @@ namespace HoboKing.Components
 
             if (!hasConnected)
             {
-                _ = Connector.Connect();
+                //hoboKingGame.GState = HoboKingGame.GameState.Multiplayer;
+                // !!!
+
                 mediator.SetId(Connector.GetConnectionId());
                 hasConnected = true;
             }
@@ -464,8 +470,9 @@ namespace HoboKing.Components
         {
             hoboKingGame.SpriteBatch.Begin(transformMatrix: mediator.GetMatrix());
             GraphicsDevice.Clear(Color.AliceBlue);
-            hoboKingGame.SpriteBatch.Draw(ContentLoader.Background,
-                new Rectangle(0, 0, HoboKingGame.GAME_WINDOW_WIDTH, HoboKingGame.GAME_WINDOW_HEIGHT), Color.White);
+            hoboKingGame.SpriteBatch.Draw(ContentLoader.Background,  new Rectangle(0, 0, HoboKingGame.GAME_WINDOW_WIDTH, HoboKingGame.GAME_WINDOW_HEIGHT), Color.White);
+            hoboKingGame.SpriteBatch.Draw(ContentLoader.Background,  new Rectangle(0, 1000, HoboKingGame.GAME_WINDOW_WIDTH, HoboKingGame.GAME_WINDOW_HEIGHT), Color.White);
+            hoboKingGame.SpriteBatch.Draw(ContentLoader.Background,  new Rectangle(0, 2000, HoboKingGame.GAME_WINDOW_WIDTH, HoboKingGame.GAME_WINDOW_HEIGHT), Color.White);
             entityManager.Draw(hoboKingGame.SpriteBatch);
             hoboKingGame.SpriteBatch.End();
             base.Draw(gameTime);

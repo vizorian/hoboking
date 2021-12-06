@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using tainicom.Aether.Physics2D.Dynamics;
+using PlayerState = HoboKing.State.PlayerState;
 
 namespace HoboKing.Entities
 {
@@ -20,23 +21,26 @@ namespace HoboKing.Entities
 
         private Movement movement;
 
+        private PlayerState state;
+
         public Player(Texture2D texture, Vector2 position, string connectionId, bool isOtherPlayer, World world) : base(
             texture, position, PLAYER_SIZE)
         {
             ConnectionId = connectionId;
             IsOtherPlayer = isOtherPlayer;
 
+            
             if (!isOtherPlayer)
             {
                 // Set physics
                 CreatePhysicsObjects(world, BodyType.Dynamic);
-                SetMovementStrategy(new PlayerMovement(this));
+                SetState(new NormalState(this));
             }
         }
 
-        public void SetMovementStrategy(Movement movementStrategy)
+        public void SetState(PlayerState newState)
         {
-            movement = movementStrategy;
+            state = newState;
         }
 
         public void Update(GameTime gameTime)
@@ -45,21 +49,44 @@ namespace HoboKing.Entities
             // Switches between movements when F2 is pressed.
             if (InputController.KeyPressed(Keys.F2))
             {
-                switch (movement)
+                switch (state)
                 {
-                    case PlayerMovement _:
-                        SetMovementStrategy(new IceMovement(this));
-                        break;
-                    case IceMovement _:
-                        SetMovementStrategy(new DebugMovement(this));
-                        break;
-                    case DebugMovement _:
-                        SetMovementStrategy(new PlayerMovement(this));
+                    case NormalState _:
+                        SetState(new Reloading(this));
                         break;
                 }
             }
 
-            movement.AcceptInputs(gameTime);
+            // If on Ice Level
+            if (Position.Y > 1000 && Position.Y < 2000)
+            {
+                if(!(state is OnIce) && !(state is InAir) && !(state is Falling) && !(state is Reloading))
+                    state = new OnIce(this);
+            }
+            // If on normal level
+            else if(!(state is NormalState) && !(state is InAir) && !(state is Falling) && !(state is Reloading))
+            {
+                state = new NormalState(this);
+            }
+
+            // Check if jumping
+            if (Body.LinearVelocity.Y < -1f && !(state is InAir) && !(state is Falling))
+            {
+                state = new InAir(this);
+            }
+
+            // Check if falling
+            if (Body.LinearVelocity.Y > 1f && state is InAir)
+            {
+                state.NextState();
+            }
+
+            if (state is Falling && Math.Abs(Body.LinearVelocity.Y) < 0.5f)
+            {
+                state.NextState();
+            }
+
+            state.HandleInputs(gameTime);
         }
 
         public override GameEntity ShallowCopy()
