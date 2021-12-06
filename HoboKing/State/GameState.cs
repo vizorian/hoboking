@@ -41,8 +41,6 @@ namespace HoboKing.State
             mainMenuItems.GetChild(2).Add(new MenuItem("Return", new Vector2(menuPosition.X, menuPosition.Y += 70), 0.6f));
 
             // Load menu - dynamic size
-            // need to load all saves
-            // need to categorize saves by sections (menus)
             menuPosition = new Vector2(graphics.Viewport.Width / 4f, 100);
             var caretaker = new Caretaker();
             var indexes = caretaker.GetSaveCount();
@@ -58,6 +56,7 @@ namespace HoboKing.State
                     new Vector2(menuPosition.X, menuPosition.Y += 70), 0.6f);
 
                 var sectionsSaves = indexes.Where(t => t.Item1 == section).Select(s => s.Item2).ToList();
+                sectionsSaves.Reverse();
 
                 var i = 0;
                 foreach (var menuSave in sectionsSaves.TakeWhile(menuSave => i < 10))

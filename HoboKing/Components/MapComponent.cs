@@ -22,8 +22,8 @@ namespace HoboKing.Components
         // Mediator stuff
         protected ConcreteMediator mediator;
 
-        public const int PLAYER_START_POSITION_X = 20;
-        public const int PLAYER_START_POSITION_Y = 93;
+        public const int PLAYER_START_POSITION_X = 30;
+        public const int PLAYER_START_POSITION_Y = 145;
 
         // approximate size to get a 1280x1080 game with side black bars
         public const int TILE_SIZE = 20;
@@ -42,6 +42,8 @@ namespace HoboKing.Components
         private EntityManager entityManager;
 
         private int loadState;
+
+        private Player player;
 
         private bool hasConnected;
         private string level;
@@ -399,9 +401,7 @@ namespace HoboKing.Components
             CreateMap();
             AddSections();
 
-
-
-            var player = CreateMainPlayer();
+            player = CreateMainPlayer();
             mediator = new ConcreteMediator(this, player, new Caretaker());
             mediator.Notify(this, "assignPlayer");
 

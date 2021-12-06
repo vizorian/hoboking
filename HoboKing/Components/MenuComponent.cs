@@ -36,13 +36,8 @@ namespace HoboKing.Components
                             hoboKingGame.ChangeStateAndDestroy(new Playing(hoboKingGame));
                             break;
                         case "Load":
-                            // figure out how to get from list of options
                             oldMenus.Add(targetMenu);
                             targetMenu = targetMenu.SelectedMenuItem as MenuItemsComponent;
-
-
-                            // do at the end
-                            // hoboKingGame.ChangeStateAndDestroy(new Playing(hoboKingGame, choice));
                             break;
                         case "Return":
                             switch (oldMenus.LastOrDefault())

@@ -75,9 +75,9 @@ namespace HoboKing.Memento
             for (var i = 0; i < lines.Count; i++)
             {
                 var words = lines[i].Split(',');
-                var position = new Vector2(Convert.ToInt32(words[0]) / 20, Convert.ToInt32(words[1]) / 20);
+                var y = double.Parse(words[1]);
 
-                var indexA = position.Y / 50;
+                var indexA = Math.Floor(y / 1000);
 
                 var index = (Convert.ToInt32(indexA), i);
                 indexes.Add(index);

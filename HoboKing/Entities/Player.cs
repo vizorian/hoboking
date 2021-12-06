@@ -43,6 +43,11 @@ namespace HoboKing.Entities
             state = newState;
         }
 
+        public PlayerState GetState()
+        {
+            return state;
+        }
+
         public void Update(GameTime gameTime)
         {
             base.Update();
