@@ -1,4 +1,7 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using HoboKing.Composite;
 using HoboKing.Control;
 using HoboKing.Graphics;
@@ -11,51 +14,79 @@ namespace HoboKing.Components
     internal class MenuComponent : DrawableGameComponent
     {
         private readonly HoboKingGame hoboKingGame;
-        private MenuItemsComponent oldMenu;
-        private MenuItemsComponent menuItems;
+        private readonly List<MenuItemsComponent> oldMenus;
+        private MenuItemsComponent targetMenu;
 
-        public MenuComponent(HoboKingGame hoboKingGame, MenuItemsComponent menuItems) : base(hoboKingGame)
+        public MenuComponent(HoboKingGame hoboKingGame, MenuItemsComponent targetMenu) : base(hoboKingGame)
         {
             this.hoboKingGame = hoboKingGame;
-            this.menuItems = menuItems;
-            oldMenu = null;
+            this.targetMenu = targetMenu;
+            oldMenus = new List<MenuItemsComponent>();
         }
 
         [ExcludeFromCodeCoverage]
         public override void Update(GameTime gameTime)
         {
             if (InputController.KeyPressed(Keys.Enter))
-                switch (menuItems.SelectedMenuItem.Text){
-                    case "Start":
-                        hoboKingGame.ChangeStateAndDestroy(new Playing(hoboKingGame));
-                        break;
-                    case "Return":
-                        switch (oldMenu)
-                        {
-                            case null:
-                                hoboKingGame.ChangeStateAndDestroy(new Playing(hoboKingGame));
-                                break;
-                            default:
-                                menuItems = oldMenu;
-                                oldMenu = null;
-                                break;
-                        }
-                        break;
-                    case "Options":
-                        oldMenu = menuItems;
-                        menuItems = menuItems.SelectedMenuItem as MenuItemsComponent;
-                        break;
-                    case "Exit Game":
-                        hoboKingGame.Exit();
-                        break;
-                    case "Exit To Menu":
-                        hoboKingGame.ChangeStateAndDestroy(new Menu(hoboKingGame, hoboKingGame.GraphicsDevice));
-                        break;
-                }
+            {
+                var selection = targetMenu.SelectedMenuItem.Text;
+                switch (selection)
+                    {
+                        case "Start":
+                            hoboKingGame.ChangeStateAndDestroy(new Playing(hoboKingGame));
+                            break;
+                        case "Load":
+                            // figure out how to get from list of options
+                            oldMenus.Add(targetMenu);
+                            targetMenu = targetMenu.SelectedMenuItem as MenuItemsComponent;
+
+
+                            // do at the end
+                            // hoboKingGame.ChangeStateAndDestroy(new Playing(hoboKingGame, choice));
+                            break;
+                        case "Return":
+                            switch (oldMenus.LastOrDefault())
+                            {
+                                case null:
+                                    hoboKingGame.ChangeStateAndDestroy(new Playing(hoboKingGame));
+                                    break;
+                                default:
+                                    targetMenu = oldMenus.Last();
+                                    oldMenus.RemoveAt(oldMenus.Count-1);
+                                    break;
+                            }
+
+                            break;
+                        case "Options":
+                            oldMenus.Add(targetMenu);
+                            targetMenu = targetMenu.SelectedMenuItem as MenuItemsComponent;
+                            break;
+                        case "Exit Game":
+                            hoboKingGame.Exit();
+                            break;
+                        case "Exit To Menu":
+                            hoboKingGame.ChangeStateAndDestroy(new Menu(hoboKingGame, hoboKingGame.GraphicsDevice));
+                            break;
+                        default:
+                            var broken = selection.Split(' ');
+                            if (broken[0] == "Section")
+                            {
+                                oldMenus.Add(targetMenu);
+                                targetMenu = targetMenu.SelectedMenuItem as MenuItemsComponent;
+                            }else if (broken[1] == "save")
+                            {
+                                var id = broken[2].Substring(3);
+                                hoboKingGame.ChangeStateAndDestroy(new Playing(hoboKingGame, Convert.ToInt32(id)));
+                            }
+                            break;
+                    }
+
+
+            }
             if (InputController.KeyPressed(Keys.Down))
-                menuItems.Next();
+                targetMenu.Next();
             if (InputController.KeyPressed(Keys.Up))
-                menuItems.Previous();
+                targetMenu.Previous();
             base.Update(gameTime);
         }
 
@@ -65,13 +96,13 @@ namespace HoboKing.Components
             hoboKingGame.SpriteBatch.Begin();
 
             var color = Color.White;
-            hoboKingGame.SpriteBatch.DrawString(ContentLoader.MenuFont, menuItems.Text, new Vector2(menuItems.GetChild(0).Position.X, menuItems.GetChild(0).Position.Y - 70), color);
+            hoboKingGame.SpriteBatch.DrawString(ContentLoader.MenuFont, targetMenu.Text, new Vector2(targetMenu.GetChild(0).Position.X, targetMenu.GetChild(0).Position.Y - 70), color);
 
-            for (int i = 0; i < menuItems.GetCount(); i++)
+            for (int i = 0; i < targetMenu.GetCount(); i++)
             {
                 color = Color.White;
-                var item = menuItems.GetChild(i);
-                if (item == menuItems.SelectedMenuItem)
+                var item = targetMenu.GetChild(i);
+                if (item == targetMenu.SelectedMenuItem)
                     color = Color.Green;
 
                 hoboKingGame.SpriteBatch.DrawString(ContentLoader.MenuFont, item.Text, item.Position, color);

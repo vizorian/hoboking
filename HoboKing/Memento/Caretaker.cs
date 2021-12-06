@@ -1,5 +1,10 @@
 ﻿using System;
+using System.CodeDom.Compiler;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using HoboKing.Entities;
 using HoboKing.Mediator;
 using Microsoft.Xna.Framework;
@@ -19,28 +24,66 @@ namespace HoboKing.Memento
         public void Backup()
         {
             snapshot = player.Save();
-            using var fileStream = File.OpenWrite("memento/snapshot.txt");
-            using var writer = new StreamWriter(fileStream);
-            writer.WriteLine(snapshot.GetPosition().X + "," + snapshot.GetPosition().Y + "," + snapshot.GetDateTime());
-            writer.Close();
-            fileStream.Close();
+            using (TextWriter writer = new StreamWriter("memento/snapshot.txt", true))
+            {
+                writer.WriteLine(snapshot.GetPosition().X + "," + snapshot.GetPosition().Y + "," + snapshot.GetDateTime());
+            }
         }
 
         public void Restore()
         {
-            using var fileStream = File.OpenRead("memento/snapshot.txt");
-            using var reader = new StreamReader(fileStream);
-            string line = reader.ReadLine();
-            if (line != null)
+            string line;
+            using (TextReader reader = new StreamReader("memento/snapshot.txt"))
             {
-                var words = line.Split(',');
-                reader.Close();
-                var v = new Vector2(Convert.ToInt32(words[0]), Convert.ToInt32(words[1]));
-                var s = new Snapshot(v);
-                player.Restore(s);
+                line = reader.ReadLine();
             }
-            
+            var words = line.Split(',');
+            var v = new Vector2(Convert.ToInt32(words[0]), Convert.ToInt32(words[1]));
+            var s = new Snapshot(v);
+            player.Restore(s);
         }
 
+        public void Restore(int i)
+        {
+            var lines = new List<string>();
+            using (TextReader reader = new StreamReader("memento/snapshot.txt"))
+            {
+                string line;
+                while ((line = reader.ReadLine()) != null)
+                    lines.Add(line);
+            }
+
+            var words = lines[i].Split(',');
+            var v = new Vector2(Convert.ToInt32(words[0]), Convert.ToInt32(words[1]));
+            var s = new Snapshot(v);
+
+            player.Restore(s);
+        }
+
+        public List<(int, int)> GetSaveCount()
+        {
+            var lines = new List<string>();
+            using (TextReader reader = new StreamReader("memento/snapshot.txt"))
+            {
+                string line;
+                while ((line = reader.ReadLine()) != null)
+                    lines.Add(line);
+            }
+
+            var indexes = new List<(int, int)>();
+
+            for (var i = 0; i < lines.Count; i++)
+            {
+                var words = lines[i].Split(',');
+                var position = new Vector2(Convert.ToInt32(words[0]) / 20, Convert.ToInt32(words[1]) / 20);
+
+                var indexA = position.Y / 50;
+
+                var index = (Convert.ToInt32(indexA), i);
+                indexes.Add(index);
+            }
+
+            return indexes;
+        }
     }
 }

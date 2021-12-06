@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using HoboKing.Components;
 using HoboKing.Entities;
 using HoboKing.Graphics;
@@ -17,6 +18,7 @@ namespace HoboKing.Mediator
             this.mapComponent = mapComponent;
         }
 
+        private int loadState = -1;
         private readonly MapComponent mapComponent;
         private readonly Camera cameraComponent;
         private readonly Player playerComponent;
@@ -33,12 +35,18 @@ namespace HoboKing.Mediator
                     caretakerComponent.Backup();
                     break;
                 case "load":
-                    caretakerComponent.Restore();
+                    if (loadState == -1) break;
+                    caretakerComponent.Restore(loadState);
                     break;
                 case "assignPlayer":
                     caretakerComponent.SetPlayer(playerComponent);
                     break;
             }
+        }
+
+        public void SetLoadState(int state)
+        {
+            loadState = state;
         }
 
         public Matrix GetMatrix()

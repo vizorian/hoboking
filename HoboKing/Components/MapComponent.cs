@@ -40,7 +40,9 @@ namespace HoboKing.Components
         // Implement Mediator
         private CritterBuilder critterBuilder;
         private EntityManager entityManager;
-        
+
+        private int loadState;
+
         private bool hasConnected;
         private string level;
         private int visibleTilesX;
@@ -50,10 +52,11 @@ namespace HoboKing.Components
 
         private World world;
 
-        public MapComponent(HoboKingGame hoboKingGame, Connector connector) : base(hoboKingGame)
+        public MapComponent(HoboKingGame hoboKingGame, Connector connector, int loadState = -1) : base(hoboKingGame)
         {
             this.hoboKingGame = hoboKingGame;
             Connector = connector;
+            this.loadState = loadState;
             Connector.CreateListeners();
         }
 
@@ -397,6 +400,9 @@ namespace HoboKing.Components
             var player = CreateMainPlayer();
             mediator = new ConcreteMediator(this, player, new Caretaker());
             mediator.Notify(this, "assignPlayer");
+
+            // Send an input to load or not load
+            mediator.SetLoadState(loadState);
             mediator.Notify(this, "load");
 
             CreateDebugCritter();
@@ -413,16 +419,13 @@ namespace HoboKing.Components
         {
             if (InputController.KeyPressed(Keys.Escape) && hoboKingGame.gameState is Playing)
             {
+                // don't destroy old game
                 hoboKingGame.ChangeStateAndDestroy(new PauseMenu(hoboKingGame, GraphicsDevice));
-                //hoboKingGame.gameState.SetVisible(true);
-                //hoboKingGame.GState = HoboKingGame.GameState.Unloading;
             }
 
 
             if (!hasConnected)
             {
-                //hoboKingGame.GState = HoboKingGame.GameState.Multiplayer;
-                // !!!
                 _ = Connector.Connect();
                 mediator.SetId(Connector.GetConnectionId());
                 hasConnected = true;
