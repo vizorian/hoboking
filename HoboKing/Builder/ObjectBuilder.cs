@@ -5,6 +5,10 @@ namespace HoboKing.Builder
 {
     internal class ObjectBuilder : AbstractBuilder
     {
+        public ObjectBuilder()
+        {
+            Reset();
+        }
         public override AbstractBuilder AddMovement()
         {
             (entity as Object)?.SetMovementStrategy(new CritterMovement(entity));
