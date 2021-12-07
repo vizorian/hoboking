@@ -37,6 +37,15 @@ namespace HoboKing.State
         }
     }
 
+    internal class DebugState : PlayerState
+    {
+        public DebugState(Player p) : base(p)
+        {
+            Console.WriteLine("Player state: Debug");
+            movement = new DebugMovement(p);
+        }
+    }
+
     //Player cannot jump while reloading
     internal class Reloading : PlayerState
     {

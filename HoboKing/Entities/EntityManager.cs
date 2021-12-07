@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using HoboKing.Builder;
 using HoboKing.Factory;
+using HoboKing.Iterator;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -13,6 +14,7 @@ namespace HoboKing.Entities
         private static List<GameEntity> Entities = new List<GameEntity>();
         private readonly List<GameEntity> entitiesToAdd = new List<GameEntity>();
         private readonly List<GameEntity> entitiesToRemove = new List<GameEntity>();
+        private TileCollection tileCollection = new TileCollection();
         public Player MainPlayer;
         public List<Player> Players = new List<Player>();
 
@@ -36,7 +38,15 @@ namespace HoboKing.Entities
                 if (player.IsOtherPlayer == false) MainPlayer = player;
             }
 
-            entitiesToAdd.Add(entity);
+            if (entity is Tile)
+            {
+                tileCollection.Add((Tile)entity);
+            }
+            else
+            {
+                entitiesToAdd.Add(entity);
+            }
+
         }
 
         /// <summary>
@@ -80,6 +90,27 @@ namespace HoboKing.Entities
         /// <param name="spriteBatch">Sprite batch</param>
         public void Draw(SpriteBatch spriteBatch)
         {
+            // Iteratorius
+            var iterator = tileCollection.CreateOrderIterator();
+
+            var tile = (Tile) iterator.First();
+            var min = Math.Floor(MainPlayer.Position.Y / 1000) * 1000;
+            var max = Math.Ceiling(MainPlayer.Position.Y / 1000) * 1000;
+            
+
+            for (; !iterator.IsDone(); tile = (Tile)iterator.Next())
+            {
+                if (tile.Position.Y <= max && tile.Position.Y >= min )
+                {
+                    //Console.WriteLine("Position {0}-{1}", tile.Position.X, tile.Position.Y);
+                    tile.Draw(spriteBatch);
+                }
+            }
+            tile.Draw(spriteBatch);
+
+
+            //foreach (var tile in tileCollection.GetItems()) tile.Draw(spriteBatch);
+
             foreach (var entity in Entities) entity.Draw(spriteBatch);
         }
 
@@ -89,11 +120,24 @@ namespace HoboKing.Entities
         /// <returns>All tiles</returns>
         public List<Tile> GetTiles()
         {
-            var tiles = new List<Tile>();
-            foreach (var entity in entitiesToAdd)
-                if (entity is Tile tile)
-                    tiles.Add(tile);
-            return tiles;
+            //var tiles = new List<Tile>();
+            //foreach (var entity in entitiesToAdd)
+            //    if (entity is Tile tile)
+            //        tiles.Add(tile);
+
+            //for (int i = 0; i < 50; i++)
+            //{
+            //    Console.WriteLine("Position {0}-{1}", tileCollection.GetItems()[i].Position.X, tileCollection.GetItems()[i].Position.Y);
+            //}
+            //var iterator = tileCollection.CreateOrderIterator();
+
+            //for (var tile = (Tile)iterator.First(); !iterator.IsDone(); tile = (Tile)iterator.Next())
+            //{
+            //    Console.WriteLine("Position {0}-{1}", tile.Position.X, tile.Position.Y);
+            //    //tile.Draw(spriteBatch);
+            //}
+
+            return tileCollection.GetItems();
         }
 
         public static void Reset()
