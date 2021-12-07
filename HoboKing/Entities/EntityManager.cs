@@ -91,7 +91,7 @@ namespace HoboKing.Entities
         public void Draw(SpriteBatch spriteBatch)
         {
             // Iteratorius
-            var iterator = tileCollection.CreateOrderIterator();
+            var iterator = tileCollection.CreateHorizontalIterator();
 
             var tile = (Tile) iterator.First();
             var min = Math.Floor(MainPlayer.Position.Y / 1000) * 1000;
@@ -118,7 +118,7 @@ namespace HoboKing.Entities
         ///     Retrieves all tiles from the entity list
         /// </summary>
         /// <returns>All tiles</returns>
-        public List<Tile> GetTiles()
+        public List<GameEntity> GetTiles()
         {
             //var tiles = new List<Tile>();
             //foreach (var entity in entitiesToAdd)

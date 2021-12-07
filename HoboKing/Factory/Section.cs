@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using HoboKing.Entities;
 using HoboKing.Graphics;
 
 namespace HoboKing.Factory
@@ -20,9 +21,9 @@ namespace HoboKing.Factory
         private readonly int MapWidth;
         private readonly int SectionEndPosition;
         private readonly int SectionStartPosition;
-        private readonly List<Tile> StandardTiles;
+        private readonly List<GameEntity> StandardTiles;
 
-        protected Section(List<Tile> standardTiles, string level, int mapWidth, int mapHeight, int sectionStartPosition,
+        protected Section(List<GameEntity> standardTiles, string level, int mapWidth, int mapHeight, int sectionStartPosition,
             int sectionEndPosition)
         {
             StandardTiles = standardTiles;
@@ -87,10 +88,10 @@ namespace HoboKing.Factory
             if (GetTile(x + 1, y + 1) != '.') hasSe = true;
         }
 
-        protected abstract void ReplaceLeft(Tile tile);
+        protected abstract void ReplaceLeft(GameEntity tile);
 
-        protected abstract void ReplaceRight(Tile tile);
+        protected abstract void ReplaceRight(GameEntity tile);
 
-        protected abstract void UpdateTextures(Tile specificTile);
+        protected abstract void UpdateTextures(GameEntity specificTile);
     }
 }

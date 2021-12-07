@@ -1,27 +1,28 @@
 ﻿using System.Collections.Generic;
+using HoboKing.Entities;
 using HoboKing.Graphics;
 
 namespace HoboKing.Factory
 {
     internal class GrassSection : Section
     {
-        public GrassSection(List<Tile> standardTiles, string level, int mapWidth, int mapHeight,
+        public GrassSection(List<GameEntity> standardTiles, string level, int mapWidth, int mapHeight,
             int sectionStartPosition, int sectionEndPosition) : base(standardTiles, level, mapWidth, mapHeight,
             sectionStartPosition, sectionEndPosition)
         {
         }
 
-        protected sealed override void ReplaceLeft(Tile tile)
+        protected sealed override void ReplaceLeft(GameEntity tile)
         {
             tile.ChangeTexture(ContentLoader.GrassLeft);
         }
 
-        protected sealed override void ReplaceRight(Tile tile)
+        protected sealed override void ReplaceRight(GameEntity tile)
         {
             tile.ChangeTexture(ContentLoader.GrassRight);
         }
 
-        protected sealed override void UpdateTextures(Tile specificTile)
+        protected sealed override void UpdateTextures(GameEntity specificTile)
         {
             // NW
             if (!hasNorth && hasEast && hasSouth && !hasWest)

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using HoboKing.Entities;
 using HoboKing.Factory;
 using Xunit.Sdk;
 
@@ -8,14 +9,14 @@ namespace HoboKing.Iterator
 {
     public class TileCollection : IterableCollection
     {
-        List<Tile> tiles = new List<Tile>();
+        List<GameEntity> collection = new List<GameEntity>();
 
-        public override Iterator CreateSectionIterator()
+        public override Iterator CreateVerticalIterator()
         {
             return new VerticalIterator(this);
         }
 
-        public override Iterator CreateOrderIterator()
+        public override Iterator CreateHorizontalIterator()
         {
             return new HorzontalIterator(this);
         }
@@ -31,8 +32,8 @@ namespace HoboKing.Iterator
             var maxValueY = 0f;
             while (true)
             {
-                if (tiles[i].Position.X == 0)
-                    maxValueY = tiles[i].Position.Y;
+                if (collection[i].Position.X == 0)
+                    maxValueY = collection[i].Position.Y;
                 else
                     break;
 
@@ -42,20 +43,20 @@ namespace HoboKing.Iterator
             return Convert.ToInt32(sectionCount);
         }
 
-        public List<Tile> GetItems()
+        public List<GameEntity> GetItems()
         {
-            return tiles;
+            return collection;
         }
 
         public void Add(Tile tile)
         {
-            tiles.Add(tile);
+            collection.Add(tile);
         }
 
 
         public int Count()
         {
-            return tiles.Count;
+            return collection.Count;
         }
     }
 }

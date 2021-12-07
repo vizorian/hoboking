@@ -6,8 +6,8 @@ namespace HoboKing.Iterator
 {
     public abstract class IterableCollection
     {
-        public abstract Iterator CreateSectionIterator();
-        public abstract Iterator CreateOrderIterator();
+        public abstract Iterator CreateVerticalIterator();
+        public abstract Iterator CreateHorizontalIterator();
         public abstract Iterator CreateDistanceIterator();
     }
 }

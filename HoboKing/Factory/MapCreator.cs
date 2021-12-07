@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
+using HoboKing.Entities;
 
 namespace HoboKing.Factory
 {
     internal class MapCreator : Creator
     {
-        public override Section CreateMapSection(List<Tile> standardTiles, string level, int mapWidth, int mapHeight,
+        public override Section CreateMapSection(List<GameEntity> standardTiles, string level, int mapWidth, int mapHeight,
             int sectionStartPosition, int sectionEndPosition)
         {
             return sectionStartPosition switch
