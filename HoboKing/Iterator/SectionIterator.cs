@@ -4,12 +4,13 @@ using System.Text;
 
 namespace HoboKing.Iterator
 {
-    class VerticalIterator : Iterator
+    class SectionIterator : Iterator
     {
         private GameEntityCollection collection;
+        private int count = 0;
         private int position = 0;
 
-        public VerticalIterator(GameEntityCollection tileCollection)
+        public SectionIterator(GameEntityCollection tileCollection)
         {
             this.collection = tileCollection;
         }
@@ -26,6 +27,7 @@ namespace HoboKing.Iterator
                 position++;
                 return collection.GetItems()[position];
             }
+
             return null;
         }
 
@@ -33,5 +35,7 @@ namespace HoboKing.Iterator
         {
             return position + 1 >= collection.Count();
         }
+
+
     }
 }

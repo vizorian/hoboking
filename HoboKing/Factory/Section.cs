@@ -39,7 +39,7 @@ namespace HoboKing.Factory
             for (var x = 0; x < MapWidth; x++)
             for (var y = SectionStartPosition; y < SectionEndPosition; y++)
             {
-                var tileId = GetTile(x, y);
+                var tileId = GetTile(x, y); 
                 var specificTile = StandardTiles.Find(o => o.Position.X == x * 20 && o.Position.Y == y * 20);
                 switch (tileId)
                 {

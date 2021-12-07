@@ -6,22 +6,20 @@ namespace HoboKing.Iterator
 {
     class HorzontalIterator : Iterator
     {
-        private TileCollection tileCollection;
+        private GameEntityCollection collection;
         private int count = 0;
-        private int sectionCount;
         float lastX = -1f;
         float currentY = 0f;
 
-        public HorzontalIterator(TileCollection tileCollection)
+        public HorzontalIterator(GameEntityCollection tileCollection)
         {
-            this.tileCollection = tileCollection;
-            //sectionCount = tileCollection.GetSectionCount();
+            this.collection = tileCollection;
         }
 
         public override object First()
         {
             count++;
-            return tileCollection.GetItems()[0];
+            return collection.GetItems()[0];
         }
 
         public override object Next()
@@ -31,38 +29,29 @@ namespace HoboKing.Iterator
             {
                 while (!found)
                 {
-                    for (int i = 1; i < tileCollection.Count(); i++)
+                    for (int i = 1; i < collection.Count(); i++)
                     {
 
-                        if (tileCollection.GetItems()[i].Position.X > lastX &&
-                            tileCollection.GetItems()[i].Position.Y == currentY)
+                        if (collection.GetItems()[i].Position.X > lastX &&
+                            collection.GetItems()[i].Position.Y == currentY)
                         {
-                            found = true; //useless
+                            found = true;
                             count++;
-                            lastX = tileCollection.GetItems()[i].Position.X;
-                            return tileCollection.GetItems()[i];
+                            lastX = collection.GetItems()[i].Position.X;
+                            return collection.GetItems()[i];
                         }
                     }
                     // jei neranda jokios reiksmes
                     currentY += 20;
                     lastX = -1f;
-
-                    
                 }
-                
             }
             return null;
         }
 
         public override bool IsDone()
         {
-            //return count >= 910;
-            return count >= tileCollection.Count();
-        }
-
-        public override object Current()
-        {
-            throw new NotImplementedException();
+            return count >= collection.Count();
         }
     }
 }

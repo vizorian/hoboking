@@ -7,7 +7,7 @@ using Xunit.Sdk;
 
 namespace HoboKing.Iterator
 {
-    public class TileCollection : IterableCollection
+    public class GameEntityCollection : IterableCollection
     {
         List<GameEntity> collection = new List<GameEntity>();
 
@@ -23,7 +23,7 @@ namespace HoboKing.Iterator
 
         public override Iterator CreateDistanceIterator()
         {
-            throw new NotImplementedException();
+            return new SectionIterator(this);
         }
 
         public int GetSectionCount()
@@ -36,7 +36,6 @@ namespace HoboKing.Iterator
                     maxValueY = collection[i].Position.Y;
                 else
                     break;
-
             }
             var sectionCount = Math.Floor(maxValueY / 1000);
 
@@ -48,11 +47,10 @@ namespace HoboKing.Iterator
             return collection;
         }
 
-        public void Add(Tile tile)
+        public void Add(GameEntity entity)
         {
-            collection.Add(tile);
+            collection.Add(entity);
         }
-
 
         public int Count()
         {

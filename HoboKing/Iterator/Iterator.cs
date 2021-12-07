@@ -9,6 +9,6 @@ namespace HoboKing.Iterator
         public abstract object First();
         public abstract object Next();
         public abstract bool IsDone();
-        public abstract object Current();
+        //public abstract object Current();
     }
 }
